@@ -8,11 +8,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── Fonts (topbar.css) ── */
-@font-face { font-family:'VW Head'; src:url('Fonts/vwhead-light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Head'; src:url('Fonts/vwhead-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Head'; src:url('Fonts/vwhead-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Text'; src:url('Fonts/vwtext-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Text'; src:url('Fonts/vwtext-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
 
 /* ── grid.css ── */
 .grid-container {
@@ -436,6 +436,7 @@ body {
 .dist-thumb:hover rect,
 .dist-thumb.hovered rect { fill: #997F67; }
 .dist-thumb svg { display: block; pointer-events: none; }
+.dist-thumb:focus-visible { outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 50%; }
 
 /* ── Switch — 60×24, border track, filled knob ── */
 .vw-switch {
@@ -760,12 +761,16 @@ input[type="range"] {
               <div class="dist-divider" id="dist-divider-2" style="left:66.66%;"></div>
 
               <!-- Knob 1: top edge -->
-              <button class="dist-thumb" id="dist-thumb-1" style="left:33.33%; top:0; transform:translate(-50%,-50%);">
+              <button class="dist-thumb" id="dist-thumb-1"
+                role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="33" aria-label="City / Country road split"
+                style="left:33.33%; top:0; transform:translate(-50%,-50%);">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="12" fill="#293043"/><path d="M15.72 9.09L14.73 10L15.93 11.35H8.12L9.32 10L8.32 9.11C6.06 11.61 6.06 11.71 6.06 12C6.06 12.29 6.06 12.4 8.33 14.91L9.33 14.02L8.12 12.67H15.93L14.73 14L15.73 14.89C17.99 12.4 17.99 12.3 17.99 12C17.99 11.7 17.99 11.61 15.72 9.09Z" fill="white"/></svg>
               </button>
 
               <!-- Knob 2: bottom edge -->
-              <button class="dist-thumb" id="dist-thumb-2" style="left:66.66%; bottom:0; transform:translate(-50%,50%);">
+              <button class="dist-thumb" id="dist-thumb-2"
+                role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="67" aria-label="Country road / Motorway split"
+                style="left:66.66%; bottom:0; transform:translate(-50%,50%);">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="12" fill="#293043"/><path d="M15.72 9.09L14.73 10L15.93 11.35H8.12L9.32 10L8.32 9.11C6.06 11.61 6.06 11.71 6.06 12C6.06 12.29 6.06 12.4 8.33 14.91L9.33 14.02L8.12 12.67H15.93L14.73 14L15.73 14.89C17.99 12.4 17.99 12.3 17.99 12C17.99 11.7 17.99 11.61 15.72 9.09Z" fill="white"/></svg>
               </button>
 
@@ -1378,6 +1383,9 @@ function initDistSlider() {
       label.querySelector('.dist-seg-pct').textContent = vals[i] + '%';
     });
 
+    thumb1.setAttribute('aria-valuenow', v1);
+    thumb2.setAttribute('aria-valuenow', v2);
+
     updateRange();
   }
 
@@ -1434,6 +1442,44 @@ function initDistSlider() {
 
   makeDraggable(thumb1, true);
   makeDraggable(thumb2, false);
+
+  // Track click — only the top stroke (thumb-1) and bottom stroke (thumb-2) are clickable
+  const HIT = 14; // px hit zone around each 1px border
+  block.addEventListener('click', e => {
+    if (e.target.closest('.dist-thumb')) return;
+    const rect = block.getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    const x = clamp(((e.clientX - rect.left) / rect.width) * 100, 0, 100);
+    if (y <= HIT) {
+      pct1 = clamp(x, 0, pct2);
+      setPositions();
+    } else if (y >= rect.height - HIT) {
+      pct2 = clamp(x, pct1, 100);
+      setPositions();
+    }
+  });
+  block.style.cursor = 'default';
+
+  // Keyboard navigation — arrow keys move focused thumb, Shift for larger step
+  function addKeyboard(thumb, isThumb1) {
+    thumb.addEventListener('keydown', e => {
+      const step = e.shiftKey ? 5 : 1;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (isThumb1) pct1 = clamp(pct1 - step, 0, pct2);
+        else          pct2 = clamp(pct2 - step, pct1, 100);
+        setPositions();
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (isThumb1) pct1 = clamp(pct1 + step, 0, pct2);
+        else          pct2 = clamp(pct2 + step, pct1, 100);
+        setPositions();
+      }
+    });
+  }
+  addKeyboard(thumb1, true);
+  addKeyboard(thumb2, false);
+
   setPositions();
 }
 </script>

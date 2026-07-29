@@ -8,11 +8,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── Fonts (topbar.css) ── */
-@font-face { font-family:'VW Head'; src:url('Fonts/vwhead-light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Head'; src:url('Fonts/vwhead-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Head'; src:url('Fonts/vwhead-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Text'; src:url('Fonts/vwtext-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Text'; src:url('Fonts/vwtext-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
 
 /* ── grid.css ── */
 .grid-container {
@@ -583,7 +583,7 @@ input[type="range"] {
   background: var(--navy);
   border-radius: 12px;
   padding: 24px;
-  display: flex; flex-direction: column; gap: 20px;
+  display: flex; flex-direction: column; gap: 28px;
   width: 100%;
 }
 
@@ -634,6 +634,16 @@ input[type="range"] {
   border-color: transparent;
   color: var(--navy);
 }
+.cta-button--inverted {
+  background: #fff;
+  border-color: #fff;
+  color: var(--navy);
+}
+.cta-button--inverted:hover {
+  background: #CCBDAB;
+  border-color: #CCBDAB;
+  color: var(--navy);
+}
 
 /* ── Sticky result bar (mobile/tablet, <960px) ── */
 .sticky-result {
@@ -665,6 +675,7 @@ input[type="range"] {
   font-family: var(--font-text); font-size: 14px; font-weight: 400;
   color: var(--muted); line-height: 1.5;
 }
+
 
 </style>
 </head>
@@ -756,16 +767,16 @@ input[type="range"] {
             <div class="dist-block" id="dist-block">
 
               <!-- Dashed dividers — moved by JS -->
-              <div class="dist-divider" id="dist-divider-1" style="left:33.33%;"></div>
-              <div class="dist-divider" id="dist-divider-2" style="left:66.66%;"></div>
+              <div class="dist-divider" id="dist-divider-1" style="left:50%;"></div>
+              <div class="dist-divider" id="dist-divider-2" style="left:80%;"></div>
 
               <!-- Knob 1: top edge -->
-              <button class="dist-thumb" id="dist-thumb-1" style="left:33.33%; top:0; transform:translate(-50%,-50%);">
+              <button class="dist-thumb" id="dist-thumb-1" style="left:50%; top:0; transform:translate(-50%,-50%);">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="12" fill="#293043"/><path d="M15.72 9.09L14.73 10L15.93 11.35H8.12L9.32 10L8.32 9.11C6.06 11.61 6.06 11.71 6.06 12C6.06 12.29 6.06 12.4 8.33 14.91L9.33 14.02L8.12 12.67H15.93L14.73 14L15.73 14.89C17.99 12.4 17.99 12.3 17.99 12C17.99 11.7 17.99 11.61 15.72 9.09Z" fill="white"/></svg>
               </button>
 
               <!-- Knob 2: bottom edge -->
-              <button class="dist-thumb" id="dist-thumb-2" style="left:66.66%; bottom:0; transform:translate(-50%,50%);">
+              <button class="dist-thumb" id="dist-thumb-2" style="left:80%; bottom:0; transform:translate(-50%,50%);">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="12" fill="#293043"/><path d="M15.72 9.09L14.73 10L15.93 11.35H8.12L9.32 10L8.32 9.11C6.06 11.61 6.06 11.71 6.06 12C6.06 12.29 6.06 12.4 8.33 14.91L9.33 14.02L8.12 12.67H15.93L14.73 14L15.73 14.89C17.99 12.4 17.99 12.3 17.99 12C17.99 11.7 17.99 11.61 15.72 9.09Z" fill="white"/></svg>
               </button>
 
@@ -785,15 +796,15 @@ input[type="range"] {
             <!-- Labels row — below the bordered box -->
             <div class="dist-labels">
               <div class="dist-label" id="dist-label-0">
-                <span class="dist-seg-pct">33%</span>
+                <span class="dist-seg-pct">50%</span>
                 <span class="dist-seg-lbl">City</span>
               </div>
               <div class="dist-label" id="dist-label-1">
-                <span class="dist-seg-pct">33%</span>
+                <span class="dist-seg-pct">30%</span>
                 <span class="dist-seg-lbl">Country road</span>
               </div>
               <div class="dist-label" id="dist-label-2">
-                <span class="dist-seg-pct">33%</span>
+                <span class="dist-seg-pct">20%</span>
                 <span class="dist-seg-lbl">Motorway</span>
               </div>
             </div>
@@ -807,7 +818,7 @@ input[type="range"] {
             <span class="question-label">Do you often drive faster than 120 km/h on the motorway? <svg class="q-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(27,34,54,1)" stroke-width="1.5"/><path d="M12 11V16" stroke="rgba(27,34,54,1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.8" fill="rgba(27,34,54,1)"/></svg></span>
           </div>
           <label class="vw-switch">
-            <input type="checkbox" id="speed-toggle" onchange="updateRange()">
+            <input type="checkbox" id="speed-toggle" checked onchange="updateRange()">
             <span class="vw-switch-track">
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="24" viewBox="0 0 60 24" fill="none"><rect x="1" y="1" width="58" height="22" rx="11" stroke="#293043" stroke-width="2"/></svg>
               <span class="vw-switch-track-bg"></span>
@@ -823,8 +834,8 @@ input[type="range"] {
           </div>
           <div class="fl-select">
             <select id="tyre-select" onchange="tyreAutoSelected = false; syncSelectValue(this); updateRange()">
-              <option selected>Summer tyres 18"</option>
-              <option>Summer tyres 19"</option>
+              <option>Summer tyres 18"</option>
+              <option selected>Summer tyres 19"</option>
               <option>Summer tyres 20"</option>
               <option>Winter tyres 20"</option>
               <option>All-season tyres 19"</option>
@@ -918,11 +929,11 @@ input[type="range"] {
                 </span>
               </div>
               <div class="fl-select">
-                <span class="fl-label">Battery / Motor</span>
+                <span class="fl-label">Motor</span>
                 <select onchange="updateRange()" id="battery-select">
-                  <option value="50">50 kWh / 125 kW (170 PS)</option>
-                  <option value="58">58 kWh / 140 kW (190 PS)</option>
-                  <option value="79">79 kWh / 170 kW (231 PS)</option>
+                  <option value="50">125 kW (170 PS)</option>
+                  <option value="58">140 kW (190 PS)</option>
+                  <option value="79">170 kW (231 PS)</option>
                 </select>                <span class="fl-chevron">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 12 17.713 C 11.55 17.713 11.127 17.535 10.811 17.213 L 1.025 7.216 L 1.975 6.285 L 11.76 16.281 C 11.89 16.412 12.109 16.413 12.24 16.280 L 22.025 6.285 L 22.975 7.216 L 13.19 17.212 C 12.873 17.536 12.45 17.713 12 17.713 Z" fill="rgba(0,30,80,1)"/></svg>
                 </span>
@@ -958,10 +969,8 @@ input[type="range"] {
             </div>
             <div class="result-value" id="range-display"></div>
           </div>
+          <button class="cta-button cta-button--inverted">Configure this ID. model &nbsp;→</button>
         </div>
-
-        <!-- CTA default: 420x44 border 1px rgba(41,48,67) r:100 p:8 32 -->
-        <button class="cta-button">Configure this ID. model &nbsp;→</button>
 
       </div><!-- /output-panel -->
       </div><!-- /right-col -->
@@ -1079,32 +1088,32 @@ function syncSelectValue(sel) {
 // Battery options per trim
 const batteryOptions = {
   Trend: [
-    { value: '50', label: '50 kWh / 125 kW (170 PS)' }
+    { value: '50', label: '125 kW (170 PS)' }
   ],
   Life: [
-    { value: '50', label: '50 kWh / 125 kW (170 PS)' },
-    { value: '58', label: '58 kWh / 140 kW (190 PS)' },
-    { value: '79', label: '79 kWh / 170 kW (231 PS)' }
+    { value: '50', label: '125 kW (170 PS)' },
+    { value: '58', label: '140 kW (190 PS)' },
+    { value: '79', label: '170 kW (231 PS)' }
   ],
   Style: [
-    { value: '50', label: '50 kWh / 125 kW (170 PS)' },
-    { value: '58', label: '58 kWh / 140 kW (190 PS)' },
-    { value: '79', label: '79 kWh / 170 kW (231 PS)' }
+    { value: '50', label: '125 kW (170 PS)' },
+    { value: '58', label: '140 kW (190 PS)' },
+    { value: '79', label: '170 kW (231 PS)' }
   ],
   PoloTrend: [
-    { value: '37a', label: '37 kWh / 85 kW (166 PS)' }
+    { value: '37a', label: '85 kW (166 PS)' }
   ],
   PoloLife: [
-    { value: '37a', label: '37 kWh / 85 kW (166 PS)' },
-    { value: '37b', label: '37 kWh / 99 kW (135 PS)' },
-    { value: '52a', label: '52 kWh / 155 kW (211 PS)' }
+    { value: '37a', label: '85 kW (166 PS)' },
+    { value: '37b', label: '99 kW (135 PS)' },
+    { value: '52a', label: '155 kW (211 PS)' }
   ],
   PoloStyle: [
-    { value: '37b', label: '37 kWh / 99 kW (135 PS)' },
-    { value: '52a', label: '52 kWh / 155 kW (211 PS)' }
+    { value: '37b', label: '99 kW (135 PS)' },
+    { value: '52a', label: '155 kW (211 PS)' }
   ],
   PoloGTI: [
-    { value: '52b', label: '52 kWh / 166 kW (226 PS)' }
+    { value: '52b', label: '166 kW (226 PS)' }
   ]
 };
 
@@ -1340,7 +1349,7 @@ function initDistSlider() {
   const labels = [0,1,2].map(i => document.getElementById('dist-label-' + i));
   if (!block || !thumb1 || !thumb2) return;
 
-  let pct1 = 33.33, pct2 = 66.66;
+  let pct1 = 50, pct2 = 80;
   const MIN_GAP = 0;
   const ICON_MAX = 24, ICON_MIN = 10;
   let hover1 = false, hover2 = false;
