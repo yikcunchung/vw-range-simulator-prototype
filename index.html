@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+<meta name="description" content="Estimate the real-world range of your Volkswagen ID. model based on temperature, tyres, driving mix and occupancy.">
 <title>Volkswagen Range Simulator</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -292,12 +294,13 @@ body {
 /* Combo: gap:12 between question and control */
 .combo { display: flex; flex-direction: column; gap: 12px; }
 
-.question { display: flex; align-items: flex-start; gap: 0; flex-wrap: nowrap; }
+.question { display: flex; align-items: center; gap: 0; flex-wrap: nowrap; }
 .question-label {
   font-family: var(--font-text); font-size: 16px;
   font-weight: 700; line-height: 1.2; color: var(--navy);
 }
-.q-icon { width: 20px; height: 20px; display: none; vertical-align: middle; margin-left: 8px; flex-shrink: 0; }
+.q-icon-btn { position:relative; display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; color:rgb(41,48,67); background:transparent; border:none; padding:0; cursor:pointer; flex-shrink:0; margin-left:4px; vertical-align:middle; -webkit-tap-highlight-color:transparent; }
+.q-icon { width:24px; height:24px; display:block; pointer-events:none; }
 
 /* ── Floating label select ── */
 .fl-select { position: relative; overflow: visible; }
@@ -308,7 +311,7 @@ body {
   font-family: var(--font-text); font-size: 16px;
   font-weight: 400; color: rgba(0,14,38,1);
   background: transparent;
-  border: 1px solid rgb(161,164,172);
+  border: 1px solid rgb(110,116,126);
   border-radius: 8px;
   appearance: none;
   cursor: pointer;
@@ -320,7 +323,7 @@ body {
 
 /* Hover — exact Figma values */
 .fl-select:hover select { border-color: rgba(153,127,103,1); color: rgba(115,62,1,1); }
-.fl-select:hover .fl-label { color: rgba(115,62,1,1); }
+.fl-select:hover .fl-label { color: rgba(115,62,1,1); max-width:100%; white-space:normal; overflow-wrap:break-word; text-overflow:clip;}
 .fl-select:hover .fl-chevron svg path { fill: rgba(115,62,1,1); }
 
 /* Focus/open — handled via JS, not CSS :focus */
@@ -330,10 +333,9 @@ body {
   font-family: var(--font-text); font-size: 12px; line-height: 18px;
   font-weight: 400; color: rgba(0,30,80,1);
   pointer-events: none;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  max-width: calc(100% - 48px);
-  transition: color 0.15s;
-}
+  overflow: hidden;  
+  
+  transition: color 0.15s; max-width:100%; white-space:normal; overflow-wrap:break-word; text-overflow:clip;}
 
 .fl-chevron {
   position: absolute; right: 8px; top: 50%;
@@ -352,7 +354,7 @@ body {
 
 /* Dist thumb hover — after base rule so specificity wins */
 .dist-thumb:hover,
-.dist-thumb.hovered { background: #997F67 !important; }
+.dist-thumb.hovered { background-color: #997F67 !important; border-color: #997F67 !important; }
 
 /* Switch hover — change SVG rect stroke and knob colour */
 .vw-switch:hover .vw-switch-track svg rect { stroke: #997F67; }
@@ -367,8 +369,8 @@ body {
 .dist-wrap { display: flex; flex-direction: column; margin-top: 4px; }
 
 .dist-block {
-  border: 1px solid rgba(161,164,172,1);
-  border-radius: 8px;
+  border: 1px solid rgba(110,116,126,1);
+  border-radius: 12px;
   overflow: visible;
   position: relative;
   width: 100%;
@@ -397,7 +399,7 @@ body {
   position: absolute;
   top: 0; bottom: 0;
   width: 2px;
-  border-left: 2px dashed rgba(161,164,172,1);
+  border-left: 2px dashed rgba(110,116,126,1);
   transform: translateX(-1px);
   pointer-events: none;
   z-index: 1;
@@ -421,22 +423,24 @@ body {
 /* Knobs — anchored to .dist-block */
 .dist-thumb {
   position: absolute;
-  width: 24px; height: 24px; border-radius: 50%;
-  background: var(--navy-dark);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 2;
-  cursor: ew-resize;
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px; border-radius: 100%;
+  border: 2px solid rgb(41, 48, 67);
+  background-color: rgb(41, 48, 67);
+  color: rgb(255, 255, 255);
+  z-index: 1;
+  cursor: grab;
   user-select: none;
   touch-action: none;
   pointer-events: auto;
-  border: none; /* button reset */
-  padding: 0;   /* button reset */
-  outline: none; /* button reset */
+  padding: 0;
+  outline: none;
 }
-.dist-thumb:hover rect,
-.dist-thumb.hovered rect { fill: #997F67; }
 .dist-thumb svg { display: block; pointer-events: none; }
-.dist-thumb:focus-visible { outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 50%; }
+.dist-thumb:focus-visible { outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 100%; }
 
 /* ── Switch — 60×24, border track, filled knob ── */
 .vw-switch {
@@ -444,7 +448,8 @@ body {
   font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy);
   cursor: pointer;
 }
-.vw-switch input { display: none; }
+.vw-switch input { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); border:0; white-space:nowrap; }
+.vw-switch input:focus-visible ~ .vw-switch-track { outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 12px; }
 .vw-switch-track {
   position: relative; width: 60px; height: 24px; flex-shrink: 0;
   cursor: pointer;
@@ -479,7 +484,8 @@ body {
   display: inline-flex; align-items: center; gap: 12px;
   font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy);
 }
-.vw-toggle input { display: none; }
+.vw-toggle input { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); border:0; white-space:nowrap; }
+.vw-toggle input:focus-visible ~ .vw-toggle-track { outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 12px; }
 .vw-toggle-track {
   position: relative; width: 60px; height: 24px; flex-shrink: 0;
   background: var(--navy-dark); border-radius: 12px;
@@ -592,15 +598,29 @@ input[type="range"] {
 .result-value {
   font-family: var(--font-head); font-size: 52px; font-weight: 700;
   color: #fff; line-height: 1; display: flex; align-items: baseline; gap: 0;
+  /* Lets the unit drop to its own line at 320px instead of the digits being
+     compressed into their own overflow:hidden clip. Only engages at 320 — at 390
+     the row needs 229px of 277px available, so nothing wraps. See .slot-digit. */
+  flex-wrap: wrap;
 }
 .range-unit { font-size: 52px; font-weight: 700; margin-left: 8px; color: #fff; }
 
-/* Each digit column */
+/* Each digit column.
+   SC 1.4.10 / 1.4.4: as flex items these columns inherit flex-shrink:1, so at 320px
+   the row was squeezed and each column fell from the glyph's 30.69px advance to a
+   27.55px clip box. Combined with the overflow:hidden that produces the reel effect,
+   that shaved 1.2-1.9 CSS px off the RIGHT edge of digits 0, 4, 6, 8 and 9 — measured
+   ink loss, not empty advance width. It went unnoticed because the default value is
+   "252", and 2 and 5 are among the digits narrow enough to survive.
+   flex-shrink:0 keeps the clip box at the full advance width; the wrap on
+   .result-value stops that pushing the unit outside the panel. 320px only —
+   clientWidth == scrollWidth == 31 at 390 and above either way. */
 .slot-digit {
   display: inline-block;
   overflow: hidden;
   height: 1em; /* clips to one digit height */
   vertical-align: top;
+  flex-shrink: 0;
 }
 .slot-reel {
   display: flex;
@@ -667,12 +687,47 @@ input[type="range"] {
   color: var(--muted); line-height: 1.5;
 }
 
+
+/* ---- a11y additions (WCAG 2.2 AA) ---- */
+/* SC 2.4.7: .fl-select select sets outline:none and the JS that was meant to
+   replace it never existed, so these drew 0 indicator pixels. */
+.fl-select select:focus-visible { outline: 2px solid var(--navy-dark); outline-offset: 2px; }
+/* SC 2.4.7: input[type=range] is opacity:0 over a decorative thumb, so its UA
+   ring renders fully transparent. Forward focus to the visible thumb. */
+input[type="range"]:focus-visible ~ .slider-thumb {
+  outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 50%;
+}
+/* SC 2.4.11: the fixed result bar is 123px tall but the page reserved only 56px,
+   so a focused control could be scrolled to a position the bar covers. */
+html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
+/* Visually hidden but exposed to AT — used for the live result text. Never
+   display:none, which would hide it from screen readers too. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0,0,0,0); clip-path: inset(50%);
+  border: 0; white-space: nowrap;
+}
+/* SC 1.4.10: 67px (3.2 lines) of the disclaimer sat permanently under the fixed
+   bar at 320px because padding-bottom (56px) was smaller than the bar (123px). */
+@media (max-width: 959px) {
+  .range-simulator { padding-bottom: 160px; }
+}
+
+/* SC 2.4.1: skip link, visually hidden until focused */
+.skip-link {
+  position:absolute; left:8px; top:-40px; z-index:9999;
+  background:#1B2236; color:#fff; padding:8px 16px; border-radius:0 0 8px 8px;
+  font-family:var(--font-text,sans-serif); font-size:14px; text-decoration:none;
+  transition:top 0.15s;
+}
+.skip-link:focus { top:0; }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#sim-main">Skip to main content</a>
 
 <!-- ════ TOPBAR ════ -->
-  <div id="topbar">
+  <div id="topbar" role="banner">
     <div class="topbar-container">
       <!-- Left group: Logo + Tabs -->
       <div class="topbar-left">
@@ -731,7 +786,7 @@ input[type="range"] {
 
 <!-- ════ CONTENT ════ -->
 <div id="content">
-  <div class="range-simulator">
+  <div role="main" id="sim-main" class="range-simulator">
 
     <!-- Header — gap:40 from top, icon+headline -->
     <div class="rs-header">
@@ -751,7 +806,7 @@ input[type="range"] {
         <!-- Combo 1: Where do you travel? (Distribution slider) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">Where do you travel and how often? <svg class="q-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(27,34,54,1)" stroke-width="1.5"/><path d="M12 11V16" stroke="rgba(27,34,54,1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.8" fill="rgba(27,34,54,1)"/></svg></span>
+            <span class="question-label">Where do you travel and how often? <button class="q-icon-btn" aria-label="More information: Where do you travel and how often"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="dist-wrap">
             <div class="dist-block" id="dist-block">
@@ -764,14 +819,14 @@ input[type="range"] {
               <button class="dist-thumb" id="dist-thumb-1"
                 role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="33" aria-label="City / Country road split"
                 style="left:33.33%; top:0; transform:translate(-50%,-50%);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="12" fill="#293043"/><path d="M15.72 9.09L14.73 10L15.93 11.35H8.12L9.32 10L8.32 9.11C6.06 11.61 6.06 11.71 6.06 12C6.06 12.29 6.06 12.4 8.33 14.91L9.33 14.02L8.12 12.67H15.93L14.73 14L15.73 14.89C17.99 12.4 17.99 12.3 17.99 12C17.99 11.7 17.99 11.61 15.72 9.09Z" fill="white"/></svg>
+                <svg width="12" height="12" viewBox="6 6 12 12" fill="none"><path d="M15.72 9.09L14.73 10L15.93 11.35H8.12L9.32 10L8.32 9.11C6.06 11.61 6.06 11.71 6.06 12C6.06 12.29 6.06 12.4 8.33 14.91L9.33 14.02L8.12 12.67H15.93L14.73 14L15.73 14.89C17.99 12.4 17.99 12.3 17.99 12C17.99 11.7 17.99 11.61 15.72 9.09Z" fill="white"/></svg>
               </button>
 
               <!-- Knob 2: bottom edge -->
               <button class="dist-thumb" id="dist-thumb-2"
                 role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="67" aria-label="Country road / Motorway split"
                 style="left:66.66%; bottom:0; transform:translate(-50%,50%);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="12" fill="#293043"/><path d="M15.72 9.09L14.73 10L15.93 11.35H8.12L9.32 10L8.32 9.11C6.06 11.61 6.06 11.71 6.06 12C6.06 12.29 6.06 12.4 8.33 14.91L9.33 14.02L8.12 12.67H15.93L14.73 14L15.73 14.89C17.99 12.4 17.99 12.3 17.99 12C17.99 11.7 17.99 11.61 15.72 9.09Z" fill="white"/></svg>
+                <svg width="12" height="12" viewBox="6 6 12 12" fill="none"><path d="M15.72 9.09L14.73 10L15.93 11.35H8.12L9.32 10L8.32 9.11C6.06 11.61 6.06 11.71 6.06 12C6.06 12.29 6.06 12.4 8.33 14.91L9.33 14.02L8.12 12.67H15.93L14.73 14L15.73 14.89C17.99 12.4 17.99 12.3 17.99 12C17.99 11.7 17.99 11.61 15.72 9.09Z" fill="white"/></svg>
               </button>
 
               <!-- Icons — absolutely centred in their region by JS -->
@@ -809,10 +864,10 @@ input[type="range"] {
         <!-- Combo 2: Speed toggle -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">Do you often drive faster than 120 km/h on the motorway? <svg class="q-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(27,34,54,1)" stroke-width="1.5"/><path d="M12 11V16" stroke="rgba(27,34,54,1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.8" fill="rgba(27,34,54,1)"/></svg></span>
+            <span class="question-label"><span id="q-speed">Do you often drive faster than 120 km/h on the motorway?</span> <button class="q-icon-btn" aria-label="More information: Do you often drive faster than 120 km/h on the motorway"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <label class="vw-switch">
-            <input type="checkbox" id="speed-toggle" onchange="updateRange()">
+            <input type="checkbox" id="speed-toggle" aria-labelledby="q-speed" onchange="updateRange()">
             <span class="vw-switch-track">
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="24" viewBox="0 0 60 24" fill="none"><rect x="1" y="1" width="58" height="22" rx="11" stroke="#293043" stroke-width="2"/></svg>
               <span class="vw-switch-track-bg"></span>
@@ -824,10 +879,10 @@ input[type="range"] {
         <!-- Combo 3: Tyres select -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">What tyres does your car have? <svg class="q-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(27,34,54,1)" stroke-width="1.5"/><path d="M12 11V16" stroke="rgba(27,34,54,1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.8" fill="rgba(27,34,54,1)"/></svg></span>
+            <span class="question-label"><span id="q-tyre">What tyres does your car have?</span> <button class="q-icon-btn" aria-label="More information: What tyres does your car have"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="fl-select">
-            <select id="tyre-select" onchange="tyreAutoSelected = false; syncSelectValue(this); updateRange()">
+            <select id="tyre-select" aria-labelledby="q-tyre">
               <option selected>Summer tyres 18"</option>
               <option>Summer tyres 19"</option>
               <option>Summer tyres 20"</option>
@@ -843,11 +898,12 @@ input[type="range"] {
         <!-- Combo 4: Temperature (Slider / Temperature) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">What is the outside temperature? <svg class="q-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(27,34,54,1)" stroke-width="1.5"/><path d="M12 11V16" stroke="rgba(27,34,54,1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.8" fill="rgba(27,34,54,1)"/></svg></span>
+            <span class="question-label">What is the outside temperature? <button class="q-icon-btn" aria-label="More information: What is the outside temperature"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="slider-wrap">
             <div class="slider-track-area">
               <input type="range" min="-20" max="30" step="10" value="20" id="temp-slider"
+                     aria-label="What is the outside temperature?" aria-valuetext="+20 degrees Celsius"
                 oninput="updateSlider('temp-slider','temp-tooltip','temp-thumb')">
               <div class="slider-thumb" id="temp-thumb">
                 <div class="slider-tooltip" id="temp-tooltip">+20°</div>
@@ -860,10 +916,10 @@ input[type="range"] {
         <!-- Combo 5: A/C toggle -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">Is the heating or air conditioning on? <svg class="q-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(27,34,54,1)" stroke-width="1.5"/><path d="M12 11V16" stroke="rgba(27,34,54,1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.8" fill="rgba(27,34,54,1)"/></svg></span>
+            <span class="question-label"><span id="q-ac">Is the heating or air conditioning on?</span> <button class="q-icon-btn" aria-label="More information: Is the heating or air conditioning on"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <label class="vw-switch">
-            <input type="checkbox" id="ac-toggle" onchange="acManuallySet = true; updateRange()">
+            <input type="checkbox" id="ac-toggle" aria-labelledby="q-ac" onchange="acManuallySet = true; updateRange()">
             <span class="vw-switch-track">
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="24" viewBox="0 0 60 24" fill="none"><rect x="1" y="1" width="58" height="22" rx="11" stroke="#293043" stroke-width="2"/></svg>
               <span class="vw-switch-track-bg"></span>
@@ -875,11 +931,11 @@ input[type="range"] {
         <!-- Combo 6: Occupancy (Toggle) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">How many people are in the car? <svg class="q-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(27,34,54,1)" stroke-width="1.5"/><path d="M12 11V16" stroke="rgba(27,34,54,1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.8" fill="rgba(27,34,54,1)"/></svg></span>
+            <span class="question-label"><span id="q-occ">How many people are in the car?</span> <button class="q-icon-btn" aria-label="More information: How many people are in the car"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <!-- Toggle: 1 person | [track] | Full — default ON = 1 person -->
           <label class="vw-toggle">
-            <input type="checkbox" id="occ-toggle" onchange="updateRange()">
+            <input type="checkbox" id="occ-toggle" aria-labelledby="q-occ" onchange="updateRange()">
             <span>1 person</span>
             <span class="vw-toggle-track">
               <span class="vw-toggle-knob"></span>
@@ -901,12 +957,12 @@ input[type="range"] {
           <!-- Combo: question + two selects -->
           <div class="model-combo">
             <div class="question">
-              <span class="question-label">Which model are you interested in? <svg class="q-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(27,34,54,1)" stroke-width="1.5"/><path d="M12 11V16" stroke="rgba(27,34,54,1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.8" fill="rgba(27,34,54,1)"/></svg></span>
+              <span class="question-label">Which model are you interested in?</span>
             </div>
             <div class="select-group">
               <div class="fl-select">
                 <span class="fl-label" id="trim-fl-label">The new ID.3 Neo</span>
-                <select id="trim-select" onchange="updateBatteryOptions(); updateCarImage(); updateRange()">
+                <select id="trim-select" aria-labelledby="trim-fl-label">
                   <optgroup label="The new ID.3 Neo">
                     <option value="Trend">Trend</option>
                     <option value="Life">Life</option>
@@ -923,11 +979,11 @@ input[type="range"] {
                 </span>
               </div>
               <div class="fl-select">
-                <span class="fl-label">Motor</span>
-                <select onchange="updateRange()" id="battery-select">
-                  <option value="50">125 kW (170 PS)</option>
-                  <option value="58">140 kW (190 PS)</option>
-                  <option value="79">170 kW (231 PS)</option>
+                <span class="fl-label" id="battery-fl-label">Motor / Battery Capacity</span>
+                <select id="battery-select" aria-labelledby="battery-fl-label">
+                  <option value="50">125 kW (170 PS) · 50 kWh</option>
+                  <option value="58">140 kW (190 PS) · 58 kWh</option>
+                  <option value="79">170 kW (231 PS) · 79 kWh</option>
                 </select>                <span class="fl-chevron">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 12 17.713 C 11.55 17.713 11.127 17.535 10.811 17.213 L 1.025 7.216 L 1.975 6.285 L 11.76 16.281 C 11.89 16.412 12.109 16.413 12.24 16.280 L 22.025 6.285 L 22.975 7.216 L 13.19 17.212 C 12.873 17.536 12.45 17.713 12 17.713 Z" fill="rgba(0,30,80,1)"/></svg>
                 </span>
@@ -954,14 +1010,9 @@ input[type="range"] {
           <div class="result-header">
             <div class="result-headline-row">
               <span class="result-headline-label">Estimated range</span>
-              <!-- 24px/info icon, white -->
-              <svg class="result-info-icon" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="9" stroke="white" stroke-width="1.5"/>
-                <path d="M12 11V16" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                <circle cx="12" cy="8" r="0.8" fill="white"/>
-              </svg>
             </div>
-            <div class="result-value" id="range-display"></div>
+            <div class="result-value" id="range-display" aria-hidden="true"></div>
+            <p class="sr-only" id="range-live" aria-live="polite"></p>
           </div>
         </div>
 
@@ -977,7 +1028,7 @@ input[type="range"] {
           <div class="result-headline-row">
             <span class="result-headline-label" id="sticky-model-label">The new ID.3 Neo Trend</span>
           </div>
-          <div class="result-value" id="sticky-range-display"></div>
+          <div class="result-value" id="sticky-range-display" aria-hidden="true"></div>
         </div>
       </div>
 
@@ -1084,32 +1135,32 @@ function syncSelectValue(sel) {
 // Battery options per trim
 const batteryOptions = {
   Trend: [
-    { value: '50', label: '125 kW (170 PS)' }
+    { value: '50', label: '125 kW (170 PS) · 50 kWh' }
   ],
   Life: [
-    { value: '50', label: '125 kW (170 PS)' },
-    { value: '58', label: '140 kW (190 PS)' },
-    { value: '79', label: '170 kW (231 PS)' }
+    { value: '50', label: '125 kW (170 PS) · 50 kWh' },
+    { value: '58', label: '140 kW (190 PS) · 58 kWh' },
+    { value: '79', label: '170 kW (231 PS) · 79 kWh' }
   ],
   Style: [
-    { value: '50', label: '125 kW (170 PS)' },
-    { value: '58', label: '140 kW (190 PS)' },
-    { value: '79', label: '170 kW (231 PS)' }
+    { value: '50', label: '125 kW (170 PS) · 50 kWh' },
+    { value: '58', label: '140 kW (190 PS) · 58 kWh' },
+    { value: '79', label: '170 kW (231 PS) · 79 kWh' }
   ],
   PoloTrend: [
-    { value: '37a', label: '85 kW (166 PS)' }
+    { value: '37a', label: '85 kW (166 PS) · 37 kWh' }
   ],
   PoloLife: [
-    { value: '37a', label: '85 kW (166 PS)' },
-    { value: '37b', label: '99 kW (135 PS)' },
-    { value: '52a', label: '155 kW (211 PS)' }
+    { value: '37a', label: '85 kW (166 PS) · 37 kWh' },
+    { value: '37b', label: '99 kW (135 PS) · 37 kWh' },
+    { value: '52a', label: '155 kW (211 PS) · 52 kWh' }
   ],
   PoloStyle: [
-    { value: '37b', label: '99 kW (135 PS)' },
-    { value: '52a', label: '155 kW (211 PS)' }
+    { value: '37b', label: '99 kW (135 PS) · 37 kWh' },
+    { value: '52a', label: '155 kW (211 PS) · 52 kWh' }
   ],
   PoloGTI: [
-    { value: '52b', label: '166 kW (226 PS)' }
+    { value: '52b', label: '166 kW (226 PS) · 52 kWh' }
   ]
 };
 
@@ -1179,6 +1230,13 @@ function rollSlots(target) {
   buildSlots(container, target);
   const sticky = document.getElementById('sticky-range-display');
   if (sticky) buildSlots(sticky, target);
+  // SC 1.3.1 / 4.1.3: the reels above are aria-hidden because their textContent is
+  // all ten digits per column. This is the only accessible form of the result, and
+  // being aria-live it also announces each recomputation.
+  const live = document.getElementById('range-live');
+  if (live && target !== _currentRange) {
+    live.textContent = 'Estimated range ' + target + ' miles';
+  }
   _currentRange = target;
 }
 
@@ -1450,15 +1508,18 @@ function initDistSlider() {
     const rect = block.getBoundingClientRect();
     const y = e.clientY - rect.top;
     const x = clamp(((e.clientX - rect.left) / rect.width) * 100, 0, 100);
-    if (y <= HIT) {
+    // SC 2.5.7 / usability: the clickable band used to be only HIT px at each edge
+    // (14px of an 80px control). The whole block is now a single-pointer target —
+    // the upper half sets the first boundary, the lower half the second, which
+    // preserves the two-stroke semantic.
+    if (y < rect.height / 2) {
       pct1 = clamp(x, 0, pct2);
-      setPositions();
-    } else if (y >= rect.height - HIT) {
+    } else {
       pct2 = clamp(x, pct1, 100);
-      setPositions();
     }
+    setPositions();
   });
-  block.style.cursor = 'default';
+  block.style.cursor = 'pointer';
 
   // Keyboard navigation — arrow keys move focused thumb, Shift for larger step
   function addKeyboard(thumb, isThumb1) {
@@ -1482,6 +1543,21 @@ function initDistSlider() {
 
   setPositions();
 }
+
+/* WAVE flags a <select> carrying an inline onchange as a possible "JavaScript jump
+   menu" - the pattern where changing a select navigates the user away, which traps
+   keyboard users stepping through options. These only recompute the range estimate
+   (SC 3.2.2: no navigation), so the alert was a false positive, but binding via
+   addEventListener removes the inline handler and matches the sibling simulators.
+   The three checkbox toggles keep their onchange: WAVE only flags selects. */
+(function bindSelectHandlers(){
+  (function(){ var el = document.getElementById('tyre-select');
+    if (el) el.addEventListener('change', function () { tyreAutoSelected = false; syncSelectValue(el); updateRange(); }); })();
+  (function(){ var el = document.getElementById('battery-select');
+    if (el) el.addEventListener('change', function () { updateRange(); }); })();
+  (function(){ var el = document.getElementById('trim-select');
+    if (el) el.addEventListener('change', function () { updateBatteryOptions(); updateCarImage(); updateRange(); }); })();
+})();
 </script>
 </body>
 </html>
