@@ -784,7 +784,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
   -webkit-tap-highlight-color: transparent;
 }
 .info-modal-close:focus-visible { outline: 2px solid var(--focus-orange); }
-.info-modal-body > :first-child:focus-visible { outline: 2px solid var(--focus-orange); border-radius: 4px; }
+.info-modal-body:focus-visible { outline: 2px solid var(--focus-orange); border-radius: 4px; }
 .info-modal-body {
   font-family: var(--font-text); font-weight: 400; font-size: 16px; line-height: 1.5;
   color: var(--navy); background-color: #fff;
@@ -1150,7 +1150,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         </svg>
       </button>
     </div>
-    <div class="info-modal-body" id="info-modal-body"></div>
+    <div class="info-modal-body" id="info-modal-body" tabindex="0"></div>
   </div>
 </div>
 
@@ -1767,11 +1767,6 @@ function initDistSlider() {
 
   var lastTrigger = null, modalIsOpen = false;
 
-  // Returns the first rendered block so it — not the whole container — becomes
-  // the initial focus target. Focusing the container would compute ONE name
-  // from all its descendant text, so the tyres modal's 3 <li>s would be
-  // flattened into the opening announcement instead of read as a real list
-  // once the user continues past the first paragraph.
   function renderBody(blocks) {
     body.textContent = '';
     (blocks || []).forEach(function (block) {
@@ -1789,8 +1784,6 @@ function initDistSlider() {
         body.appendChild(p);
       }
     });
-    if (body.firstElementChild) body.firstElementChild.id = 'info-modal-focus-anchor';
-    return body.firstElementChild;
   }
 
   var focusAnchor = null;
@@ -1799,14 +1792,19 @@ function initDistSlider() {
     lastTrigger = trigger;
     var content = MODAL_CONTENT[trigger.id] || { title: '', body: [] };
     title.textContent = content.title;
-    focusAnchor = renderBody(content.body);
+    renderBody(content.body);
+
+    // Every modal (including the tyres one, which has a real <ul>/<li>) reads
+    // as one combined chunk: focus the whole container, whose computed name
+    // folds all its text together. The list markup itself is untouched in the
+    // DOM (SC 1.3.1 still holds), it just isn't split into separate stops on
+    // the initial read.
+    focusAnchor = body;
+
     overlay.hidden = false;
     setBackgroundInert(true);
     requestAnimationFrame(function () { overlay.classList.add('is-open'); });
-    if (focusAnchor) {
-      focusAnchor.setAttribute('tabindex', '0');
-      focusAnchor.focus();
-    }
+    focusAnchor.focus();
     modalIsOpen = true;
   }
 
