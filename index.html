@@ -1535,6 +1535,10 @@ function initDistSlider() {
 
     thumb1.setAttribute('aria-valuenow', v1);
     thumb2.setAttribute('aria-valuenow', v2);
+    // Raw percentages alone don't say which two segments a thumb sits between —
+    // pair each with its neighbouring segment's name and percentage instead.
+    thumb1.setAttribute('aria-valuetext', vals[0] + '% City, ' + vals[1] + '% Country road');
+    thumb2.setAttribute('aria-valuetext', vals[1] + '% Country road, ' + vals[2] + '% Motorway');
 
     updateRange();
   }
