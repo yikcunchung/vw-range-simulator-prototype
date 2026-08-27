@@ -10,11 +10,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── Fonts (topbar.css) ── */
-@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('site-01/assets/fonts/vwhead-light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('site-01/assets/fonts/vwhead-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('site-01/assets/fonts/vwhead-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('site-01/assets/fonts/vwtext-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('site-01/assets/fonts/vwtext-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
 
 /* ── grid.css ── */
 .grid-container {
@@ -36,6 +36,7 @@
   --muted: rgba(96,101,116,1);
   --track-inactive: rgba(208,209,213,1);
   --tooltip-bg: rgba(49,56,74,1);
+  --focus-orange: #C86C03;
   --font-text: 'VW Text','Inter',-apple-system,sans-serif;
   --font-head: 'VW Head','Inter',-apple-system,sans-serif;
 }
@@ -301,6 +302,7 @@ body {
 }
 .q-icon-btn { position:relative; display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; color:rgb(41,48,67); background:transparent; border:none; padding:0; cursor:pointer; flex-shrink:0; margin-left:4px; vertical-align:middle; -webkit-tap-highlight-color:transparent; }
 .q-icon { width:24px; height:24px; display:block; pointer-events:none; }
+.q-icon-btn:focus-visible { outline: 2px solid var(--focus-orange); border-radius: 50%; }
 
 /* ── Floating label select ── */
 .fl-select { position: relative; overflow: visible; }
@@ -323,7 +325,7 @@ body {
 
 /* Hover — exact Figma values */
 .fl-select:hover select { border-color: rgba(153,127,103,1); color: rgba(115,62,1,1); }
-.fl-select:hover .fl-label { color: rgba(115,62,1,1); max-width:100%; white-space:normal; overflow-wrap:break-word; text-overflow:clip;}
+.fl-select:hover .fl-label { color: rgba(115,62,1,1); right:52px; white-space:nowrap; text-overflow:ellipsis;}
 .fl-select:hover .fl-chevron svg path { fill: rgba(115,62,1,1); }
 
 /* Focus/open — handled via JS, not CSS :focus */
@@ -335,7 +337,7 @@ body {
   pointer-events: none;
   overflow: hidden;  
   
-  transition: color 0.15s; max-width:100%; white-space:normal; overflow-wrap:break-word; text-overflow:clip;}
+  transition: color 0.15s; right:52px; white-space:nowrap; text-overflow:ellipsis;}
 
 .fl-chevron {
   position: absolute; right: 8px; top: 50%;
@@ -440,16 +442,20 @@ body {
   outline: none;
 }
 .dist-thumb svg { display: block; pointer-events: none; }
-.dist-thumb:focus-visible { outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 100%; }
+.dist-thumb:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 0; border-radius: 100%; }
 
 /* ── Switch — 60×24, border track, filled knob ── */
 .vw-switch {
   display: inline-flex; align-items: center; gap: 12px;
   font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy);
   cursor: pointer;
+  /* .combo is flex-direction:column with default align-items:stretch, so without
+     this the label stretches to the row's full width — hover then fires anywhere
+     across that band, not just over the visible track. */
+  align-self: flex-start;
 }
 .vw-switch input { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); border:0; white-space:nowrap; }
-.vw-switch input:focus-visible ~ .vw-switch-track { outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 12px; }
+.vw-switch input:focus-visible ~ .vw-switch-track { outline: 2px solid var(--focus-orange); outline-offset: 0; border-radius: 12px; }
 .vw-switch-track {
   position: relative; width: 60px; height: 24px; flex-shrink: 0;
   cursor: pointer;
@@ -483,9 +489,10 @@ body {
 .vw-toggle {
   display: inline-flex; align-items: center; gap: 12px;
   font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy);
+  align-self: flex-start;
 }
 .vw-toggle input { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); border:0; white-space:nowrap; }
-.vw-toggle input:focus-visible ~ .vw-toggle-track { outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 12px; }
+.vw-toggle input:focus-visible ~ .vw-toggle-track { outline: 2px solid var(--focus-orange); outline-offset: 0; border-radius: 12px; }
 .vw-toggle-track {
   position: relative; width: 60px; height: 24px; flex-shrink: 0;
   background: var(--navy-dark); border-radius: 12px;
@@ -636,9 +643,9 @@ input[type="range"] {
 
 /* Header: "Estimated range" + info icon, then value */
 .result-header { display: flex; flex-direction: column; gap: 4px; }
-.result-headline-row { display: flex; align-items: flex-start; gap: 8px; }
+.result-headline-row { display: flex; align-items: center; }
 .result-headline-label { font-family: var(--font-text); font-size: 16px; font-weight: 700; color: #fff; line-height: 1.2; }
-.result-info-icon { width: 24px; height: 24px; flex-shrink: 0; display: none; }
+.result-headline-row .q-icon-btn { color: #fff; }
 
 /* ── CTA: 420x44, border 1px rgba(41,48,67), r:100, p:8 32 ── */
 .cta-button {
@@ -654,6 +661,9 @@ input[type="range"] {
   background: var(--button-secondary-hover, #CCBDAB);
   border-color: transparent;
   color: var(--navy);
+}
+.cta-button:focus-visible {
+  outline: 2px solid var(--focus-orange); outline-offset: 0;
 }
 
 /* ── Sticky result bar (mobile/tablet, <960px) ── */
@@ -691,11 +701,11 @@ input[type="range"] {
 /* ---- a11y additions (WCAG 2.2 AA) ---- */
 /* SC 2.4.7: .fl-select select sets outline:none and the JS that was meant to
    replace it never existed, so these drew 0 indicator pixels. */
-.fl-select select:focus-visible { outline: 2px solid var(--navy-dark); outline-offset: 2px; }
+.fl-select select:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 0; }
 /* SC 2.4.7: input[type=range] is opacity:0 over a decorative thumb, so its UA
    ring renders fully transparent. Forward focus to the visible thumb. */
 input[type="range"]:focus-visible ~ .slider-thumb {
-  outline: 2px solid var(--navy-dark); outline-offset: 3px; border-radius: 50%;
+  outline: 2px solid var(--focus-orange); outline-offset: 0; border-radius: 50%;
 }
 /* SC 2.4.11: the fixed result bar is 123px tall but the page reserved only 56px,
    so a focused control could be scrolled to a position the bar covers. */
@@ -707,11 +717,11 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
   overflow: hidden; clip: rect(0,0,0,0); clip-path: inset(50%);
   border: 0; white-space: nowrap;
 }
-/* #range-live sits inside the navy output panel and inherited the body's #1b2236, so
-   it was #1b2236 on #1b2236 - a 1:1 ratio that real WAVE reports as a Contrast Error.
-   The node is clipped to 1x1 and never visually rendered, so no user was affected, but
-   a BITV tester would have to dismiss the item by hand. White also degrades safely if
-   the clip ever breaks. Scoped: other .sr-only nodes sit on the light background. */
+/* #range-live sits inside the navy .result-section and inherits the body's #1b2236,
+   so it was #1b2236 on #1b2236 — 1:1 contrast. Clipped to 1×1px so nothing is
+   visually rendered, but WAVE does not treat .sr-only as hidden and reports a
+   Contrast Error a BITV tester must dismiss. White degrades safely if the clip
+   ever breaks. Scoped — the other sr-only elements sit on the light background. */
 #range-live { color: #fff; }
 /* SC 1.4.10: 67px (3.2 lines) of the disclaimer sat permanently under the fixed
    bar at 320px because padding-bottom (56px) was smaller than the bar (123px). */
@@ -727,6 +737,69 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
   transition:top 0.15s;
 }
 .skip-link:focus { top:0; }
+.skip-link:focus-visible { outline: 2px solid var(--focus-orange); }
+
+/* ════════════════════════════
+   INFO MODAL — shared by every "More information" button
+   Behaviour ported from nala's #nala-range-modal (single reusable dialog,
+   title/body swapped per trigger by button id, via MODAL_CONTENT in JS).
+════════════════════════════ */
+#info-overlay { position: fixed; inset: 0; z-index: 200; }
+#info-overlay[hidden] { display: none; }
+#info-backdrop { position: absolute; inset: 0; background: rgba(27,34,54,0.6); }
+#info-modal {
+  position: absolute; top: 50%; left: 50%;
+  overflow-y: auto; max-height: calc(100% - 24px);
+  width: 91.66vw;
+  background-color: #fff;
+  border-radius: 20px;
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(12px);
+  transition: opacity 300ms, transform 300ms;
+  padding-bottom: 24px;
+  outline: none;
+  z-index: 1;
+}
+#info-overlay.is-open #info-modal {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0px);
+}
+@media (min-width: 960px) {
+  #info-modal { width: 58.33vw; }
+}
+.info-modal-header {
+  display: flex; position: sticky; z-index: 1; top: 0;
+  align-items: center; justify-content: space-between;
+  padding-block: 24px; padding-inline: min(4.16vw, 106.66px);
+  background-color: #fff;
+}
+.info-modal-title {
+  font-family: var(--font-head); font-weight: 700; font-size: 20px;
+  line-height: 1.2; color: var(--navy);
+}
+.info-modal-close {
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border: none; background: transparent;
+  cursor: pointer; color: var(--navy); border-radius: 50%; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.info-modal-close:focus-visible { outline: 2px solid var(--focus-orange); }
+.info-modal-body > :first-child:focus-visible { outline: 2px solid var(--focus-orange); border-radius: 4px; }
+.info-modal-body {
+  font-family: var(--font-text); font-weight: 400; font-size: 16px; line-height: 1.5;
+  color: var(--navy); background-color: #fff;
+  padding: 0 min(4.16vw, 106.66px);
+}
+.info-modal-body p { margin: 0 0 16px; }
+.info-modal-body p:last-child { margin-bottom: 0; }
+.info-modal-body ul { margin: 0 0 16px; padding-left: 20px; }
+.info-modal-body ul:last-child { margin-bottom: 0; }
+.info-modal-body li { margin-bottom: 8px; }
+.info-modal-body li:last-child { margin-bottom: 0; }
+/* SC 2.3.3 — honour a reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  #info-modal { transition-duration: 0.001ms !important; }
+}
 </style>
 </head>
 <body>
@@ -812,7 +885,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 1: Where do you travel? (Distribution slider) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">Where do you travel and how often? <button class="q-icon-btn" aria-label="More information: Where do you travel and how often"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label">Where do you travel and how often? <button class="q-icon-btn" id="info-btn-distance" aria-label="More information: Where do you travel and how often"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="dist-wrap">
             <div class="dist-block" id="dist-block">
@@ -870,11 +943,10 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 2: Speed toggle -->
         <div class="combo">
           <div class="question">
-            <span class="question-label"><span id="q-speed">Do you often drive faster than 120 km/h on the motorway?</span> <button class="q-icon-btn" aria-label="More information: Do you often drive faster than 120 km/h on the motorway"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label"><span id="q-speed">Do you often drive faster than 120 km/h on the motorway?</span> <button class="q-icon-btn" id="info-btn-speed" aria-label="More information: Do you often drive faster than 120 km/h on the motorway"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <label class="vw-switch">
             <input type="checkbox" id="speed-toggle" aria-labelledby="q-speed" onchange="updateRange()">
-            <span class="sr-only">Motorway driving</span>
             <span class="vw-switch-track">
               <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="60" height="24" viewBox="0 0 60 24" fill="none"><rect x="1" y="1" width="58" height="22" rx="11" stroke="#293043" stroke-width="2"/></svg>
               <span class="vw-switch-track-bg"></span>
@@ -886,7 +958,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 3: Tyres select -->
         <div class="combo">
           <div class="question">
-            <span class="question-label"><span id="q-tyre">What tyres does your car have?</span> <button class="q-icon-btn" aria-label="More information: What tyres does your car have"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label"><span id="q-tyre">What tyres does your car have?</span> <button class="q-icon-btn" id="info-btn-tyres" aria-label="More information: What tyres does your car have"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="fl-select">
             <select id="tyre-select" aria-labelledby="q-tyre">
@@ -905,7 +977,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 4: Temperature (Slider / Temperature) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">What is the outside temperature? <button class="q-icon-btn" aria-label="More information: What is the outside temperature"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label">What is the outside temperature? <button class="q-icon-btn" id="info-btn-temp" aria-label="More information: What is the outside temperature"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="slider-wrap">
             <div class="slider-track-area">
@@ -923,11 +995,10 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 5: A/C toggle -->
         <div class="combo">
           <div class="question">
-            <span class="question-label"><span id="q-ac">Is the heating or air conditioning on?</span> <button class="q-icon-btn" aria-label="More information: Is the heating or air conditioning on"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label"><span id="q-ac">Is the heating or air conditioning on?</span> <button class="q-icon-btn" id="info-btn-ac" aria-label="More information: Is the heating or air conditioning on"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <label class="vw-switch">
             <input type="checkbox" id="ac-toggle" aria-labelledby="q-ac" onchange="acManuallySet = true; updateRange()">
-            <span class="sr-only">Heating or air conditioning</span>
             <span class="vw-switch-track">
               <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="60" height="24" viewBox="0 0 60 24" fill="none"><rect x="1" y="1" width="58" height="22" rx="11" stroke="#293043" stroke-width="2"/></svg>
               <span class="vw-switch-track-bg"></span>
@@ -939,7 +1010,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 6: Occupancy (Toggle) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label"><span id="q-occ">How many people are in the car?</span> <button class="q-icon-btn" aria-label="More information: How many people are in the car"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label"><span id="q-occ">How many people are in the car?</span> <button class="q-icon-btn" id="info-btn-occ" aria-label="More information: How many people are in the car"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <!-- Toggle: 1 person | [track] | Full — default ON = 1 person -->
           <label class="vw-toggle">
@@ -1003,7 +1074,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
           <div class="model-frame">
             <!-- Car: IMAGE fill in Figma, 420x210 -->
             <div class="vehicle-asset">
-              <img src="assets/media/id3/id3-trend.webp" alt="Volkswagen ID.3 Neo" id="car-img">
+              <img src="site-01/assets/media/id3/id3-trend.webp" alt="Volkswagen ID.3 Neo" id="car-img">
             </div>
             <div class="model-content">
               <p class="model-disclaimer" id="model-disclaimer">Electricity combined fuel consumption 22.7–22.5 kWh / 100 mi · CO₂ emissions combined 0 g / km</p>
@@ -1018,6 +1089,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
           <div class="result-header">
             <div class="result-headline-row">
               <span class="result-headline-label">Estimated range</span>
+              <button class="q-icon-btn" id="info-btn-range" aria-label="More information: Estimated range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button>
             </div>
             <div class="result-value" id="range-display" aria-hidden="true"></div>
             <p class="sr-only" id="range-live" aria-live="polite"></p>
@@ -1034,7 +1106,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
       <div class="sticky-result" id="sticky-result" aria-hidden="true">
         <div class="result-header">
           <div class="result-headline-row">
-            <span class="result-headline-label" id="sticky-model-label">The new ID.3 Neo Trend</span>
+            <span class="result-headline-label">Estimated range</span>
           </div>
           <div class="result-value" id="sticky-range-display" aria-hidden="true"></div>
         </div>
@@ -1050,6 +1122,26 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
 
   </div><!-- /range-simulator -->
 </div><!-- /content -->
+
+<!-- ════ INFO MODAL (shared across all "More information" buttons) ════ -->
+<div id="info-overlay" hidden>
+  <div id="info-backdrop" aria-hidden="true"></div>
+  <div id="info-modal" role="dialog" aria-modal="true"
+       aria-labelledby="info-modal-title" tabindex="-1">
+    <div class="info-modal-header">
+      <h2 id="info-modal-title" class="info-modal-title"></h2>
+      <button type="button" id="info-modal-close" class="info-modal-close"
+              aria-label="Close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+             focusable="false" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 5L5 19M5 5l14 14" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="info-modal-body" id="info-modal-body"></div>
+  </div>
+</div>
 
 <script>
 let tyreAutoSelected = false;
@@ -1067,6 +1159,10 @@ function updateSlider(sliderId, tooltipId, thumbId) {
     tip.classList.remove('align-left', 'align-right');
     if (pct < 10) tip.classList.add('align-left');
     else if (pct > 90) tip.classList.add('align-right');
+  }
+
+  if (s.hasAttribute('aria-valuetext')) {
+    s.setAttribute('aria-valuetext', (val >= 0 ? '+' : '') + val + ' degrees Celsius');
   }
 
   if (sliderId === 'temp-slider') {
@@ -1119,13 +1215,13 @@ function setDrive(el) {
 
 // Car images per trim
 const carImages = {
-  Trend:     'assets/media/id3/id3-trend.webp',
-  Life:      'assets/media/id3/id3-life.webp',
-  Style:     'assets/media/id3/id3-style.webp',
-  PoloTrend: 'assets/media/idpolo/idpolo-trend.webp',
-  PoloLife:  'assets/media/idpolo/idpolo-life.webp',
-  PoloStyle: 'assets/media/idpolo/idpolo-style.webp',
-  PoloGTI:   'assets/media/idpolo/idpolo-gti.webp'
+  Trend:     'site-01/assets/media/id3/id3-trend.webp',
+  Life:      'site-01/assets/media/id3/id3-life.webp',
+  Style:     'site-01/assets/media/id3/id3-style.webp',
+  PoloTrend: 'site-01/assets/media/idpolo/idpolo-trend.webp',
+  PoloLife:  'site-01/assets/media/idpolo/idpolo-life.webp',
+  PoloStyle: 'site-01/assets/media/idpolo/idpolo-style.webp',
+  PoloGTI:   'site-01/assets/media/idpolo/idpolo-gti.webp'
 };
 
 function updateCarImage() {
@@ -1309,18 +1405,6 @@ window.addEventListener('DOMContentLoaded', () => {
     if (sel) syncSelectValue(sel);
   });
 
-  const stickyModelLabel = document.getElementById('sticky-model-label');
-  const trimNames = {
-    Trend: 'The new ID.3 Neo Trend', Life: 'The new ID.3 Neo Life', Style: 'The new ID.3 Neo Style',
-    PoloTrend: 'The new ID. Polo Trend', PoloLife: 'The new ID. Polo Life',
-    PoloStyle: 'The new ID. Polo Style', PoloGTI: 'The new ID. Polo GTI'
-  };
-  function updateStickyLabel() {
-    const trim = document.getElementById('trim-select')?.value ?? 'Trend';
-    if (stickyModelLabel) stickyModelLabel.textContent = trimNames[trim] || trim;
-  }
-  document.getElementById('trim-select')?.addEventListener('change', updateStickyLabel);
-  updateStickyLabel();
   const stickyBar = document.getElementById('sticky-result');
   const inlineResult = document.querySelector('.result-section');
 
@@ -1565,6 +1649,173 @@ function initDistSlider() {
     if (el) el.addEventListener('change', function () { updateRange(); }); })();
   (function(){ var el = document.getElementById('trim-select');
     if (el) el.addEventListener('change', function () { updateBatteryOptions(); updateCarImage(); updateRange(); }); })();
+})();
+
+/* ── Info modal — one reusable dialog behind every "More information" button.
+   Behaviour ported from nala's #nala-range-modal: focus lands on the body
+   paragraph (not the close button), since a screen reader announces the
+   dialog's accessible name (the h2) on open but not the body text — landing
+   on the close button would leave the explanation unread. `inert` on the
+   background makes the 2-stop focus trap robust: without it a trip out to
+   browser chrome and back could land focus on a background control. */
+(function initInfoModal(){
+  var overlay = document.getElementById('info-overlay');
+  var modal = document.getElementById('info-modal');
+  var title = document.getElementById('info-modal-title');
+  var body = document.getElementById('info-modal-body');
+  var closeBtn = document.getElementById('info-modal-close');
+  var backdrop = document.getElementById('info-backdrop');
+
+  // Each button's copy, keyed by its id. A block is either a paragraph string
+  // or { list: [...] } for a bulleted list (SC 1.3.1 — real <ul>/<li>, not
+  // visual bullet characters in a plain paragraph).
+  var MODAL_CONTENT = {
+    'info-btn-distance': {
+      title: 'Road type impact on range',
+      body: [
+        'Define your personal driving profile here and find out what effect the selected combination of driving scenarios has on the range of your e-vehicle.',
+        'Depending on the defined profile, there are direct implications for the range of your e-vehicle. For example, driving at high speed on the motorway is significantly more energy-intensive than using the vehicle in city traffic.'
+      ]
+    },
+    'info-btn-speed': {
+      title: 'Motorway speed impact on range',
+      body: [
+        'The motorway section set above will be driven at speeds of up to 140 km/h if "YES" is selected.'
+      ]
+    },
+    'info-btn-tyres': {
+      title: 'Tyres impact on range',
+      body: [
+        'Tyres can affect how far your electric car will go on a charge. This is mainly because of rolling resistance: the less resistance, the more range you get.',
+        { list: [
+          'Standard Tyres (18”, 19”, 20”): These usually have lower rolling resistance, which helps your car go further. Larger sizes may reduce range slightly.',
+          'Winter Tyres (19”): Made for grip in cold and icy weather, but their softer, deeper tread means higher rolling resistance and a bit less range.',
+          'All Season Tyres (19”): Designed for all kinds of weather, they balance grip and efficiency, with lower rolling resistance than winter tyres and a smaller impact on range.'
+        ] },
+        'Choosing the right tyre depends on your driving needs and local weather.'
+      ]
+    },
+    'info-btn-temp': {
+      title: 'Outside temperature impact on range',
+      body: [
+        'Find out here how the outside temperature could affect the range of your e-vehicle.',
+        'In general, the performance of the battery in the e-vehicle - as well as in other battery-operated devices - is dependent on the outside temperature. The range will be reduced at very low temperatures and higher at very high temperatures.'
+      ]
+    },
+    'info-btn-ac': {
+      title: 'Cabin climate impact on range',
+      body: [
+        'Understand the effect of the heating and air conditioning on the range of your e-vehicle.',
+        'In contrast to a combustion engine, the interior air conditioning of an electric vehicle, i.e. both cooling and heating, is implemented with the help of the high-voltage battery. This significantly reduces the range, particularly at very high or very low outside temperatures.'
+      ]
+    },
+    'info-btn-occ': {
+      title: 'Passenger load impact on range',
+      body: [
+        'Adjust the number of passengers to find out how additional weight could affect the range of your electric vehicle.',
+        'As the load increases, both the driving resistance of the vehicle increases and the vehicle needs to more expend energy to accelerate. However the e-vehicle can recover a large part of this acceleration energy through recuperation and store it back in the battery, but city driving typically uses more acceleration.',
+        'If you select FULL, the range is calculated with the maximum payload.'
+      ]
+    },
+    'info-btn-range': {
+      title: 'How your estimated range is calculated',
+      body: [
+        'The range calculation always assumes a complete battery depletion cycle, meaning driving the entire distance the battery is empty in one go. Commuting journeys with repeated cold starts and recurring battery heating activation are not included. The displayed range indication is based on the WLTP partial profiles, taking into account additional parameter inputs for outside temperature, air conditioning, payload, and wheel/tire combination. The actual range may vary in practice, as crucial factors such as personal driving style, speed, use of comfort and auxiliary systems, topography, and the aging and wear process of the battery are individually variable. Due to its significantly higher efficiency compared to a combustion engine, the electric motor contributes less to overall energy consumption, meaning the electric vehicle is considerably more sensitive to, for example, auxiliary systems, as well as aerodynamic and tire influences.'
+      ]
+    }
+  };
+
+  var triggers = Object.keys(MODAL_CONTENT)
+    .map(function (id) { return document.getElementById(id); })
+    .filter(Boolean);
+  if (!overlay || !triggers.length) return;
+
+  var bgRegions = [document.getElementById('topbar'), document.getElementById('sim-main')];
+  function setBackgroundInert(on) {
+    bgRegions.forEach(function (el) {
+      if (!el) return;
+      if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert');
+    });
+  }
+
+  var lastTrigger = null, modalIsOpen = false;
+
+  // Returns the first rendered block so it — not the whole container — becomes
+  // the initial focus target. Focusing the container would compute ONE name
+  // from all its descendant text, so the tyres modal's 3 <li>s would be
+  // flattened into the opening announcement instead of read as a real list
+  // once the user continues past the first paragraph.
+  function renderBody(blocks) {
+    body.textContent = '';
+    (blocks || []).forEach(function (block) {
+      if (block && block.list) {
+        var ul = document.createElement('ul');
+        block.list.forEach(function (item) {
+          var li = document.createElement('li');
+          li.textContent = item;
+          ul.appendChild(li);
+        });
+        body.appendChild(ul);
+      } else {
+        var p = document.createElement('p');
+        p.textContent = block;
+        body.appendChild(p);
+      }
+    });
+    if (body.firstElementChild) body.firstElementChild.id = 'info-modal-focus-anchor';
+    return body.firstElementChild;
+  }
+
+  var focusAnchor = null;
+
+  function openInfoModal(trigger) {
+    lastTrigger = trigger;
+    var content = MODAL_CONTENT[trigger.id] || { title: '', body: [] };
+    title.textContent = content.title;
+    focusAnchor = renderBody(content.body);
+    overlay.hidden = false;
+    setBackgroundInert(true);
+    requestAnimationFrame(function () { overlay.classList.add('is-open'); });
+    if (focusAnchor) {
+      focusAnchor.setAttribute('tabindex', '0');
+      focusAnchor.focus();
+    }
+    modalIsOpen = true;
+  }
+
+  function closeInfoModal() {
+    overlay.classList.remove('is-open');
+    var done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      overlay.hidden = true;
+      setBackgroundInert(false); // must clear inert before focusing, or the focus call is ignored
+      if (lastTrigger) lastTrigger.focus();
+      modalIsOpen = false;
+    }
+    modal.addEventListener('transitionend', finish, { once: true });
+    setTimeout(finish, 350); // fallback if transition fires before listener attaches
+  }
+
+  triggers.forEach(function (btn) {
+    btn.addEventListener('click', function () { openInfoModal(btn); });
+  });
+  closeBtn.addEventListener('click', closeInfoModal);
+  backdrop.addEventListener('click', closeInfoModal);
+
+  modal.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || !focusAnchor) return;
+    e.preventDefault();
+    if (document.activeElement === closeBtn && !e.shiftKey) { focusAnchor.focus(); }
+    else if (document.activeElement === focusAnchor && e.shiftKey) { closeBtn.focus(); }
+    else if (e.shiftKey) { focusAnchor.focus(); }
+    else { closeBtn.focus(); }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modalIsOpen) closeInfoModal();
+  });
 })();
 </script>
 </body>
