@@ -10,11 +10,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── Fonts (topbar.css) ── */
-@font-face { font-family:'VW Head'; src:url('site-01/assets/fonts/vwhead-light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Head'; src:url('site-01/assets/fonts/vwhead-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Head'; src:url('site-01/assets/fonts/vwhead-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Text'; src:url('site-01/assets/fonts/vwtext-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:'VW Text'; src:url('site-01/assets/fonts/vwtext-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
 
 /* ── grid.css ── */
 .grid-container {
@@ -1074,7 +1074,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
           <div class="model-frame">
             <!-- Car: IMAGE fill in Figma, 420x210 -->
             <div class="vehicle-asset">
-              <img src="site-01/assets/media/id3/id3-trend.webp" alt="Volkswagen ID.3 Neo" id="car-img">
+              <img src="assets/media/id3/id3-trend.webp" alt="Volkswagen ID.3 Neo" id="car-img">
             </div>
             <div class="model-content">
               <p class="model-disclaimer" id="model-disclaimer">Electricity combined fuel consumption 22.7–22.5 kWh / 100 mi · CO₂ emissions combined 0 g / km</p>
@@ -1215,13 +1215,13 @@ function setDrive(el) {
 
 // Car images per trim
 const carImages = {
-  Trend:     'site-01/assets/media/id3/id3-trend.webp',
-  Life:      'site-01/assets/media/id3/id3-life.webp',
-  Style:     'site-01/assets/media/id3/id3-style.webp',
-  PoloTrend: 'site-01/assets/media/idpolo/idpolo-trend.webp',
-  PoloLife:  'site-01/assets/media/idpolo/idpolo-life.webp',
-  PoloStyle: 'site-01/assets/media/idpolo/idpolo-style.webp',
-  PoloGTI:   'site-01/assets/media/idpolo/idpolo-gti.webp'
+  Trend:     'assets/media/id3/id3-trend.webp',
+  Life:      'assets/media/id3/id3-life.webp',
+  Style:     'assets/media/id3/id3-style.webp',
+  PoloTrend: 'assets/media/idpolo/idpolo-trend.webp',
+  PoloLife:  'assets/media/idpolo/idpolo-life.webp',
+  PoloStyle: 'assets/media/idpolo/idpolo-style.webp',
+  PoloGTI:   'assets/media/idpolo/idpolo-gti.webp'
 };
 
 function updateCarImage() {
