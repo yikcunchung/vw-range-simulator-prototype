@@ -885,7 +885,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 1: Where do you travel? (Distribution slider) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">Where do you travel and how often? <button class="q-icon-btn" id="info-btn-distance" aria-label="More information: Where do you travel and how often"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label">Where do you travel and how often? <button class="q-icon-btn" id="info-btn-distance" aria-label="More information: Road type impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="dist-wrap">
             <div class="dist-block" id="dist-block">
@@ -943,7 +943,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 2: Speed toggle -->
         <div class="combo">
           <div class="question">
-            <span class="question-label"><span id="q-speed">Do you often drive faster than 120 km/h on the motorway?</span> <button class="q-icon-btn" id="info-btn-speed" aria-label="More information: Do you often drive faster than 120 km/h on the motorway"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label"><span id="q-speed">Do you often drive faster than 120 km/h on the motorway?</span> <button class="q-icon-btn" id="info-btn-speed" aria-label="More information: Motorway speed impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <label class="vw-switch">
             <input type="checkbox" id="speed-toggle" aria-labelledby="q-speed" onchange="updateRange()">
@@ -958,7 +958,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 3: Tyres select -->
         <div class="combo">
           <div class="question">
-            <span class="question-label"><span id="q-tyre">What tyres does your car have?</span> <button class="q-icon-btn" id="info-btn-tyres" aria-label="More information: What tyres does your car have"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label"><span id="q-tyre">What tyres does your car have?</span> <button class="q-icon-btn" id="info-btn-tyres" aria-label="More information: Tyres impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="fl-select">
             <select id="tyre-select" aria-labelledby="q-tyre">
@@ -977,7 +977,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 4: Temperature (Slider / Temperature) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">What is the outside temperature? <button class="q-icon-btn" id="info-btn-temp" aria-label="More information: What is the outside temperature"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label">What is the outside temperature? <button class="q-icon-btn" id="info-btn-temp" aria-label="More information: Outside temperature impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="slider-wrap">
             <div class="slider-track-area">
@@ -995,7 +995,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 5: A/C toggle -->
         <div class="combo">
           <div class="question">
-            <span class="question-label"><span id="q-ac">Is the heating or air conditioning on?</span> <button class="q-icon-btn" id="info-btn-ac" aria-label="More information: Is the heating or air conditioning on"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label"><span id="q-ac">Is the heating or air conditioning on?</span> <button class="q-icon-btn" id="info-btn-ac" aria-label="More information: Cabin climate impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <label class="vw-switch">
             <input type="checkbox" id="ac-toggle" aria-labelledby="q-ac" onchange="acManuallySet = true; updateRange()">
@@ -1010,7 +1010,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 6: Occupancy (Toggle) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label"><span id="q-occ">How many people are in the car?</span> <button class="q-icon-btn" id="info-btn-occ" aria-label="More information: How many people are in the car"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label"><span id="q-occ">How many people are in the car?</span> <button class="q-icon-btn" id="info-btn-occ" aria-label="More information: Passenger load impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <!-- Toggle: 1 person | [track] | Full — default ON = 1 person -->
           <label class="vw-toggle">
@@ -1089,7 +1089,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
           <div class="result-header">
             <div class="result-headline-row">
               <span class="result-headline-label">Estimated range</span>
-              <button class="q-icon-btn" id="info-btn-range" aria-label="More information: Estimated range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button>
+              <button class="q-icon-btn" id="info-btn-range" aria-label="More information: How your estimated range is calculated"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button>
             </div>
             <div class="result-value" id="range-display" aria-hidden="true"></div>
             <p class="sr-only" id="range-live" aria-live="polite"></p>
