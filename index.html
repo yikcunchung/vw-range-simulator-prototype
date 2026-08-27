@@ -455,7 +455,7 @@ body {
   align-self: flex-start;
 }
 .vw-switch input { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); border:0; white-space:nowrap; }
-.vw-switch input:focus-visible ~ .vw-switch-track { outline: 2px solid var(--focus-orange); outline-offset: 0; border-radius: 12px; }
+.vw-switch:has(input:focus-visible) { outline: 2px solid var(--focus-orange); outline-offset: 0; border-radius: 12px; }
 .vw-switch-track {
   position: relative; width: 60px; height: 24px; flex-shrink: 0;
   cursor: pointer;
@@ -491,8 +491,9 @@ body {
   font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy);
   align-self: flex-start;
 }
+.vw-toggle-opt { position: relative; cursor: pointer; }
 .vw-toggle input { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); border:0; white-space:nowrap; }
-.vw-toggle input:focus-visible ~ .vw-toggle-track { outline: 2px solid var(--focus-orange); outline-offset: 0; border-radius: 12px; }
+.vw-toggle:has(input:focus-visible) { outline: 2px solid var(--focus-orange); outline-offset: 0; border-radius: 12px; }
 .vw-toggle-track {
   position: relative; width: 60px; height: 24px; flex-shrink: 0;
   background: var(--navy-dark); border-radius: 12px;
@@ -506,10 +507,9 @@ body {
   background: #fff;
   transition: left 400ms;
 }
-.vw-toggle input:checked ~ .vw-toggle-track .vw-toggle-knob {
-  left: calc(100% - 20px); width: 16px; height: 16px; background: #fff;
+.vw-toggle:has(#occ-full:checked) .vw-toggle-knob {
+  left: calc(100% - 20px);
 }
-.vw-toggle input:checked ~ .vw-toggle-track { background: var(--navy-dark); border: none; }
 .slider-wrap { position: relative; padding-top: 44px; } /* space for tooltip above track */
 .slider-track-area {
   position: relative; height: 4px;
@@ -946,7 +946,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             <span class="question-label"><span id="q-speed">Do you often drive faster than 120 km/h on the motorway?</span> <button class="q-icon-btn" id="info-btn-speed" aria-label="More information: Motorway speed impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <label class="vw-switch">
-            <input type="checkbox" id="speed-toggle" aria-labelledby="q-speed" onchange="updateRange()">
+            <input type="checkbox" id="speed-toggle" role="switch" aria-labelledby="q-speed lbl-no" onchange="updateRange(); updateToggleValueLabel(this, 'q-speed', 'lbl-no', 'lbl-yes')">
             <span class="vw-switch-track">
               <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="60" height="24" viewBox="0 0 60 24" fill="none"><rect x="1" y="1" width="58" height="22" rx="11" stroke="#293043" stroke-width="2"/></svg>
               <span class="vw-switch-track-bg"></span>
@@ -961,7 +961,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             <span class="question-label"><span id="q-tyre">What tyres does your car have?</span> <button class="q-icon-btn" id="info-btn-tyres" aria-label="More information: Tyres impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="fl-select">
-            <select id="tyre-select" aria-labelledby="q-tyre">
+            <select id="tyre-select" aria-label="Tyre type and size">
               <option selected>Summer tyres 18"</option>
               <option>Summer tyres 19"</option>
               <option>Summer tyres 20"</option>
@@ -982,7 +982,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
           <div class="slider-wrap">
             <div class="slider-track-area">
               <input type="range" min="-20" max="30" step="10" value="20" id="temp-slider"
-                     aria-label="What is the outside temperature?" aria-valuetext="+20 degrees Celsius"
+                     aria-label="Current outside temperature" aria-valuetext="+20 degrees Celsius"
                 oninput="updateSlider('temp-slider','temp-tooltip','temp-thumb')">
               <div class="slider-thumb" id="temp-thumb">
                 <div class="slider-tooltip" id="temp-tooltip">+20°</div>
@@ -998,7 +998,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             <span class="question-label"><span id="q-ac">Is the heating or air conditioning on?</span> <button class="q-icon-btn" id="info-btn-ac" aria-label="More information: Cabin climate impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <label class="vw-switch">
-            <input type="checkbox" id="ac-toggle" aria-labelledby="q-ac" onchange="acManuallySet = true; updateRange()">
+            <input type="checkbox" id="ac-toggle" role="switch" aria-labelledby="q-ac lbl-no" onchange="acManuallySet = true; updateRange(); updateToggleValueLabel(this, 'q-ac', 'lbl-no', 'lbl-yes')">
             <span class="vw-switch-track">
               <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="60" height="24" viewBox="0 0 60 24" fill="none"><rect x="1" y="1" width="58" height="22" rx="11" stroke="#293043" stroke-width="2"/></svg>
               <span class="vw-switch-track-bg"></span>
@@ -1012,15 +1012,24 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
           <div class="question">
             <span class="question-label"><span id="q-occ">How many people are in the car?</span> <button class="q-icon-btn" id="info-btn-occ" aria-label="More information: Passenger load impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
-          <!-- Toggle: 1 person | [track] | Full — default ON = 1 person -->
-          <label class="vw-toggle">
-            <input type="checkbox" id="occ-toggle" aria-labelledby="q-occ" onchange="updateRange()">
-            <span>1 person</span>
-            <span class="vw-toggle-track">
+          <!-- Toggle: 1 person | [track] | Full — default = 1 person.
+               Two radios, not a checkbox: this picks one of two NAMED states, not
+               an on/off property, so role="switch" was wrong here (that's for
+               yes/no questions). Radios give "1 of 2"/"2 of 2" natively, and each
+               one's own accessible name is just its own visible label text. -->
+          <div class="vw-toggle" role="radiogroup" aria-labelledby="q-occ">
+            <label class="vw-toggle-opt">
+              <input type="radio" name="occ" id="occ-1p" checked onchange="updateRange()">
+              <span>1 person</span>
+            </label>
+            <span class="vw-toggle-track" onclick="toggleOccTrack()">
               <span class="vw-toggle-knob"></span>
             </span>
-            <span>Full</span>
-          </label>
+            <label class="vw-toggle-opt">
+              <input type="radio" name="occ" id="occ-full" onchange="updateRange()">
+              <span>Full</span>
+            </label>
+          </div>
         </div>
 
       </div><!-- /input-section -->
@@ -1093,6 +1102,8 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             </div>
             <div class="result-value" id="range-display" aria-hidden="true"></div>
             <p class="sr-only" id="range-live" aria-live="polite"></p>
+            <span id="lbl-yes" class="sr-only">Yes</span>
+            <span id="lbl-no" class="sr-only">No</span>
           </div>
         </div>
 
@@ -1147,6 +1158,17 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
 let tyreAutoSelected = false;
 let acManuallySet = false;
 
+function updateToggleValueLabel(input, questionId, falseId, trueId) {
+  input.setAttribute('aria-labelledby', questionId + ' ' + (input.checked ? trueId : falseId));
+}
+
+function toggleOccTrack() {
+  const full = document.getElementById('occ-full');
+  const other = full.checked ? document.getElementById('occ-1p') : full;
+  other.checked = true;
+  other.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
 function updateSlider(sliderId, tooltipId, thumbId) {
   const s = document.getElementById(sliderId);
   const thumb = document.getElementById(thumbId);
@@ -1185,6 +1207,7 @@ function updateSlider(sliderId, tooltipId, thumbId) {
       const acToggle = document.getElementById('ac-toggle');
       if (acToggle) {
         acToggle.checked = (val >= 30 || val <= 0);
+        updateToggleValueLabel(acToggle, 'q-ac', 'lbl-no', 'lbl-yes');
       }
     }
   }
@@ -1390,7 +1413,7 @@ function updateRange() {
   // AC: yes → 371km = 231mi (delta = -21mi)
   if (document.getElementById('ac-toggle')?.checked) base -= 21;
   // Full occupancy: → 384km = 239mi (delta = -13mi)
-  if (document.getElementById('occ-toggle')?.checked) base -= 13;
+  if (document.getElementById('occ-full')?.checked) base -= 13;
 
   rollSlots(Math.max(60, Math.round(base)));
 }
