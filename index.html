@@ -778,7 +778,8 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
   line-height: 1.2; color: var(--navy);
 }
 .info-modal-close {
-  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  position: absolute; top: 24px; right: min(4.16vw, 106.66px); z-index: 2;
+  display: flex; align-items: center; justify-content: center;
   width: 32px; height: 32px; border: none; background: transparent;
   cursor: pointer; color: var(--navy); border-radius: 50%; padding: 0;
   -webkit-tap-highlight-color: transparent;
@@ -982,7 +983,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
           <div class="slider-wrap">
             <div class="slider-track-area">
               <input type="range" min="-20" max="30" step="10" value="20" id="temp-slider"
-                     aria-label="Current outside temperature" aria-valuetext="+20 degrees Celsius"
+                     aria-label="Current outside temperature, from -20 to +30 degrees Celsius" aria-valuetext="+20 degrees Celsius"
                 oninput="updateSlider('temp-slider','temp-tooltip','temp-thumb')">
               <div class="slider-thumb" id="temp-thumb">
                 <div class="slider-tooltip" id="temp-tooltip">+20°</div>
@@ -1102,8 +1103,8 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             </div>
             <div class="result-value" id="range-display" aria-hidden="true"></div>
             <p class="sr-only" id="range-live" aria-live="polite"></p>
-            <span id="lbl-yes" class="sr-only">Yes</span>
-            <span id="lbl-no" class="sr-only">No</span>
+            <span id="lbl-yes" class="sr-only" aria-hidden="true">Yes</span>
+            <span id="lbl-no" class="sr-only" aria-hidden="true">No</span>
           </div>
         </div>
 
@@ -1139,18 +1140,18 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
   <div id="info-backdrop" aria-hidden="true"></div>
   <div id="info-modal" role="dialog" aria-modal="true"
        aria-labelledby="info-modal-title" tabindex="-1">
-    <div class="info-modal-header">
+    <div class="info-modal-header" role="presentation">
       <h2 id="info-modal-title" class="info-modal-title"></h2>
-      <button type="button" id="info-modal-close" class="info-modal-close"
-              aria-label="Close">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"
-             focusable="false" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 5L5 19M5 5l14 14" stroke="currentColor" stroke-width="1.5"
-                stroke-linecap="round"/>
-        </svg>
-      </button>
     </div>
     <div class="info-modal-body" id="info-modal-body" tabindex="0"></div>
+    <button type="button" id="info-modal-close" class="info-modal-close"
+            aria-label="Close">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+           focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 5L5 19M5 5l14 14" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round"/>
+      </svg>
+    </button>
   </div>
 </div>
 
