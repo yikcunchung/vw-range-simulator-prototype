@@ -968,8 +968,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             <span class="question-label"><span id="q-tyre">What tyres does your car have?</span> <button class="q-icon-btn" id="info-btn-tyres" aria-label="More information: Tyres impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="fl-select">
-            <span class="fl-label" id="tyre-fl-label">Tyre type and size</span>
-            <select id="tyre-select" aria-labelledby="tyre-fl-label">
+            <select id="tyre-select" aria-labelledby="q-tyre">
               <option selected>Summer tyres 18"</option>
               <option>Summer tyres 19"</option>
               <option>Summer tyres 20"</option>
@@ -985,12 +984,12 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
         <!-- Combo 4: Temperature (Slider / Temperature) -->
         <div class="combo">
           <div class="question">
-            <span class="question-label">What is the outside temperature? <button class="q-icon-btn" id="info-btn-temp" aria-label="More information: Outside temperature impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
+            <span class="question-label"><span id="q-temp">What is the outside temperature?</span> <button class="q-icon-btn" id="info-btn-temp" aria-label="More information: Outside temperature impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="slider-wrap">
             <div class="slider-track-area">
               <input type="range" min="-20" max="30" step="10" value="20" id="temp-slider"
-                     aria-label="Current outside temperature, from -20 to +30 degrees Celsius" aria-valuetext="+20 degrees Celsius"
+                     aria-labelledby="q-temp" aria-valuetext="+20 degrees Celsius"
                 oninput="updateSlider('temp-slider','temp-tooltip','temp-thumb')">
               <div class="slider-thumb" id="temp-thumb">
                 <div class="slider-tooltip" id="temp-tooltip">+20°</div>
