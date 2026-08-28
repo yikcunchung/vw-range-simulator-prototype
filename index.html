@@ -267,8 +267,6 @@ body {
 @media (max-width: 767px) {
   .rs-headline { font-size: 24px; }
   .rs-header { padding-top: 28px; padding-bottom: 28px; }
-  .result-value { font-size: 44px; }
-  .range-unit { font-size: 44px; }
 }
 
 /* <440px Mobile */
@@ -277,8 +275,6 @@ body {
   .rs-header { gap: 12px; padding-top: 24px; padding-bottom: 24px; }
   .rs-header-icon { width: 36px; height: 36px; }
   .input-section { gap: 28px; }
-  .result-value { font-size: 38px; }
-  .range-unit { font-size: 38px; }
   .dist-seg-lbl { font-size: 12px; }
   #topbar { height: 56px; padding: 6px 0; }
   .topbar-tab { display: none; }
@@ -288,8 +284,6 @@ body {
 @media (max-width: 374px) {
   .rs-headline { font-size: 20px; }
   .input-section { gap: 24px; }
-  .result-value { font-size: 34px; }
-  .range-unit { font-size: 34px; }
 }
 
 /* Combo: gap:12 between question and control */
@@ -611,6 +605,12 @@ input[type="range"] {
   flex-wrap: wrap;
 }
 .range-unit { font-size: 52px; font-weight: 700; margin-left: 8px; color: #fff; }
+/* These three must come AFTER the base rule above (same selectors) or cascade order
+   lets the base rule win regardless of width — which is exactly the bug that made
+   this responsive shrink dead CSS (always rendered at 52px) until this fix. */
+@media (max-width: 767px) { .result-value { font-size: 44px; } .range-unit { font-size: 44px; } }
+@media (max-width: 439px) { .result-value { font-size: 38px; } .range-unit { font-size: 38px; } }
+@media (max-width: 374px) { .result-value { font-size: 34px; } .range-unit { font-size: 34px; } }
 
 /* Each digit column.
    SC 1.4.10 / 1.4.4: as flex items these columns inherit flex-shrink:1, so at 320px
@@ -674,18 +674,29 @@ input[type="range"] {
   .sticky-result {
     display: block;
     position: fixed;
-    bottom: 0; left: 0; right: 0;
+    bottom: 0px; left: 0px; width: 100%;
     background: var(--navy);
-    padding: 24px 8.33vw;
-    z-index: 100;
+    padding: 16px 32px;
+    z-index: 10;
     transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.2s;
     pointer-events: none;
   }
   .sticky-result.visible {
-    transform: translateY(0);
+    transform: translateY(0%);
     pointer-events: auto;
   }
+}
+/* Fluid value type, scoped to the sticky bar only (higher specificity than the
+   shared .result-value/.range-unit rules, so the main result card is untouched). */
+.sticky-result .result-value, .sticky-result .range-unit {
+  color: rgb(255, 255, 255);
+  margin: unset;
+  font-family: var(--font-head);
+  font-weight: bold;
+  font-size: clamp(2.5rem, 2.19rem + 0.88vw, 3.25rem);
+  line-height: 120%;
+  letter-spacing: calc(-0.02em + 0.02rem);
 }
 .disclaimer { display: flex; gap: 32px; margin-top: 40px; }
 .disclaimer-num {
