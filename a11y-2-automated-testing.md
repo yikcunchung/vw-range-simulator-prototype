@@ -76,7 +76,7 @@ Viewports: 1440×900, 768×1024, 390×844, 320×640, and 320×256 @ dsf 4 (liter
 
 | Measure | Value |
 |---|---|
-| Nodes (1440×900) | 247 |
+| Nodes (1440×900) | 241 |
 | Named interactive / graphic nodes | 34 |
 | **Unnamed** | **0** |
 | Focusable controls | 16 |
