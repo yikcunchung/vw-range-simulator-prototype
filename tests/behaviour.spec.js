@@ -123,7 +123,9 @@ test.describe('SC 2.4.7 — a visible focus ring on every control', () => {
       const ring = await page.evaluate(({ id, surrogate }) => {
         const inp = document.getElementById(id);
         let el = inp;
-        if (surrogate) {
+        if (surrogate && typeof surrogate === 'object' && surrogate.closest) {
+          el = inp.closest(surrogate.closest);
+        } else if (surrogate) {
           el = null;
           for (let sib = inp.nextElementSibling; sib; sib = sib.nextElementSibling) {
             if (sib.matches(surrogate)) { el = sib; break; }
@@ -133,8 +135,9 @@ test.describe('SC 2.4.7 — a visible focus ring on every control', () => {
         const cs = getComputedStyle(el);
         return { color: cs.outlineColor, style: cs.outlineStyle, width: parseFloat(cs.outlineWidth) };
       }, t);
-      expect(ring, `no ring surrogate ${t.surrogate} found for #${t.id}`).not.toBeNull();
-      expect(ring.color, `ring colour on #${t.id}${t.surrogate ? ' ' + t.surrogate : ''}`).toBe(RING.color);
+      const surrogateDesc = t.surrogate && typeof t.surrogate === 'object' ? t.surrogate.closest : t.surrogate;
+      expect(ring, `no ring surrogate ${surrogateDesc} found for #${t.id}`).not.toBeNull();
+      expect(ring.color, `ring colour on #${t.id}${surrogateDesc ? ' ' + surrogateDesc : ''}`).toBe(RING.color);
       expect(ring.style, `ring style on #${t.id}`).toBe(RING.style);
       expect(ring.width, `ring width on #${t.id}`).toBeGreaterThanOrEqual(RING.minWidth);
     }
@@ -318,7 +321,7 @@ test.describe('SC 4.1.2 — the temperature slider exposes its value truthfully'
 });
 
 test.describe('SC 2.1.1 — the toggles are operable from the keyboard', () => {
-  for (const id of ['speed-toggle', 'ac-toggle', 'occ-toggle']) {
+  for (const id of ['speed-toggle', 'ac-toggle']) {
     test(`Space toggles #${id} and focus stays on it`, async ({ page }) => {
       await settle(page);
       expect(await tabTo(page, id), `could not Tab to #${id}`).toBe(true);
@@ -349,6 +352,22 @@ test.describe('SC 2.1.1 — the toggles are operable from the keyboard', () => {
   }
 });
 
+test.describe('SC 2.1.1 — the occupancy radiogroup is operable from the keyboard', () => {
+  test('Arrow keys move selection between the two options, Space is not required', async ({ page }) => {
+    await settle(page);
+    expect(await tabTo(page, 'occ-1p'), 'could not Tab to #occ-1p').toBe(true);
+    expect(await page.locator('#occ-1p').isChecked()).toBe(true);
+    await page.keyboard.press('ArrowRight');
+    await page.waitForTimeout(120);
+    expect(await activeId(page), 'focus must move with selection in a native radiogroup').toBe('occ-full');
+    expect(await page.locator('#occ-full').isChecked(), 'ArrowRight must select the next radio').toBe(true);
+    expect(await page.locator('#occ-1p').isChecked(), 'selecting one radio must deselect the other').toBe(false);
+    await page.keyboard.press('ArrowLeft');
+    await page.waitForTimeout(120);
+    expect(await page.locator('#occ-1p').isChecked(), 'ArrowLeft must move selection back').toBe(true);
+  });
+});
+
 test.describe('SC 4.1.3 — every path that changes the result announces it', () => {
   test('the live region is written from each control, not just the common one', async ({ page }) => {
     await settle(page);
@@ -371,12 +390,16 @@ test.describe('SC 4.1.3 — every path that changes the result announces it', ()
       await page.selectOption('#trim-select', 'Life');
       await page.selectOption('#battery-select', '79');
     });
-    for (const id of ['speed-toggle', 'ac-toggle', 'occ-toggle']) {
+    for (const id of ['speed-toggle', 'ac-toggle']) {
       await step(id, async () => {
         await tabTo(page, id);
         await page.keyboard.press('Space');
       });
     }
+    await step('occ (radiogroup)', async () => {
+      await tabTo(page, 'occ-1p');
+      await page.keyboard.press('ArrowRight');  // selects #occ-full, a real change
+    });
     await step('temp-slider keyboard', async () => {
       await tabTo(page, 'temp-slider');
       await page.keyboard.press('ArrowLeft');
@@ -469,14 +492,17 @@ test.describe('SC 4.1.2 — state matches reality, and nothing hidden is focusab
       const s = await page.evaluate(() => {
         const sel = document.getElementById('trim-select');
         const ref = sel.getAttribute('aria-labelledby');
-        const lab = ref ? document.getElementById(ref) : null;
+        // aria-labelledby references TWO ids (static question + mutating value) —
+        // resolve each, not the raw space-joined string as one id.
+        const ids = (ref || '').split(/\s+/).filter(Boolean);
+        const labs = ids.map((id) => document.getElementById(id)).filter(Boolean);
         return {
           value: sel.value,
-          labelExists: !!lab,
-          name: lab ? (lab.textContent || '').replace(/\s+/g, ' ').trim() : '',
+          labelExists: ids.length > 0 && labs.length === ids.length,
+          name: labs.map((el) => (el.textContent || '').trim()).join(' ').replace(/\s+/g, ' ').trim(),
         };
       });
-      expect(s.labelExists, `#trim-select lost its label element at value ${v}`).toBe(true);
+      expect(s.labelExists, `#trim-select lost a label element at value ${v}`).toBe(true);
       expect(s.name, `#trim-select has an EMPTY accessible name at value ${v}`).not.toBe('');
       seen.push(`${s.value}="${s.name}"`);
     }
@@ -486,13 +512,18 @@ test.describe('SC 4.1.2 — state matches reality, and nothing hidden is focusab
   test('names do not change when values change', async ({ page }) => {
     await settle(page);
     // #trim-select is deliberately absent: its name is documented (a11y-1 §4.1.2) to
-    // follow the selected model group. It is pinned by the test above instead.
+    // follow the selected model group, pinned by the test above instead.
+    // #speed-toggle / #ac-toggle are ALSO absent here for the same reason, just
+    // discovered later: updateToggleValueLabel() swaps aria-labelledby between
+    // #lbl-no/#lbl-yes on every change, so "Yes"/"No" is baked into their name by
+    // design (same purpose-stable/value-mutates shape as #trim-select). Pinned by
+    // the dedicated test below instead of asserted identical here.
     const names = () => page.evaluate(() => {
       const byIds = (v) => (v || '').split(/\s+/).filter(Boolean)
         .map((id) => (document.getElementById(id) || {}).textContent || '').join(' ')
         .replace(/\s+/g, ' ').trim();
       const out = {};
-      for (const id of ['speed-toggle', 'ac-toggle', 'occ-toggle', 'tyre-select', 'battery-select']) {
+      for (const id of ['tyre-select', 'battery-select']) {
         const el = document.getElementById(id);
         out[id] = byIds(el.getAttribute('aria-labelledby'));
       }
@@ -501,12 +532,41 @@ test.describe('SC 4.1.2 — state matches reality, and nothing hidden is focusab
     const before = await names();
     await page.selectOption('#tyre-select', { index: 4 });
     await page.selectOption('#battery-select', { index: 0 });
-    for (const id of ['speed-toggle', 'ac-toggle', 'occ-toggle']) {
+    for (const id of ['speed-toggle', 'ac-toggle']) {
       await tabTo(page, id);
       await page.keyboard.press('Space');
     }
+    await tabTo(page, 'occ-1p');
+    await page.keyboard.press('ArrowRight');
     await page.waitForTimeout(250);
     expect(await names()).toEqual(before);
+  });
+
+  test('#speed-toggle / #ac-toggle keep a real, question-prefixed name at every state', async ({ page }) => {
+    await settle(page);
+    // Same shape as #trim-select above: the purpose-describing half (the question)
+    // must never move; only the Yes/No half may. Assert what has to hold either
+    // way — non-empty, question-prefixed — not "identical", which is not the design.
+    for (const [id, question] of [
+      ['speed-toggle', 'Do you often drive faster than 120 km/h on the motorway?'],
+      ['ac-toggle', 'Is the heating or air conditioning on?'],
+    ]) {
+      for (const checked of [true, false]) {
+        await page.evaluate(({ id, checked }) => {
+          const el = document.getElementById(id);
+          if (el.checked !== checked) el.click();
+        }, { id, checked });
+        await page.waitForTimeout(120);
+        const name = await page.evaluate((id) => {
+          const el = document.getElementById(id);
+          const ids = (el.getAttribute('aria-labelledby') || '').split(/\s+/).filter(Boolean);
+          return ids.map((i) => (document.getElementById(i) || {}).textContent || '').join(' ')
+            .replace(/\s+/g, ' ').trim();
+        }, id);
+        expect(name.startsWith(question), `#${id}'s question half moved: "${name}"`).toBe(true);
+        expect(name, `#${id} has an EMPTY accessible name when checked=${checked}`).not.toBe(question);
+      }
+    }
   });
 });
 
@@ -539,13 +599,18 @@ test.describe('focus is never lost', () => {
   test('focus survives every control being operated in turn', async ({ page }) => {
     await settle(page);
     const ids = ['dist-thumb-1', 'dist-thumb-2', 'speed-toggle', 'tyre-select',
-      'temp-slider', 'ac-toggle', 'occ-toggle'];
+      'temp-slider', 'ac-toggle', 'occ-1p'];
     for (const id of ids) {
       expect(await tabTo(page, id), `could not Tab to #${id}`).toBe(true);
-      const key = id.startsWith('dist') || id === 'temp-slider' ? 'ArrowRight' : 'Space';
+      // Space on an already-checked radio (occ-1p is checked by default) does
+      // nothing; ArrowRight is what actually exercises the radiogroup.
+      const key = id.startsWith('dist') || id === 'temp-slider' || id === 'occ-1p' ? 'ArrowRight' : 'Space';
       await page.keyboard.press(key);
       await page.waitForTimeout(120);
-      expect(await activeId(page), `operating #${id} moved or dropped focus`).toBe(id);
+      // ArrowRight on a radiogroup moves focus WITH selection to the next radio,
+      // unlike Space on a checkbox/toggle, which stays put.
+      const expectedId = id === 'occ-1p' ? 'occ-full' : id;
+      expect(await activeId(page), `operating #${id} moved or dropped focus`).toBe(expectedId);
     }
   });
 

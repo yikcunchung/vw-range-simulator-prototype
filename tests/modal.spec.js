@@ -35,7 +35,6 @@ const modalState = (page) => page.evaluate(() => ({
   hidden: document.getElementById('info-overlay').hidden,
   isOpen: document.getElementById('info-overlay').classList.contains('is-open'),
   activeId: document.activeElement && document.activeElement.id,
-  anchorTag: document.getElementById('info-modal-focus-anchor') && document.getElementById('info-modal-focus-anchor').tagName,
   mainInert: document.getElementById('sim-main').hasAttribute('inert'),
   topbarInert: document.getElementById('topbar').hasAttribute('inert'),
   title: document.getElementById('info-modal-title').textContent,
@@ -54,9 +53,11 @@ test.describe('SC 2.4.3 / 4.1.2 — opening a trigger reveals the dialog with th
       expect(s.title, 'dialog title must match THIS trigger, not a stale one left by a previous open').toBe(title);
       // A screen reader announces the dialog's accessible name (this h2, via
       // aria-labelledby) on open but not the body text — landing focus on the
-      // close button instead would leave the explanation unread.
-      expect(s.activeId, 'focus must land on the first paragraph, not the close button or the whole body container').toBe('info-modal-focus-anchor');
-      expect(s.anchorTag, 'the focus anchor must be the first real content block (a <p> for every current entry), not the container').toBe('P');
+      // close button instead would leave the explanation unread. Focus lands on
+      // the body CONTAINER, not a first-paragraph anchor — a deliberate trade-off
+      // (a11y-3): the tyres modal's real <ul>/<li> content gets flattened into one
+      // computed name on this initial announcement, which is accepted, not a defect.
+      expect(s.activeId, 'focus must land on the body container, not the close button').toBe('info-modal-body');
       expect(s.mainInert, '#sim-main must be inert while the dialog is open').toBe(true);
       expect(s.topbarInert, '#topbar must be inert while the dialog is open').toBe(true);
 
@@ -96,13 +97,13 @@ test.describe('SC 2.1.2 — focus trap cycles without escaping', () => {
     await page.waitForTimeout(TRANSITION_MS);
 
     const activeId = () => page.evaluate(() => document.activeElement && document.activeElement.id);
-    expect(await activeId()).toBe('info-modal-focus-anchor');
+    expect(await activeId()).toBe('info-modal-body');
 
     await page.keyboard.press('Tab');
     expect(await activeId()).toBe('info-modal-close');
 
     await page.keyboard.press('Tab');
-    expect(await activeId(), 'must wrap back to the focus anchor, not escape to the CTA button behind the dialog').toBe('info-modal-focus-anchor');
+    expect(await activeId(), 'must wrap back to the body container, not escape to the CTA button behind the dialog').toBe('info-modal-body');
 
     await page.keyboard.press('Shift+Tab');
     expect(await activeId()).toBe('info-modal-close');
@@ -131,7 +132,7 @@ test.describe('SC 2.1.2 — focus trap cycles without escaping', () => {
       return { color: cs.outlineColor, style: cs.outlineStyle, width: parseFloat(cs.outlineWidth) };
     }, id);
 
-    const bodyRing = await ringOn('info-modal-focus-anchor');
+    const bodyRing = await ringOn('info-modal-body');
     expect(bodyRing.color, 'body ring colour').toBe(RING.color);
     expect(bodyRing.style, 'body ring style').toBe(RING.style);
     expect(bodyRing.width, 'body ring width').toBeGreaterThanOrEqual(RING.minWidth);

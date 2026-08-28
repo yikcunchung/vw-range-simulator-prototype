@@ -38,7 +38,8 @@ const EXPECTED = {
   distThumbs: 2,  // #dist-thumb-1, #dist-thumb-2 — the only role="slider" elements.
                   // #temp-slider is a native input[type=range], so the AX tree shows
                   // three sliders while only two carry the role attribute.
-  toggles: 3,     // #speed-toggle, #ac-toggle, #occ-toggle
+  toggles: 2,     // #speed-toggle, #ac-toggle — occupancy is a radiogroup now, not a toggle
+  radios: 2,      // #occ-1p, #occ-full
   selects: 3,     // #tyre-select, #trim-select, #battery-select
   infoBtns: 7,    // the .q-icon-btn "More information" buttons, incl. the one
                   // on the result panel's "Estimated range" headline
@@ -48,9 +49,17 @@ const EXPECTED = {
 // focus ring cannot be on the input — it is drawn on the sibling named here via
 // `input:focus-visible ~ <surrogate>`. Same for the range input, which is opacity:0.
 const RING_SURROGATE = {
-  'speed-toggle': '.vw-switch-track',
-  'ac-toggle': '.vw-switch-track',
-  'occ-toggle': '.vw-toggle-track',
+  // Both the switches and the occupancy radiogroup draw their ring on the whole
+  // container via `:has(input:focus-visible)` — an ANCESTOR of the input, not a
+  // sibling track element (which carries no outline styling of its own).
+  // { closest } picks that lookup mode; a bare string is a sibling-selector lookup.
+  'speed-toggle': { closest: '.vw-switch' },
+  'ac-toggle': { closest: '.vw-switch' },
+  // occ-full is deliberately absent: it is not its own Tab stop (native radios
+  // share one; Tab lands on whichever is checked, occ-1p by default — arrow keys
+  // move within the group). It shares the exact same container-level CSS rule as
+  // occ-1p, so testing occ-1p already covers it.
+  'occ-1p': { closest: '.vw-toggle' },
   'temp-slider': '.slider-thumb',
 };
 
@@ -190,9 +199,14 @@ function nameOfExpr() {
   return `(el) => {
     const byIds = (v) => (v || '').split(/\\s+/).filter(Boolean)
       .map((id) => (document.getElementById(id) || {}).textContent || '').join(' ');
+    // A wrapping <label> is a real, native accessible-name source (e.g. the
+    // occupancy radios: <label><input type=radio><span>1 person</span></label>).
+    // Its own textContent already excludes the void <input>'s (empty) contribution.
+    const wrappingLabel = el.closest('label');
     const n = el.getAttribute('aria-labelledby') ? byIds(el.getAttribute('aria-labelledby'))
       : el.getAttribute('aria-label') ? el.getAttribute('aria-label')
       : el.tagName === 'IMG' ? (el.getAttribute('alt') || '')
+      : wrappingLabel ? (wrappingLabel.textContent || '')
       : (el.textContent || '');
     return n.replace(/\\s+/g, ' ').trim();
   }`;

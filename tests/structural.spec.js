@@ -149,12 +149,14 @@ test.describe('names', () => {
         infoButtons: g('${ROOT} .q-icon-btn'),
         selects: g('${ROOT} select'),
         checkboxes: g('${ROOT} input[type=checkbox]'),
+        radios: g('${ROOT} input[type=radio]'),
         distThumbs: g('${ROOT} [role=slider]'),
       };
     })()`);
     expect(groups.infoButtons).toHaveLength(EXPECTED.infoBtns);
     expect(groups.selects).toHaveLength(EXPECTED.selects);
     expect(groups.checkboxes).toHaveLength(EXPECTED.toggles);
+    expect(groups.radios).toHaveLength(EXPECTED.radios);
     expect(groups.distThumbs).toHaveLength(EXPECTED.distThumbs);
     for (const [kind, names] of Object.entries(groups)) {
       expect(names.filter((n) => n === ''), `unnamed ${kind}`).toEqual([]);
@@ -169,17 +171,20 @@ test.describe('names', () => {
     // accessible name drift apart (A4). A <select>'s <option> text is NOT its label
     // and must not be compared against the name (a11y-2 trap 8).
     const selects = await page.evaluate(`[...document.querySelectorAll('${ROOT} select')].map((s) => {
+      // aria-labelledby may reference MULTIPLE ids (e.g. trim-select's static
+      // question + mutating value) — resolve each one, not the raw string as one id.
       const ref = s.getAttribute('aria-labelledby');
-      const target = ref ? document.getElementById(ref) : null;
+      const ids = (ref || '').split(/\\s+/).filter(Boolean);
+      const targets = ids.map((id) => document.getElementById(id)).filter(Boolean);
       return {
         id: s.id,
         labelledby: ref,
         hasAriaLabel: s.hasAttribute('aria-label'),
-        targetExists: !!target,
-        targetVisible: !!target && target.getBoundingClientRect().width > 0
-          && getComputedStyle(target).visibility !== 'hidden'
-          && !target.closest('.sr-only'),
-        targetText: target ? (target.textContent || '').replace(/\\s+/g, ' ').trim() : null,
+        targetExists: ids.length > 0 && targets.length === ids.length,
+        targetVisible: targets.length > 0 && targets.every((el) => el.getBoundingClientRect().width > 0
+          && getComputedStyle(el).visibility !== 'hidden'
+          && !el.closest('.sr-only')),
+        targetText: targets.length ? targets.map((el) => (el.textContent || '').trim()).join(' ').replace(/\\s+/g, ' ').trim() : null,
       };
     })`);
     expect(selects).toHaveLength(EXPECTED.selects);
@@ -195,10 +200,12 @@ test.describe('names', () => {
   test('SC 2.5.3 — the visible label sits contiguously inside the accessible name', async ({ page }) => {
     await settle(page);
     // axe has no `label-in-name` rule at all. This is the check that replaces it.
-    // #occ-toggle is the one recorded exception: its visible "1 person" / "Full" are
-    // the switch's two VALUES, not a label, so it is excluded by id and by nothing
-    // else — see a11y-1-criteria.md.
-    const RECORDED_EXCEPTIONS = ['occ-toggle'];
+    // Occupancy used to be a single checkbox whose visible "1 person" / "Full" were
+    // its two VALUES, not a label — a recorded exception. It is now two real radio
+    // inputs, each natively wrapped in its own <label> containing that option's own
+    // text ("1 person", "Full"), which correctly IS that radio's label. No exception
+    // needed any more.
+    const RECORDED_EXCEPTIONS = [];
     const rows = await page.evaluate(`(() => {
       const nameOf = ${nameOfExpr()};
       const norm = (s) => (s || '').replace(/\\s+/g, ' ').trim();
@@ -241,7 +248,7 @@ test.describe('names', () => {
     // this check passes while testing nothing.
     expect(rows.map((r) => r.id).sort(),
       'the SC 2.5.3 harness did not match the expected control set').toEqual([
-      'ac-toggle', 'battery-select', 'cta-button', 'occ-toggle', 'speed-toggle',
+      'ac-toggle', 'battery-select', 'cta-button', 'occ-1p', 'occ-full', 'speed-toggle',
       'temp-slider', 'trim-select', 'tyre-select',
     ]);
     const failures = rows
@@ -522,10 +529,14 @@ test.describe('the build itself', () => {
     await page.selectOption('#trim-select', { index: 1 });
     await page.selectOption('#battery-select', { index: 0 });
     await page.selectOption('#tyre-select', { index: 4 });
-    for (const id of ['speed-toggle', 'ac-toggle', 'occ-toggle']) {
+    for (const id of ['speed-toggle', 'ac-toggle']) {
       await page.locator(`#${id}`).focus();
       await page.keyboard.press('Space');
     }
+    // occ-1p is checked by default; Space on an already-checked radio does not
+    // toggle it off (unlike a checkbox) — exercise the OTHER option instead.
+    await page.locator('#occ-full').focus();
+    await page.keyboard.press('Space');
     await page.locator('#temp-slider').focus();
     await page.keyboard.press('ArrowLeft');
     await page.locator('#dist-thumb-1').focus();
