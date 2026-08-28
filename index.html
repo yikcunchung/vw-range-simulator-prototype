@@ -1068,7 +1068,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             </div>
             <div class="select-group">
               <div class="fl-select">
-                <span class="fl-label" id="trim-fl-label">The new ID.3 Neo</span>
+                <span class="fl-label" id="trim-fl-label">Model: The new ID.3 Neo</span>
                 <select id="trim-select" aria-labelledby="trim-fl-label">
                   <optgroup label="The new ID.3 Neo">
                     <option value="Trend">Trend</option>
@@ -1451,7 +1451,7 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   function updateTrimLabel() {
     const trim = document.getElementById('trim-select')?.value ?? 'Trend';
-    if (trimFlLabel) trimFlLabel.textContent = trimGroupLabels[trim] || 'The new ID.3 Neo';
+    if (trimFlLabel) trimFlLabel.textContent = 'Model: ' + (trimGroupLabels[trim] || 'The new ID.3 Neo');
   }
   document.getElementById('trim-select')?.addEventListener('change', updateTrimLabel);
   updateTrimLabel();
