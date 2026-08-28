@@ -1259,10 +1259,19 @@ const carImages = {
   PoloGTI:   'assets/media/idpolo/idpolo-gti.webp'
 };
 
+const carImageAlt = {
+  Trend: 'Volkswagen ID.3 Neo', Life: 'Volkswagen ID.3 Neo', Style: 'Volkswagen ID.3 Neo',
+  PoloTrend: 'Volkswagen ID. Polo', PoloLife: 'Volkswagen ID. Polo',
+  PoloStyle: 'Volkswagen ID. Polo', PoloGTI: 'Volkswagen ID. Polo'
+};
+
 function updateCarImage() {
   const trim = document.getElementById('trim-select')?.value ?? 'Trend';
   const img = document.getElementById('car-img');
-  if (img && carImages[trim]) img.src = carImages[trim];
+  if (img && carImages[trim]) {
+    img.src = carImages[trim];
+    img.alt = carImageAlt[trim] || 'Volkswagen ID.3 Neo';
+  }
 }
 
 // Sync custom display value from native select
