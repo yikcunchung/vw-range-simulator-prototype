@@ -27,9 +27,8 @@ Fixed with `aria-hidden="true"`. **A1 is the rule; the accessibility-tree assert
 Definition of Done is the check that keeps it fixed.** The pattern was already understood in this
 codebase — every `.q-icon` SVG carried `aria-hidden="true"` already. These 16 were simply missed.
 
-Note also that **the local working copy of `index.html` was behind the deployed build** — an
-untracked 79,464-byte file still using the old `site-01/` asset paths. Everything in this pack
-describes the deployed build. **Diff local against live before quoting a number.**
+**Before quoting any figure in this pack, confirm the local checkout matches the deployed
+build.** They have diverged before without anyone noticing.
 
 ---
 # 1. Semantics and naming
@@ -99,8 +98,7 @@ If a control has a visible text label, the accessible name must **contain that t
 ```jsx
 // ✗ visible "Motor / Battery Capacity", name "Motor and battery capacity"
 //   one character — "/" written as the word "and" — is a Level A failure
-// ✗ visible "in … weather", name "in which weather"  (a word spliced between)
-// ✓ append, never splice:  visible "of my ID.7", name "of my ID.7 variant"
+// ✓ append, never splice — extending the visible text is fine, rewording it is not
 ```
 
 **axe has no rule for this at all.** It must be checked by hand, against the accessibility tree.

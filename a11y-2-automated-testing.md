@@ -21,9 +21,8 @@ The single most important sentence in this pack:
 This app is a **standalone page**, so `axe.run(document)` covers the whole conformance surface.
 There is no component-versus-page split.
 
-**This app's local `index.html` was behind the deployed build** when audited: the local copy
-was an untracked 79,464-byte file still using the old `site-01/` asset paths, while the deployed
-build was 80,404 bytes. Everything below describes the **deployed** build.
+Everything below describes the **deployed** build. Confirm the local checkout matches it before
+quoting a number — the two have diverged before without anyone noticing.
 
 ---
 
