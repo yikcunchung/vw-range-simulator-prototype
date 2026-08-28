@@ -968,7 +968,8 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             <span class="question-label"><span id="q-tyre">What tyres does your car have?</span> <button class="q-icon-btn" id="info-btn-tyres" aria-label="More information: Tyres impact on range"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button></span>
           </div>
           <div class="fl-select">
-            <select id="tyre-select" aria-label="Tyre type and size">
+            <span class="fl-label" id="tyre-fl-label">Tyre type and size</span>
+            <select id="tyre-select" aria-labelledby="tyre-fl-label">
               <option selected>Summer tyres 18"</option>
               <option>Summer tyres 19"</option>
               <option>Summer tyres 20"</option>
