@@ -171,7 +171,7 @@ criteria are not required and are not listed.
 | SC | Name | Lvl | Relevant | Status | Evidence / what to do |
 |---|---|---|---|---|---|
 | **4.1.1** | Parsing | A | Yes | ✅ Pass | Nu HTML validator: **0 errors**. Obsolete in WCAG 2.2 but normative under EN 301 549 clause 9.4.1.1, so it is checked and kept. |
-| **4.1.2** | Name, Role, Value | A | Yes | ✅ Pass | **AX tree: 245 nodes, 34 named, 0 unnamed, 0 duplicate role+name** (the `Trend/Life/Style ×2` pairs are one `<select>` split across two `<optgroup>`s, disambiguated by the group in the AX parent chain). The **245-node count above has not been re-verified against the current build** and is flagged in "Decisions an auditor could challenge" below; the 18 Tab-reachable controls are independently re-verified this pass and are all named. `#trim-select`'s `aria-labelledby` concatenates the visible question ("Which model are you interested in?"), a static "Model: " prefix, and the floating label showing the current trim group: computed name is "Which model are you interested in? Model: The new ID.3 Neo", updating to "… Model: The new ID. Polo" on change — verified via CDP `Accessibility.getPartialAXTree` before and after a real `selectOption`. The purpose-describing halves are permanently stable; only the trailing trim-group value mutates, same as any label describing a control whose display also shows the current value. |
+| **4.1.2** | Name, Role, Value | A | Yes | ✅ Pass | **AX tree: 245 nodes, 34 named, 0 unnamed, 0 duplicate role+name** (the `Trend/Life/Style ×2` pairs are one `<select>` split across two `<optgroup>`s, disambiguated by the group in the AX parent chain). The **245-node count above has not been re-verified against the current build** and is flagged in "Decisions an auditor could challenge" below; the 18 Tab-reachable controls are independently re-verified this pass and are all named. `#trim-select`'s `aria-labelledby` concatenates the visible question ("Which model are you interested in?"), a static "Model: " prefix, and the floating label showing the current trim group: computed name is "Which model are you interested in? Model: The new ID.3 Neo", updating to "… Model: The new ID. Polo" on change — verified via CDP `Accessibility.getPartialAXTree` before and after a real `selectOption`. The purpose-describing halves are permanently stable; only the trailing trim-group value mutates, same as any label describing a control whose display also shows the current value. **`#battery-select` now disables itself whenever the selected trim has exactly one battery option** (e.g. Trend) — a single option is not a real choice, so it is correctly removed from the tab order and its `disabled` state is exposed natively via the HTML `disabled` attribute (no extra ARIA needed); it re-enables the moment a multi-option trim is selected. Verified both directions in `tests/structural.spec.js`. |
 | **4.1.3** | Status Messages | AA | Yes | ✅ Pass | `#range-live` (`aria-live="polite"`, in the DOM at load, 1×1 clipped with an explicit white `color`) announces every recomputation — driven through 10 distinct announcements, e.g. "Estimated range 252 miles" → 244 → 241 → 229. |
 
 ---
@@ -191,10 +191,12 @@ occupancy radiogroup's two click targets were ~20px tall (under the 24px floor),
 the test suite's selector didn't match the actual CSS class. Both the CSS and the test were fixed;
 see the SC 2.5.8 row above.
 
-**One thing no automated pass can close:** a screen-reader run. VoiceOver is planned; the protocol
-names NVDA 2026.1.1.55980, so record that as a deviation. Two tool runs also remain — one pass
-through the axe DevTools 4.131.2 UI, and a WAVE run from the browser extension. See
-`a11y-2-automated-testing.md`.
+**VoiceOver, WAVE (extension), and axe DevTools (Interactive Elements + Forms guided tests) have
+all now been run manually** — see `a11y-2-automated-testing.md` §9 for results. Every item axe's AI
+flagged was a false positive (examining a decorative element next to an already-correct native
+control, or misapplying a disclosure/switch pattern to a dialog trigger or radiogroup) — no markup
+changes were required. **NVDA 2026.1.1.55980 is the one remaining gap**, recorded as a deviation
+(VoiceOver is not a substitute) — required before formal BITV/EN 301 549 sign-off.
 
 # Decisions an auditor could challenge
 

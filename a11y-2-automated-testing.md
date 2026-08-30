@@ -40,11 +40,11 @@ quoting a number — the two have diverged before without anyone noticing.
 
 | Required | Status | Note |
 |---|---|---|
-| **axe DevTools 4.131.2** | ◐ **Equivalent, not identical** | This audit ran **axe-core 4.13.0**, the library the extension embeds, over CDP with no `runOnly` filter. The extension's build number is not the engine version. One run through the 4.131.2 UI is still worth doing to satisfy the protocol literally; expect agreement |
+| **axe DevTools 4.131.2** | ✅ **Done — UI at WCAG 2.2 AA** | Interactive Elements and Forms guided tests both run — every AI-flagged item was a false positive (the tool examining a decorative sibling element instead of the real native input beside it, or misapplying a disclosure-widget/switch pattern to a dialog trigger or radiogroup); none required a markup change — §9.3. The CDP run used **axe-core 4.13.0**, the library the extension embeds, with no `runOnly` filter; the two agree |
 | **WAVE Evaluation Tool 3.3.1.0** | ✅ **Done** | Real engine via `wave.webaim.org/report#/<url>` against the public URL |
 | **Zoom 400% and 320 × 256 px** | ✅ **Done** | `320×256 @ deviceScaleFactor 4`. **dsf 1 is a small screen, not a zoomed one** |
 | **Operated via the keyboard** | ✅ **Done** | Driven with real `Input.dispatchKeyEvent` |
-| **NVDA 2026.1.1.55980** | ❌ **Not done** | The one real gap — §5 |
+| **NVDA 2026.1.1.55980** | ❌ **Not done** | The one real screen-reader gap. **VoiceOver has been run — §9.1** — a deviation, not a substitute. Protocol §6 Run 1, checklist §7 |
 | **PAC 26.1.0.0** | ⚪ **Not applicable** | PAC checks PDF/UA-1 (ISO 14289-1). This app ships no PDFs (`*.pdf` count: 0). If brochures or price lists are added they are a separate surface under EN 301 549 clause 10 |
 
 ### NVDA vs VoiceOver — a deviation to record
@@ -206,8 +206,10 @@ found, and neither axe nor WAVE nor Nu saw any of them.
 
 # 5. What automation will never close
 
-**Real screen-reader output has never been tested.** The accessibility tree confirms what is
-*exposed*; NVDA, JAWS and VoiceOver differ in what they *announce*. No headless pass closes this.
+**Real screen-reader/AI-guided output requires a human pass.** The accessibility tree confirms what
+is *exposed*; NVDA, JAWS and VoiceOver differ in what they *announce*, and axe's AI-guided tests
+still misjudge decorative elements (§9.3). VoiceOver, WAVE (extension), and axe DevTools have now
+all been run manually — §9. **NVDA remains the one outstanding instrument.**
 
 **A name can be present, unique, and wrong.** Every automated check here passes on a control
 labelled "button". Names must be read against what they describe.
@@ -216,28 +218,95 @@ labelled "button". Names must be read against what they describe.
 
 ---
 
-# 6. Re-running the suite
+# 6. Manual testing — what to do
 
-```
-# 1. serve the build, then drive a real browser over CDP
-python3 -m http.server 7810 --bind 127.0.0.1
-chrome --headless=new --remote-debugging-port=9345 --disable-gpu
-#    pick the debug target by matching type == "page" AND the expected URL.
-#    NEVER take the first target from /json — it is often an extension page.
+**All three (VoiceOver, WAVE, axe DevTools) have now been run — results in §9. NVDA remains
+outstanding** — §1.
 
-# 2. Network.enable BEFORE Network.setCacheDisabled, or add ?cb=<nonce>
-# 3. axe.run(document, {rules:{'target-size':{enabled:true}, ...}})
-#    read violations AND incomplete; assert target-size lands in passes
-# 4. AX tree: Accessibility.getFullAXTree
-#      -> assert 0 role=image nodes that are unnamed and not ignored
-#      -> review every duplicate role+name pair
-# 5. Real keys: Input.dispatchKeyEvent, assert document.activeElement after each
-# 6. Reflow: Emulation.setDeviceMetricsOverride 320x256 @ dsf 4   (= 400% zoom)
-# 7. Text spacing: inject the four overrides, diff the clipped-element set,
-#    and prove a canary fires before believing the result
-# 8. WAVE: wave.webaim.org/report#/<public-url>, poll until counts are STABLE
-# 9. Diff local against live first — audit what is actually deployed
-```
+**The reusable procedure (Step 0, VoiceOver/WAVE/axe DevTools runs, sign-off checklist) lives
+centrally** in `../audit-evidence/manual-testing-guide.md` — it's identical across all five sibling
+apps, so it's maintained once there instead of copied per app. What follows here is only what's
+specific to range-simulator.
+
+## App-specific Step 0
+
+- **Live** — `https://yikcunchung.github.io/vw-range-simulator-prototype/`.
+- **Confirm on screen:** 7 info-modal triggers (`info-btn-distance`, `info-btn-speed`,
+  `info-btn-tyres`, `info-btn-temp`, `info-btn-ac`, `info-btn-occ`, `info-btn-range`), the
+  temperature slider, the occupancy radiogroup ("1 person"/"Full"), two switches (motorway speed,
+  heating/AC), and the trim/battery selects.
+- **18 Tab stops** total.
+
+## App-specific notes for the central procedure's Run 3 (axe DevTools)
+
+Both the **Interactive Elements** and **Forms** guided tests have been run. Every item the AI
+flagged in Interactive Elements was a false positive — in every case the tool was examining a
+decorative sibling element next to a real, already-correct native control, or misapplying a
+disclosure-widget/switch interaction pattern to something that isn't one:
+
+- **Occupancy radiogroup** (`label.vw-toggle-opt`, `span.vw-toggle-track`, `span.vw-toggle-knob`) —
+  flagged as "not Tab focusable" (Interactive Elements) and separately as missing name/role/states,
+  with AI suggesting `role="switch"`. The real controls are the two
+  `<input type="radio" name="occ">` elements, each already named by its own wrapping label ("1
+  person"/"Full"). `switch` would also be the wrong *concept* here regardless of DOM node — this
+  control was deliberately built as a radiogroup (native "1 of 2"/"2 of 2" position info), not a
+  binary switch.
+- **Speed/AC toggles** (`label.vw-switch`, `span.vw-switch-track` ×2) — same "not Tab focusable"
+  pattern, plus separate Name/Role/States findings on the AC toggle's track span. The real controls
+  are `<input type="checkbox" role="switch" aria-labelledby="q-ac lbl-no">` (and the speed
+  equivalent), already fully correct.
+- **Temperature slider** (`div#temp-thumb`, `span.slider-track-area`) — decorative thumb/track
+  elements flagged as "not focusable" / role missing (AI suggests `slider`). The real control is
+  `<input type="range" id="temp-slider" aria-labelledby="q-temp" aria-valuetext="...">`.
+- **Info-modal trigger buttons** (all 7) — States/Properties flagged as missing `aria-expanded`
+  (AI suggestion: `"collapsed"`), treating the button as a disclosure-widget trigger. These buttons
+  open a modal dialog (`role="dialog" aria-modal="true"`), which is a different, standard ARIA
+  pattern that doesn't use `aria-expanded` at all — the modal's own role and focus movement
+  communicate its open state, not a property on the trigger.
+
+The Forms guided test was also run and returned no findings needing action.
+
+---
+
+# 7. Verification checklist
+
+Tick only what you actually observed against the central sign-off checklist in
+`../audit-evidence/manual-testing-guide.md`. **An untested box is not a pass.**
+
+---
+
+# 8. Re-running the automated suite
+
+Identical across all five sibling apps — see `../audit-evidence/manual-testing-guide.md` for the
+CDP re-run script (serve locally, drive headless Chrome over the CDP protocol, run axe/AX-tree/
+reflow/text-spacing/WAVE checks, diff local against live). Substitute this app's own port (`7810`)
+and live URL where the script needs them.
 
 **Automate the structural half in CI, but do not mistake it for the whole.** A structural-only suite
 is exactly what scores clean on a build with a Level A naming failure.
+
+---
+
+# 9. Manual run results
+
+## 9.1 Screen reader — VoiceOver / Safari, complete
+
+VoiceOver Run 1 has been completed against the live build (Tab-stop names/roles/values, the 7
+info-modals' open/close/focus-trap behaviour, the occupancy radiogroup, and the two switches). See
+`a11y-1-criteria.md` for the naming/role decisions this pass drove (tyre-select, temp-slider, the
+occupancy radiogroup role, the toggle naming pattern).
+
+## 9.2 WAVE 3.3.1.0 — extension, complete
+
+WAVE has been run via the browser extension against the live build, covering the default state and
+the info-modal-open state.
+
+## 9.3 axe DevTools 4.131.2 — Interactive Elements + Forms guided tests, complete
+
+Both guided tests were run against the live build. See §6 above for the specific items the AI
+flagged and why each was a false positive. No markup changes were required as a result of this run.
+
+## 9.4 Outstanding
+
+**NVDA 2026.1.1.55980** — not yet run; see the deviation note in §1. Required before formal
+BITV/EN 301 549 sign-off; VoiceOver is a documented deviation, not a substitute.

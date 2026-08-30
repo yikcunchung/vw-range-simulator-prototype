@@ -101,6 +101,10 @@ test.describe('SC 2.4.7 — a visible focus ring on every control', () => {
 
   test('the audited ring is rendered on each surrogate, under real :focus-visible', async ({ page }) => {
     await settle(page);
+    // Trend (the default trim) has only one battery option, which correctly
+    // disables #battery-select (not a real choice) - switch to a trim with real
+    // options so it's a valid Tab target for this check.
+    await page.selectOption('#trim-select', 'Life');
     // Three reasons this is measured on the COMPUTED style after a real Tab:
     //   · browsers normalise #C86C03 to rgb(200, 108, 3), so a stylesheet
     //     text check passes while the ring is broken;
@@ -147,6 +151,10 @@ test.describe('SC 2.4.7 — a visible focus ring on every control', () => {
 test.describe('SC 2.4.11 — a focused control is never left under the sticky chrome', () => {
   test('every tab stop is fully clear of the sticky bars once the scroll settles', async ({ page }) => {
     await settle(page);
+    // Trend (the default trim) has only one battery option, which correctly
+    // disables #battery-select (not a real choice) - switch to a trim with real
+    // options so it's a valid Tab target for this check.
+    await page.selectOption('#trim-select', 'Life');
     const chrome = await page.evaluate(() => {
       const top = document.getElementById('topbar');
       const bottom = document.getElementById('sticky-result');
@@ -529,6 +537,10 @@ test.describe('SC 4.1.2 — state matches reality, and nothing hidden is focusab
       }
       return out;
     });
+    // Trend (the default trim) has only one battery option, which correctly
+    // disables #battery-select (not a real choice) - switch to a trim with real
+    // options first so selecting a different battery below is a real interaction.
+    await page.selectOption('#trim-select', 'Life');
     const before = await names();
     await page.selectOption('#tyre-select', { index: 4 });
     await page.selectOption('#battery-select', { index: 0 });
@@ -587,13 +599,23 @@ test.describe('focus is never lost', () => {
     const opts = await page.evaluate(() => ({
       trim: document.getElementById('trim-select').value,
       count: document.getElementById('battery-select').options.length,
+      disabled: document.getElementById('battery-select').disabled,
     }));
     expect(opts.count, `the battery list is empty after a trim change to ${opts.trim}`)
       .toBeGreaterThan(0);
 
-    // And the next control is still reachable in one Tab.
+    // And focus lands somewhere real next - never <body>. Which control that is
+    // depends on whether the rebuilt battery-select has a real choice: a single
+    // option disables it (not a real choice), so a correctly-disabled select is
+    // skipped in the tab order, same as any other disabled control.
     await page.keyboard.press('Tab');
-    expect(await activeId(page)).toBe('battery-select');
+    const next = await activeId(page);
+    expect(next, 'focus dropped to <body> after the rebuild').not.toBe('body');
+    if (opts.disabled) {
+      expect(next, 'a disabled battery-select must not be the Tab target').not.toBe('battery-select');
+    } else {
+      expect(next).toBe('battery-select');
+    }
   });
 
   test('focus survives every control being operated in turn', async ({ page }) => {

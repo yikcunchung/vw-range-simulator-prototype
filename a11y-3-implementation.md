@@ -173,6 +173,37 @@ path that can change it — keyboard, drag, and click-on-track:
 
 ---
 
+### SC 4.1.2 — A select with only one real option is disabled, not offered as a choice
+
+**Level A**
+
+`#battery-select` is rebuilt from `batteryOptions[trim]` on every trim change. Some trims (e.g.
+Trend) have exactly one battery — presenting that as an interactive dropdown offers a "choice" with
+nothing to actually choose:
+
+```js
+sel.disabled = opts.length === 1;
+```
+
+The native HTML `disabled` attribute is sufficient — no extra ARIA is needed, and the browser
+correctly removes the control from the tab order and exposes its disabled state to the accessibility
+tree on its own. Toggle it every time the option list is rebuilt, not just once at load, since the
+same select must re-enable the moment a multi-option trim is selected.
+
+> **Disabling a currently-focused control forces a browser-native blur to `<body>`.** If the user is
+> tabbing through the form when a rebuild disables the control they're on, focus moves away
+> immediately — expected browser behaviour, not a bug, but any test asserting "Tab always reaches
+> this control" needs to branch on whether it's enabled first.
+
+> **Chromium's own UA stylesheet applies `opacity: 0.7` to `:disabled` form controls**, regardless of
+> author `color`. Matching an exact disabled-state color from a design spec (here: value text
+> `rgb(96,101,116)`, border `rgb(161,164,172)`, label stays full navy `rgb(27,34,54)`) requires an
+> explicit `opacity: 1` override on the control, or the browser's own dimming stacks on top of an
+> already-correct color and renders visibly lighter/greyer than specified. Verify with
+> `getComputedStyle(el).opacity`, not just by reading the CSS you wrote.
+
+---
+
 ### SC 2.4.3 — Focus order matches visual order
 
 **Level A**

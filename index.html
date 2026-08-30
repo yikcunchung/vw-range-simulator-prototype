@@ -322,6 +322,26 @@ body {
 .fl-select:hover .fl-label { color: rgba(115,62,1,1); right:52px; white-space:nowrap; text-overflow:ellipsis;}
 .fl-select:hover .fl-chevron svg path { fill: rgba(115,62,1,1); }
 
+/* A single-option select (nothing to actually choose) is disabled - matches the
+   core Select component's own disabled visual: muted text, muted border, no
+   pointer interaction at all (not just a generic dim). */
+.fl-select select:disabled {
+  cursor: not-allowed; pointer-events: none;
+  border-color: rgb(161,164,172); color: rgb(96,101,116);
+  /* Chromium's UA stylesheet applies opacity:0.7 to disabled form controls by
+     default, further dimming an already-correct muted color - cancel it out. */
+  opacity: 1;
+}
+/* Per the core component spec: the small label line stays full navy even when
+   disabled - only the value text and chevron mute. */
+.fl-select:has(select:disabled) .fl-label { color: rgb(27,34,54); }
+.fl-select:has(select:disabled) .fl-chevron svg path { fill: rgb(96,101,116); }
+/* Hover can still land on the wrapper even though the select itself ignores
+   pointer events - keep the muted colors, don't let the hover accent through. */
+.fl-select:has(select:disabled):hover select { border-color: rgb(161,164,172); color: rgb(96,101,116); }
+.fl-select:has(select:disabled):hover .fl-label { color: rgb(27,34,54); }
+.fl-select:has(select:disabled):hover .fl-chevron svg path { fill: rgb(96,101,116); }
+
 /* Focus/open — handled via JS, not CSS :focus */
 
 .fl-label {
@@ -1324,6 +1344,13 @@ const batteryOptions = {
   ]
 };
 
+// A select with only one real option offers no actual choice - disable it so
+// it isn't presented as one. Applies to any .fl-select select, not just one
+// specific control, and must be re-checked whenever a select's options change.
+function syncSelectDisabled(sel) {
+  if (sel) sel.disabled = sel.options.length === 1;
+}
+
 function updateBatteryOptions() {
   const trim = document.getElementById('trim-select')?.value ?? 'Trend';
   const sel = document.getElementById('battery-select');
@@ -1334,6 +1361,7 @@ function updateBatteryOptions() {
     + opts.map(o => `<option value="${o.value}">${o.label}</option>`).join('') + '</optgroup>';
   // Restore previous selection if still available, else default to first
   if (opts.some(o => o.value === current)) sel.value = current;
+  syncSelectDisabled(sel);
   // Sync display value
   const valEl = document.getElementById('battery-value');
   if (valEl) valEl.textContent = sel.options[sel.selectedIndex]?.text ?? '';
@@ -1455,6 +1483,9 @@ function updateRange() {
 window.addEventListener('DOMContentLoaded', () => {
   initSlider('temp-slider', 'temp-tooltip', 'temp-thumb');
   updateBatteryOptions();
+  // Defensive/general: any other .fl-select select (currently always
+  // multi-option, but checked the same way in case content ever changes)
+  document.querySelectorAll('.fl-select select').forEach(syncSelectDisabled);
   updateCarImage();
   // Sync all custom select display values
   ['trim-select','battery-select','tyre-select'].forEach(id => {
