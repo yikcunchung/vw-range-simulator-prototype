@@ -41,7 +41,7 @@ quoting a number — the two have diverged before without anyone noticing.
 | Required | Status | Note |
 |---|---|---|
 | **axe DevTools 4.131.2** | ✅ **Done — UI at WCAG 2.2 AA** | Interactive Elements and Forms guided tests both run — every AI-flagged item was a false positive (the tool examining a decorative sibling element instead of the real native input beside it, or misapplying a disclosure-widget/switch pattern to a dialog trigger or radiogroup); none required a markup change — §9.3. The CDP run used **axe-core 4.13.0**, the library the extension embeds, with no `runOnly` filter; the two agree |
-| **WAVE Evaluation Tool 3.3.1.0** | ✅ **Done** | Real engine via `wave.webaim.org/report#/<url>` against the public URL |
+| **WAVE Evaluation Tool 3.3.1.0** | ✅ **Done — hosted and extension** | Hosted engine via `wave.webaim.org/report#/<url>`; extension pass confirmed **0 errors**, default and info-modal-open states — §9.2 |
 | **Zoom 400% and 320 × 256 px** | ✅ **Done** | `320×256 @ deviceScaleFactor 4`. **dsf 1 is a small screen, not a zoomed one** |
 | **Operated via the keyboard** | ✅ **Done** | Driven with real `Input.dispatchKeyEvent` |
 | **NVDA 2026.1.1.55980** | ❌ **Not done** | The one real screen-reader gap. **VoiceOver has been run — §9.1** — a deviation, not a substitute. Protocol §6 Run 1, checklist §7 |
