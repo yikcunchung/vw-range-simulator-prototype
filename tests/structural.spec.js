@@ -348,7 +348,7 @@ test.describe('SC 2.5.8 — targets', () => {
       // measure the label and skip an input that has one (a11y-3 §7.1).
       const targets = [...document.querySelectorAll(
         '#sim-main button, #sim-main select, #sim-main a[href], #sim-main [role=slider], '
-        + '#sim-main input, #sim-main label.vw-switch, #sim-main label.vw-toggle')]
+        + '#sim-main input, #sim-main label.vw-switch, #sim-main label.vw-toggle-opt')]
         .filter((el) => !(el.tagName === 'INPUT' && el.closest('label')))
         .filter((el) => !el.disabled)
         .filter(visible);
@@ -442,13 +442,35 @@ test.describe('reflow and spacing', () => {
     const OVERRIDE = '* { line-height:1.5 !important; letter-spacing:.12em !important; '
       + 'word-spacing:.16em !important; } p { margin-bottom:2em !important; }';
 
-    // Clipped = content taller than its box with overflow actually hidden. The digit
-    // reels (10 digits per column, aria-hidden) and .sr-only are clipped BY DESIGN
-    // and are present in both sets, so the before/after diff is what matters.
+    // Clipped = content bigger than its box with overflow actually hidden, in
+    // EITHER axis. The digit reels (10 digits per column, aria-hidden) and
+    // .sr-only are clipped BY DESIGN and are present in both sets, so the
+    // before/after diff is what matters. Vertical-only (scrollHeight) missed a
+    // real bug: the trim-select/battery-select floating labels are single-line,
+    // `overflow:hidden` on the X axis (`white-space:nowrap`), so their
+    // truncation under these overrides is a scrollWidth/clientWidth mismatch,
+    // never a scrollHeight one — checking only overflowY reported 0 new
+    // clipping while the labels visibly truncated by up to 33px.
     const clipped = () => page.evaluate(() => [...document.querySelectorAll('#sim-main *')]
       .filter((e) => {
         const cs = getComputedStyle(e);
-        return /hidden|clip/.test(cs.overflowY) && e.scrollHeight > e.clientHeight + 1;
+        const vClipped = /hidden|clip/.test(cs.overflowY) && e.scrollHeight > e.clientHeight + 1;
+        const hClipped = /hidden|clip/.test(cs.overflowX) && e.scrollWidth > e.clientWidth + 1;
+        if (!vClipped && !hClipped) return false;
+        // A floating select label's truncated text is not actually lost if
+        // that same string is also an <optgroup> heading inside its own
+        // <select> — opening the select (standard operation for this
+        // control) recovers it in full. "The new ID.3 Neo"/"The new ID.
+        // Polo" and "Motor / Battery Capacity" all have a matching optgroup.
+        const flLabel = e.closest('.fl-label');
+        if (flLabel) {
+          const select = flLabel.closest('.fl-select')?.querySelector('select');
+          const optgroupLabels = select
+            ? [...select.querySelectorAll('optgroup')].map((og) => og.label) : [];
+          const text = flLabel.textContent.trim();
+          if (optgroupLabels.some((og) => og && text.includes(og))) return false;
+        }
+        return true;
       })
       .map((e) => e.tagName.toLowerCase() + '.' + (typeof e.className === 'string' ? e.className : '')));
     const hScroll = () => page.evaluate(() =>
@@ -495,7 +517,7 @@ test.describe('reflow and spacing', () => {
     // Target sizes must survive the very override the criterion invites: a 24px
     // target built from line-height collapses, one built from padding does not.
     const stillBigEnough = await page.evaluate(() => [
-      ...document.querySelectorAll('#sim-main label.vw-switch, #sim-main label.vw-toggle'),
+      ...document.querySelectorAll('#sim-main label.vw-switch, #sim-main label.vw-toggle-opt'),
     ].map((el) => {
       const r = el.getBoundingClientRect();
       return { cls: el.className, w: +r.width.toFixed(2), h: +r.height.toFixed(2) };

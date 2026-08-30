@@ -25,7 +25,7 @@ criteria are not required and are not listed.
 | ⚪ N/A | The app has no such content |
 | ⚖️ Decide | Passes, but on an arguable reading — record the decision |
 
-**56 criteria assessed. 0 failures and 0 open items.** 23 verified · 9 inspected · 23 not applicable · 1 decision to record.
+**56 criteria assessed. 0 failures and 0 open items.** 24 verified · 9 inspected · 23 not applicable · 0 decisions to record.
 
 ---
 
@@ -54,8 +54,8 @@ criteria are not required and are not listed.
 
 | SC | Name | Lvl | Relevant | Status | Evidence / what to do |
 |---|---|---|---|---|---|
-| **1.3.1** | Info and Relationships | A | Yes | ✅ Pass | One `h1`, `role="banner"` topbar, `main`, three named `<select>`s and three labelled toggles. axe 0 violations on all structure rules at 98 rules. |
-| **1.3.2** | Meaningful Sequence | A | Yes | ✅ Pass* | DOM order matches visual order; the 17 Tab stops follow the question sequence top to bottom. |
+| **1.3.1** | Info and Relationships | A | Yes | ✅ Pass | One `h1`, `role="banner"` topbar, `main`, three named `<select>`s, two labelled switches (`speed-toggle`, `ac-toggle`) and a labelled two-option `radiogroup` (occupancy). axe 0 violations on all structure rules at 98 rules. |
+| **1.3.2** | Meaningful Sequence | A | Yes | ✅ Pass* | DOM order matches visual order; the 18 Tab stops follow the question sequence top to bottom. |
 | **1.3.3** | Sensory Characteristics | A | Yes | ✅ Pass* | No instruction relies on shape, size or position. |
 | **1.3.4** | Orientation | AA | Yes | ✅ Pass | No `@media (orientation:)` rule exists anywhere. Nothing locks orientation. |
 | **1.3.5** | Identify Input Purpose | AA | No | ⚪ N/A | No field collects information *about the user* — no name, address, email or payment. The number inputs are tariff prices, not personal data, so `autocomplete` has nothing to identify. |
@@ -68,11 +68,11 @@ criteria are not required and are not listed.
 | **1.4.1** | Use of Color | A | Yes | ✅ Pass* | Colour is never the only channel — every toggle and select conveys state through its value and label. |
 | **1.4.2** | Audio Control | A | No | ⚪ N/A | No audio. `audio[autoplay]` / `video[autoplay]` count is 0. |
 | **1.4.3** | Contrast (Minimum) | AA | Yes | ✅ Pass | **All 18 `color-contrast` incomplete nodes resolved by hand on composited pixels — worst 14.50:1**, against a 4.5:1 requirement. axe went incomplete because of a subtle full-height page gradient, not because anything was close. |
-| **1.4.4** | Resize Text | AA | Yes | ✅ Pass | 400% zoom (320×256 @ dsf 4): 0 violations, no horizontal scroll, all 17 controls still present and reachable. |
+| **1.4.4** | Resize Text | AA | Yes | ✅ Pass | 400% zoom (320×256 @ dsf 4) — well past the 200% this criterion requires — 0 violations, no horizontal scroll, all 18 controls still present and reachable. |
 | **1.4.5** | Images of Text | AA | Yes | ✅ Pass* | No images of text. All text is live text. |
 | **1.4.10** | Reflow | AA | Yes | ✅ Pass | No horizontal scroll at 320 / 390 / 768 / 1440 or at 400% zoom. The control set is identical at every width — nothing is dropped at narrow widths. |
-| **1.4.11** | Non-text Contrast | AA | Yes | ✅ Pass* | Control boundaries and the focus ring are navy `#293043` on light — far above 3:1. |
-| **1.4.12** | Text Spacing | AA | Yes | ✅ Pass | All four overrides applied (line-height 1.5, letter-spacing .12em, word-spacing .16em, paragraph 2em) at 1440 / 390 / 320: **no newly clipped element, no control lost, no horizontal scroll.** Detector validated with a canary that fits at the default line-height and overflows at 1.5. |
+| **1.4.11** | Non-text Contrast | AA | Yes | ✅ Pass* | Control boundaries are navy `#293043` on the `#F6F5F2` page background — far above 3:1. The unified focus ring is `#C86C03` (`--focus-orange`), computed `rgb(200, 108, 3)`, ≈3.75:1 against both white and the page background — still clears the 3:1 floor. |
+| **1.4.12** | Text Spacing | AA | Yes | ✅ Pass | All four overrides applied (line-height 1.5, letter-spacing .12em, word-spacing .16em, paragraph 2em) at 1440 / 390 / 320: **no newly clipped element, no control lost, no horizontal scroll.** Detector validated with a canary that fits at the default line-height and overflows at 1.5. `.select-group` stacks the trim-select and battery-select vertically, unconditionally (no breakpoint gating), so each floating label ("Model: The new ID.3 Neo" / "Motor / Battery Capacity") gets the full row width at every viewport, including 960–1024px where this app's own grid narrows the shared column below both mobile and desktop widths — verified zero truncation across all tested widths. As a secondary safeguard, each select's `<option>`s are also wrapped in an `<optgroup>` whose `label` matches the floating label text (e.g. `<optgroup label="Motor / Battery Capacity">`), so even if content ever grows past the stacked width, opening the select — its own standard operation — reveals the full text natively. |
 | **1.4.13** | Content on Hover or Focus | AA | No | ⚪ N/A | No hover- or focus-triggered overlay. |
 
 
@@ -83,8 +83,8 @@ criteria are not required and are not listed.
 
 | SC | Name | Lvl | Relevant | Status | Evidence / what to do |
 |---|---|---|---|---|---|
-| **2.1.1** | Keyboard | A | Yes | ✅ Pass | All 17 controls keyboard-operable. The three visually hidden checkbox toggles were driven with real `Space` and all three flipped state; every `<select>` and the range slider operate with arrows. |
-| **2.1.2** | No Keyboard Trap | A | Yes | ✅ Pass | No trap — Tab cycles all 17 stops and returns to the first. |
+| **2.1.1** | Keyboard | A | Yes | ✅ Pass | All 18 controls keyboard-operable. The two visually hidden checkbox switches (`speed-toggle`, `ac-toggle`) were driven with real `Space` and both flipped state; the occupancy `radiogroup` moves between its two radios with arrow keys (`Space` is not required, by native radio semantics); every `<select>` and the native temperature slider operate with arrows; the two custom `role="slider"` distribution thumbs also move with arrow keys (`Shift` for a larger step). |
+| **2.1.2** | No Keyboard Trap | A | Yes | ✅ Pass | No trap — Tab cycles all 18 stops and returns to the first. When the info modal is open, Tab cycles only its own two stops (body, close button) and Escape/backdrop-click always escape it. |
 | **2.1.4** | Character Key Shortcuts | A | No | ⚪ N/A | No single-character key shortcuts are registered. |
 
 
@@ -109,11 +109,11 @@ criteria are not required and are not listed.
 |---|---|---|---|---|---|
 | **2.4.1** | Bypass Blocks | A | Yes | ✅ Pass | `a.skip-link → #main`, present as the **first** Tab stop, with a custom focus style. |
 | **2.4.2** | Page Titled | A | Yes | ✅ Pass | `<title>Volkswagen Range Simulator</title>` — descriptive and unique. |
-| **2.4.3** | Focus Order | A | Yes | ✅ Pass | 17 Tab stops in DOM order matching visual order, verified at 1440×900 and 390×844 with real Tab presses. |
+| **2.4.3** | Focus Order | A | Yes | ✅ Pass | 18 Tab stops in DOM order matching visual order, verified at 1440×900 and 390×844 with real Tab presses. Opening any of the 7 "More information" triggers moves focus into the shared modal body and returns it to the triggering button on close. |
 | **2.4.4** | Link Purpose (In Context) | A | No | ⚪ N/A | No links other than the skip link, which is named. |
 | **2.4.5** | Multiple Ways | AA | No | ⚪ N/A | A standalone single page. SC 2.4.5 applies to a *set* of web pages; there is no set. |
 | **2.4.6** | Headings and Labels | AA | Yes | ✅ Pass | One `h1`, no other headings, so no skipped levels. Each question label describes its control. |
-| **2.4.7** | Focus Visible | AA | Yes | ✅ Pass | **Every one of the 17 stops shows a visible focus indicator.** The hidden-checkbox toggles draw a 2px `rgb(41,48,67)` ring on their visible surrogate — measured at ~1540 changed device pixels against a predicted 1536 for a 2px ring at 3px offset around a 60×24 track, i.e. a real ring, not a repaint artifact. |
+| **2.4.7** | Focus Visible | AA | Yes | ✅ Pass | **Every one of the 18 stops shows a visible focus indicator**, plus the modal's own two stops while it is open. The unified ring is `outline: 2px solid var(--focus-orange)` (`#C86C03`, computed `rgb(200, 108, 3)`) at `outline-offset: 0`. On the two hidden-checkbox switches and the occupancy radiogroup, it is drawn on the ancestor label/container via `:has(input:focus-visible)` (not a sibling combinator on the track), so it fires under real `:focus-visible` on the visible surrogate rather than the 1×1 clipped input. |
 | **2.4.11** | Focus Not Obscured (Minimum) | AA | Yes | ✅ Pass | No fixed or sticky element overlaps a focused control; every focused control measured inside the viewport after the scroll settled. |
 
 
@@ -123,10 +123,10 @@ criteria are not required and are not listed.
 |---|---|---|---|---|---|
 | **2.5.1** | Pointer Gestures | A | Yes | ✅ Pass* | No path-based or multipoint gesture. |
 | **2.5.2** | Pointer Cancellation | A | Yes | ✅ Pass* | Activation is on the up-event throughout — native `<button>`, `<select>` and `<label>` semantics. |
-| **2.5.3** | Label in Name | A | Yes | ⚖️ Decide | **Decide:** `#occ-toggle` shows "1 person" / "Full" at the two ends of the switch but is named "How many people are in the car?". Those visible words are the two *values*, not the control's label — the same reading that lets a value display sit outside the name. It passes on that reading; a speech-input user saying "1 person" would not match. All other labelled controls are exact. |
+| **2.5.3** | Label in Name | A | Yes | ✅ Pass | Occupancy is now two native radios (`#occ-1p`, `#occ-full`), each wrapped in its own `<label>` — "1 person" and "Full" are each radio's *entire* visible label and its *entire* accessible name, verbatim (no `aria-label`/`aria-labelledby` overriding it). The previous single-switch design (named by the question, with "1 person"/"Full" as the two end-values) needed an arguable reading to pass; splitting it into two radios removed the ambiguity rather than just re-arguing it. All other labelled controls are exact matches too. |
 | **2.5.4** | Motion Actuation | A | No | ⚪ N/A | No device-motion or user-motion actuation. |
-| **2.5.7** | Dragging Movements | AA | Yes | ✅ Pass | The temperature `<input type=range>` is a native slider — arrow keys operate it without any dragging. |
-| **2.5.8** | Target Size (Minimum) | AA | Yes | ✅ Pass | **No target under 24×24.** The three toggles' `<input>`s measure 1×1, but the input is not the target — the wrapping `<label>` is, at **640.14 × 24.00**, and a real `Input.dispatchMouseEvent` toggled the input at **15 of 15** points probed across the full width. Height is exactly 24.00, so any future line-height change is a regression risk. |
+| **2.5.7** | Dragging Movements | AA | Yes | ✅ Pass | The two `role="slider"` distribution thumbs are the control that actually needs this: they support mouse/touch drag, but also arrow keys (`Shift` for a bigger step) and a click anywhere on the track — no dragging is required to operate them. The temperature `<input type=range>` is a native slider and gets the same guarantee for free. |
+| **2.5.8** | Target Size (Minimum) | AA | Yes | ✅ Pass | **No visible target under 24×24 — one real gap found and fixed this pass.** The two switches' `<input>`s measure 1×1, but the input is not the target — the wrapping `label.vw-switch` is, at **60 × 24** (a real `Input.dispatchMouseEvent` toggles it across the full width). The occupancy radiogroup's two `label.vw-toggle-opt` targets were found at only **~20px tall** — text-only line-height, under the 24px floor — invisible to the test suite because its target-size query (`label.vw-toggle`) didn't match the real class (`vw-toggle-opt`). Fixed: `.vw-toggle-opt` now sets `display:flex; align-items:center; min-height:24px`, measured **59.56 × 24** and **25.16 × 24**; the test selector was corrected to actually cover it. The two custom `role="slider"` distribution thumbs are ray-cast (not assumed) to ≥24×24 at every tested viewport including 320×256 @ dsf 4. |
 
 
 # 3. Understandable
@@ -171,7 +171,7 @@ criteria are not required and are not listed.
 | SC | Name | Lvl | Relevant | Status | Evidence / what to do |
 |---|---|---|---|---|---|
 | **4.1.1** | Parsing | A | Yes | ✅ Pass | Nu HTML validator: **0 errors**. Obsolete in WCAG 2.2 but normative under EN 301 549 clause 9.4.1.1, so it is checked and kept. |
-| **4.1.2** | Name, Role, Value | A | Yes | ✅ Pass | **AX tree: 245 nodes, 34 named, 0 unnamed, 0 duplicate role+name** (the `Trend/Life/Style ×2` pairs are one `<select>` split across two `<optgroup>`s, disambiguated by the group in the AX parent chain). 16 focusable controls, all named. `#trim-select`'s `aria-labelledby` concatenates the visible question ("Which model are you interested in?"), a static "Model: " prefix, and the floating label showing the current trim group: computed name is "Which model are you interested in? Model: The new ID.3 Neo", updating to "… Model: The new ID. Polo" on change — verified via CDP `Accessibility.getPartialAXTree` before and after a real `selectOption`. The purpose-describing halves are permanently stable; only the trailing trim-group value mutates, same as any label describing a control whose display also shows the current value. |
+| **4.1.2** | Name, Role, Value | A | Yes | ✅ Pass | **AX tree: 245 nodes, 34 named, 0 unnamed, 0 duplicate role+name** (the `Trend/Life/Style ×2` pairs are one `<select>` split across two `<optgroup>`s, disambiguated by the group in the AX parent chain). The **245-node count above has not been re-verified against the current build** and is flagged in "Decisions an auditor could challenge" below; the 18 Tab-reachable controls are independently re-verified this pass and are all named. `#trim-select`'s `aria-labelledby` concatenates the visible question ("Which model are you interested in?"), a static "Model: " prefix, and the floating label showing the current trim group: computed name is "Which model are you interested in? Model: The new ID.3 Neo", updating to "… Model: The new ID. Polo" on change — verified via CDP `Accessibility.getPartialAXTree` before and after a real `selectOption`. The purpose-describing halves are permanently stable; only the trailing trim-group value mutates, same as any label describing a control whose display also shows the current value. |
 | **4.1.3** | Status Messages | AA | Yes | ✅ Pass | `#range-live` (`aria-live="polite"`, in the DOM at load, 1×1 clipped with an explicit white `color`) announces every recomputation — driven through 10 distinct announcements, e.g. "Estimated range 252 miles" → 244 → 241 → 229. |
 
 ---
@@ -181,11 +181,15 @@ criteria are not required and are not listed.
 **No open criteria and no known failures.** Every Level A/AA criterion is verified, inspected, or
 not applicable.
 
-**One decision to record.** It passes; it needs a recorded position, not code:
+**No decisions left to record.** The one previously-recorded decision (SC 2.5.3, occupancy) was
+resolved by a code change, not re-argued: converting the occupancy toggle to two native radios each
+named by its own visible label removed the ambiguity, so it is now a plain pass. See the SC 2.5.3
+row above and `a11y-3-implementation.md` §7.
 
-| SC | Decision |
-|---|---|
-| **2.5.3** Label in Name | `#occ-toggle` shows "1 person" / "Full" but is named "How many people are in the car?". Those are the switch's two *values*, not its label, so it passes on the same reading that lets a value display sit outside the name — but a speech-input user saying "1 person" would not match. |
+**One real defect found and fixed this re-audit pass, not previously documented:** SC 2.5.8 — the
+occupancy radiogroup's two click targets were ~20px tall (under the 24px floor), untested because
+the test suite's selector didn't match the actual CSS class. Both the CSS and the test were fixed;
+see the SC 2.5.8 row above.
 
 **One thing no automated pass can close:** a screen-reader run. VoiceOver is planned; the protocol
 names NVDA 2026.1.1.55980, so record that as a deviation. Two tool runs also remain — one pass
@@ -195,8 +199,17 @@ through the axe DevTools 4.131.2 UI, and a WAVE run from the browser extension. 
 # Decisions an auditor could challenge
 
 24 of the 56 A/AA criteria have **no machine-testable ACT rule**, and several apply directly here
-(1.4.11, 1.4.13, 2.5.1, 2.5.2, 2.5.8, 2.4.11). For those, "passes" reflects a **judgement**, not a
-test result.
+(1.4.11, 1.4.13, 2.5.1, 2.5.2, 2.5.8, 2.4.11). For those, "passes" reflects a **judgement** backed by
+this app's own Playwright evidence (ray-casting, computed-style assertions), not a formal ACT test
+result.
+
+**Not independently re-verified this pass:** the SC 4.1.2 row's "245 nodes, 34 named, 0 unnamed, 0
+duplicate role+name" AX-tree snapshot. A raw `Accessibility.getFullAXTree` walk taken during this
+re-audit returned 249 total nodes (the two figures likely use different counting rules — e.g.
+whether ignored/generic/text nodes are included — rather than one being wrong), but the underlying
+normative claim (0 unnamed interactive controls, no duplicate name+role pairs) is independently
+confirmed true by the passing `structural.spec.js`/`behaviour.spec.js` suite regardless of which raw
+count is used. Reconciling the exact node-count methodology is left as an open item.
 
 **The strongest claim this evidence supports:**
 

@@ -118,6 +118,16 @@ large-text threshold never applies).
 `letter-spacing:0.12em`, `word-spacing:0.16em`, `p margin-bottom:2em`) at 1440 / 390 / 320:
 **no newly clipped element, no control lost, no horizontal scroll.**
 
+> **One nuance the detector accounts for, re-verified this pass.** Direct `scrollWidth`/`clientWidth`
+> measurement of both floating labels ("Model: The new ID.3 Neo" / "Motor / Battery Capacity") under
+> these overrides, swept across every tested width from 320 to 1440 (including the 960–1280 zone
+> where this app's own grid narrows the shared column), found **zero truncation now** — the
+> unconditional vertical stack (`.select-group { flex-direction: column }`) gives each label the
+> full row width everywhere. Each select's `<option>`s are *also* wrapped in an `<optgroup>` whose
+> `label` matches the floating-label string exactly, as a safeguard: if content ever grows past the
+> stacked width in the future, opening the select — its own normal operation — still reveals the
+> same text in full, and the detector's exemption for that case is already in place and tested.
+
 > **Detector validated.** A canary that fits at the default line-height and overflows only at 1.5
 > was injected and *was* detected. A first canary was already clipped before the override and
 > therefore proved nothing — "no new clipping" is worthless unless you have watched the detector fire.

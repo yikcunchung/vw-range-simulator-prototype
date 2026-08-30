@@ -345,7 +345,13 @@ body {
 /* Select without floating label */
 #tyre-select { padding: 0 48px 0 16px; line-height: 50px; }
 
-.select-group { display: flex; gap: 12px; }
+.select-group { display: flex; gap: 12px; flex-direction: column; }
+/* Unconditional, not viewport-gated: this page's own two-column grid (>=960px)
+   makes available width non-monotonic (227px at 960px is worse than 267px at
+   320px), so no breakpoint holds. Stacking gives each select the full row
+   width at every size, which comfortably fits "Model: The new ID.3 Neo" /
+   "Motor / Battery Capacity" even under SC 1.4.12 stress, with zero change to
+   .fl-select's own height and zero font-size reduction. */
 .select-group .fl-select { flex: 1; min-width: 0; }
 
 /* Dist thumb hover — after base rule so specificity wins */
@@ -485,7 +491,11 @@ body {
   font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy);
   align-self: flex-start;
 }
-.vw-toggle-opt { position: relative; cursor: pointer; }
+/* SC 2.5.8: text-only line-height put this label's own click target at ~20px
+   tall (< 24px min). min-height + centering keeps the visual text untouched
+   but gives the label itself a real 24px-tall hit box, same floor as the
+   .vw-switch track next to it. */
+.vw-toggle-opt { position: relative; cursor: pointer; display: inline-flex; align-items: center; min-height: 24px; }
 .vw-toggle input { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); border:0; white-space:nowrap; }
 .vw-toggle:has(input:focus-visible) { outline: 2px solid var(--focus-orange); outline-offset: 0; border-radius: 12px; }
 .vw-toggle-track {
@@ -1088,9 +1098,11 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
               <div class="fl-select">
                 <span class="fl-label" id="battery-fl-label">Motor / Battery Capacity</span>
                 <select id="battery-select" aria-labelledby="battery-fl-label">
-                  <option value="50">125 kW (170 PS) · 50 kWh</option>
-                  <option value="58">140 kW (190 PS) · 58 kWh</option>
-                  <option value="79">170 kW (231 PS) · 79 kWh</option>
+                  <optgroup label="Motor / Battery Capacity">
+                    <option value="50">125 kW (170 PS) · 50 kWh</option>
+                    <option value="58">140 kW (190 PS) · 58 kWh</option>
+                    <option value="79">170 kW (231 PS) · 79 kWh</option>
+                  </optgroup>
                 </select>                <span class="fl-chevron">
                   <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 12 17.713 C 11.55 17.713 11.127 17.535 10.811 17.213 L 1.025 7.216 L 1.975 6.285 L 11.76 16.281 C 11.89 16.412 12.109 16.413 12.24 16.280 L 22.025 6.285 L 22.975 7.216 L 13.19 17.212 C 12.873 17.536 12.45 17.713 12 17.713 Z" fill="rgba(0,30,80,1)"/></svg>
                 </span>
@@ -1318,7 +1330,8 @@ function updateBatteryOptions() {
   if (!sel) return;
   const opts = batteryOptions[trim] || batteryOptions.Trend;
   const current = sel.value;
-  sel.innerHTML = opts.map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+  sel.innerHTML = '<optgroup label="Motor / Battery Capacity">'
+    + opts.map(o => `<option value="${o.value}">${o.label}</option>`).join('') + '</optgroup>';
   // Restore previous selection if still available, else default to first
   if (opts.some(o => o.value === current)) sel.value = current;
   // Sync display value
