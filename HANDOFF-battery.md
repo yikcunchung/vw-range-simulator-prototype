@@ -4,7 +4,7 @@
 
 ## OBJECTIVE
 
-An extended version of the VW ID.3 Neo Range Simulator (`index-battery.html`) that adds the **ID. Polo** as a second vehicle, with full trim/battery/range logic and dedicated car images. Built on the same single-file HTML foundation as `index.html`.
+An extended version of the VW ID.3 Neo Range Simulator that adds the **ID. Polo** as a second vehicle, with full trim/battery/range logic and dedicated car images. This was originally built as a standalone `index-battery.html`; that content has since been merged into `index.html`, which is now the only live file — this document is a historical record of the Polo/battery-capacity build, not a description of a separate file.
 
 ---
 
@@ -120,9 +120,10 @@ PoloGTI:   '25.1–23.0 kWh/100mi'  // simulated
 ```
 Updated by `updateDisclaimer()` on trim change.
 
-### Sticky bar label (`#sticky-model-label`)
-Shows full model + trim name e.g. "The new ID. Polo GTI"
-Updated by `updateStickyLabel()` on trim change.
+### Sticky bar label
+The sticky result bar no longer carries a model/trim name — `#sticky-model-label` and
+`updateStickyLabel()` were removed. It now shows only the static "Estimated range" headline label
+plus the live value (`#sticky-range-display`).
 
 ---
 
@@ -168,8 +169,8 @@ Updated by `updateStickyLabel()` on trim change.
 | `updateCarImage()` | Swaps car image by trim |
 | `updateTrimLabel()` | Updates floating label with model group name |
 | `updateDisclaimer()` | Updates consumption disclaimer by trim |
-| `updateStickyLabel()` | Updates sticky bar label with full trim name |
 | `syncSelectValue(sel)` | Updates custom select display value |
+| `syncSelectDisabled(sel)` | Disables a select when it has exactly one option |
 | `updateSlider(id, tooltipId, thumbId)` | Temp slider update + auto winter tyre logic |
 | `initSlider(id, tooltipId, thumbId)` | Temp slider init |
 | `initDistSlider()` | Distribution slider drag init |
@@ -210,8 +211,8 @@ Updated by `updateStickyLabel()` on trim change.
 
 ## ENVIRONMENT
 
-- Output file: `/mnt/user-data/outputs/index-battery.html`
-- Title: `Test Range Simulator / Battery Capacity`
+- Live file: `index.html` (the Polo/battery-capacity work described above is merged into it — there is no separate `index-battery.html`)
+- Title: `Volkswagen Range Simulator`
 - Browser target: Chrome, Safari, Firefox, Edge
 - Viewport range: 375px → 2560px+
 - Figma file: `FivoE61MU1j5xtIMd6r0Ie` — "New Brand Design"
