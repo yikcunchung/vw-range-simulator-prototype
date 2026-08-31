@@ -58,7 +58,10 @@ Build a pixel-accurate, fully interactive HTML prototype of the **VW ID.3 Neo Ra
 - `--navy: rgba(27,34,54,1)` — primary text
 - `--navy-dark: rgba(41,48,67,1)` — buttons, switch tracks
 - `--label-blue: rgba(0,30,80,1)` — floating labels
-- `--border-light: rgb(161,164,172)` — select borders
+- `--border-light: rgb(208,209,213)` — topbar bottom border (not the select border — see below)
+- Select border (enabled): `rgb(110,116,126)`, deliberately darker than the real core component's
+  `rgb(161,164,172)` so it clears the SC 1.4.11 3:1 floor outright; disabled selects use the real
+  core's `rgb(161,164,172)` for the muted state
 - Hover brown: `#997F67` / `rgba(153,127,103,1)`
 - Active/focus orange: `rgba(200,108,3,1)`
 
