@@ -612,9 +612,38 @@ input[type="range"] {
 }
 
 /* "Show technical data" — label + 1px underline rect */
-.tech-link { display: inline-flex; flex-direction: column; gap: 1px; cursor: pointer; width: fit-content; }
+.tech-link { display: inline-flex; flex-direction: column; gap: 1px; cursor: pointer; width: fit-content; background: none; border: none; padding: 0; font: inherit; }
+.tech-link:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; border-radius: 2px; }
 .tech-link-label { font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy-dark); line-height: 1.2; }
 .tech-link-stroke { height: 1px; background: var(--navy-dark); }
+
+/* Reference badge — small numbered footnote marker, dark theme (used on the navy result card).
+   24x24 wrapper matches the adjacent 24px info-icon hit target; visible circle is 16x16. */
+.ref-badge-wrapper { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ref-badge {
+  width: 16px; height: 16px; border-radius: 100px;
+  background: var(--border-light); border: none;
+  color: var(--navy); font-family: var(--font-text); font-size: 12px; font-weight: 400;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; text-decoration: none; line-height: 1;
+}
+.ref-badge:hover, .ref-badge:active { background: #997F67; }
+.ref-badge:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+
+/* ── FAQ Accordion ── */
+.faq-section { margin-top: 8vw; display: flex; flex-direction: column; gap: 28px; }
+.faq-heading { font-family: var(--font-head); font-size: 28px; font-weight: 700; line-height: 1.2; color: var(--navy-dark); text-align: center; margin: 0; }
+.faq-list { display: flex; flex-direction: column; width: 62.5vw; margin: 0 auto; }
+@media (max-width: 375px) { .faq-list { width: 53.33vw; } }
+.faq-item { border-bottom: 1px solid var(--border-light); }
+.faq-question {
+  width: 100%; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  padding: 16px 0; background: none; border: none; cursor: pointer; text-align: left;
+  font-family: var(--font-text); font-size: 16px; font-weight: 700; color: var(--navy-dark); line-height: 1.2;
+}
+.faq-question:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; border-radius: 2px; }
+.faq-chevron { flex-shrink: 0; width: 24px; height: 24px; color: var(--navy-dark); }
+.faq-answer-copy { font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy); line-height: 1.5; padding: 0 0 20px; margin: 0; }
 
 /* ── Result Section: bg rgba(27,34,54) r:12 p:24 gap:20 ── */
 .result-section {
@@ -675,7 +704,7 @@ input[type="range"] {
 .result-header { display: flex; flex-direction: column; gap: 4px; }
 .result-headline-row { display: flex; align-items: center; }
 .result-headline-label { font-family: var(--font-text); font-size: 16px; font-weight: 700; color: #fff; line-height: 1.2; }
-.result-headline-row .q-icon-btn { color: #fff; }
+.result-headline-row .q-icon-btn { color: #fff; margin-left: 0; }
 
 /* ── CTA: 420x44, border 1px rgba(41,48,67), r:100, p:8 32 ── */
 .cta-button {
@@ -820,8 +849,10 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
   background-color: #fff;
 }
 .info-modal-title {
-  font-family: var(--font-head); font-weight: 700; font-size: 20px;
-  line-height: 1.2; color: var(--navy);
+  font-family: var(--font-head); font-weight: 700;
+  font-size: clamp(1.38rem, 1.22rem + 0.44vw, 1.75rem);
+  line-height: 120%; letter-spacing: calc(-0.02em + 0.02rem);
+  color: var(--navy);
 }
 .info-modal-close {
   position: absolute; top: 24px; right: min(4.16vw, 106.66px); z-index: 2;
@@ -843,6 +874,14 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
 .info-modal-body ul:last-child { margin-bottom: 0; }
 .info-modal-body li { margin-bottom: 8px; }
 .info-modal-body li:last-child { margin-bottom: 0; }
+.info-modal-subtitle { font-family: var(--font-text); font-weight: 700; font-size: 16px; color: var(--navy-dark); margin: 0 0 16px; }
+.info-modal-link-row { display: flex; justify-content: flex-end; margin: 0 0 16px; }
+.info-modal-link-row a { font-family: var(--font-text); font-size: 14px; color: var(--navy-dark); text-decoration: underline; }
+.info-modal-section-header { font-family: var(--font-text); font-weight: 700; font-size: 16px; color: var(--navy-dark); margin: 0 0 8px; }
+.info-modal-rows { display: flex; flex-direction: column; margin: 0 0 16px; }
+.info-modal-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+.info-modal-row dt { font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy); margin: 0; }
+.info-modal-row dd { font-family: var(--font-text); font-size: 16px; font-weight: 700; color: var(--navy-dark); margin: 0; text-align: right; }
 /* SC 2.3.3 — honour a reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
   #info-modal { transition-duration: 0.001ms !important; }
@@ -1118,11 +1157,9 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
               <div class="fl-select">
                 <span class="fl-label" id="battery-fl-label">Motor / Battery Capacity</span>
                 <select id="battery-select" aria-labelledby="battery-fl-label">
-                  <optgroup label="Motor / Battery Capacity">
-                    <option value="50">125 kW (170 PS) · 50 kWh</option>
-                    <option value="58">140 kW (190 PS) · 58 kWh</option>
-                    <option value="79">170 kW (231 PS) · 79 kWh</option>
-                  </optgroup>
+                  <option value="50">125 kW (170 PS) · 50 kWh</option>
+                  <option value="58">140 kW (190 PS) · 58 kWh</option>
+                  <option value="79">170 kW (231 PS) · 79 kWh</option>
                 </select>                <span class="fl-chevron">
                   <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 12 17.713 C 11.55 17.713 11.127 17.535 10.811 17.213 L 1.025 7.216 L 1.975 6.285 L 11.76 16.281 C 11.89 16.412 12.109 16.413 12.24 16.280 L 22.025 6.285 L 22.975 7.216 L 13.19 17.212 C 12.873 17.536 12.45 17.713 12 17.713 Z" fill="rgba(0,30,80,1)"/></svg>
                 </span>
@@ -1139,6 +1176,11 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             <div class="model-content">
               <p class="model-disclaimer" id="model-disclaimer">Electricity combined fuel consumption 22.7–22.5 kWh / 100 mi · CO₂ emissions combined 0 g / km</p>
 
+              <button class="tech-link" type="button" id="tech-link-btn">
+                <span class="tech-link-label">Show technical data</span>
+                <span class="tech-link-stroke" aria-hidden="true"></span>
+              </button>
+
             </div>
           </div>
 
@@ -1149,6 +1191,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
           <div class="result-header">
             <div class="result-headline-row">
               <span class="result-headline-label">Estimated range</span>
+              <span class="ref-badge-wrapper"><a href="#disclaimer" class="ref-badge" aria-label="See disclaimer 1">1</a></span>
               <button class="q-icon-btn" id="info-btn-range" aria-label="More information: How your estimated range is calculated"><svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg></button>
             </div>
             <div class="result-value" id="range-display" aria-hidden="true"></div>
@@ -1177,10 +1220,88 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
       </div><!-- /section-container -->
 
         <!-- Disclaimer: outside section-container so sticky stop = card bottom -->
-        <div class="disclaimer">
+        <div class="disclaimer" id="disclaimer">
           <span class="disclaimer-num">1</span>
           <p class="disclaimer-copy">Estimated range only (based on user inputs and test values) for the standard German specification car (model year 2026). Actual results will vary. Estimated range assumes the battery is fully charged (to 100%) and is depleted to 0%. Range figures are provided for information and comparability only. Only compare range figures with other cars tested to the same technical procedures. These figures may not reflect real life driving results, which will depend upon a number of factors including differences between UK and standard specification, the options you choose, accessories fitted (post-registration), variations in weather, driving styles, car load, starting and finish charge etc. The tool provides an indicative impact for changes in some of these factors but this will not reflect your actual use. Battery electric cars require mains electricity for charging. Zero emissions while driving. Figures are subject to change due to ongoing approvals/changes in model specification. Please consult your retailer for further information. The car specification used in the tool may vary due to review of the model range line up throughout the year. Data correct as at February 2026.</p>
         </div>
+
+        <!-- FAQ Accordion -->
+        <section class="faq-section" aria-labelledby="faq-heading">
+          <h2 id="faq-heading" class="faq-heading">Range simulator FAQs</h2>
+          <div class="faq-list">
+            <div class="faq-item">
+              <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1">
+                <span class="faq-question-label">How does the air conditioning affect the range of my electric vehicle?</span>
+                <svg class="faq-chevron" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 18.9993C11.55 18.9993 11.127 18.8213 10.811 18.4993L1.02502 8.50227L1.97502 7.57227L11.76 17.5683C11.89 17.6993 12.109 17.7003 12.24 17.5673L22.024 7.57227L22.975 8.50227L13.19 18.4983C12.873 18.8223 12.45 18.9993 12 18.9993Z" fill="currentColor"/></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-1" role="region" aria-labelledby="faq-question-1" hidden>
+                <p class="faq-answer-copy">In contrast to a combustion engine, the interior air conditioning of an electric vehicle, i.e. both cooling and heating, is implemented with the help of the high-voltage battery. This significantly reduces the range, particularly at very high or very low outside temperatures.</p>
+            <p class="faq-answer-copy">Tip: Pre-setting your temperature during charging is also a good idea in summer in order to avoid costly cooling at the expense of the range.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2">
+                <span class="faq-question-label">How does the interior heating affect the range of my electric vehicle?</span>
+                <svg class="faq-chevron" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 18.9993C11.55 18.9993 11.127 18.8213 10.811 18.4993L1.02502 8.50227L1.97502 7.57227L11.76 17.5683C11.89 17.6993 12.109 17.7003 12.24 17.5673L22.024 7.57227L22.975 8.50227L13.19 18.4983C12.873 18.8223 12.45 18.9993 12 18.9993Z" fill="currentColor"/></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-2" role="region" aria-labelledby="faq-question-2" hidden>
+                <p class="faq-answer-copy">The interior heating uses a significant proportion of the energy produced by the battery, especially at low average speeds.</p>
+            <p class="faq-answer-copy">Conventional interior heating first heats the air in the interior around the occupants. How energy-intensive this process is essentially depends on the outside temperature and the selected desired interior temperature.</p>
+            <p class="faq-answer-copy">Tip: Set the interior heating to a lower level and supplement it with the more energy-efficient seat and steering wheel heating in order to optimize the vehicle's range.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3">
+                <span class="faq-question-label">How does cold weather my battery charge and range?</span>
+                <svg class="faq-chevron" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 18.9993C11.55 18.9993 11.127 18.8213 10.811 18.4993L1.02502 8.50227L1.97502 7.57227L11.76 17.5683C11.89 17.6993 12.109 17.7003 12.24 17.5673L22.024 7.57227L22.975 8.50227L13.19 18.4983C12.873 18.8223 12.45 18.9993 12 18.9993Z" fill="currentColor"/></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-3" role="region" aria-labelledby="faq-question-3" hidden>
+                <p class="faq-answer-copy">Frost and freezing temperatures can lengthen the charging time of electric vehicles – especially when the battery is cold. You need to take this into account when scheduling charging stops. Another recommendation is to charge the battery when it is still warm. It's also best not to wait until the battery is fully drained, as this reduces the voltage, which in turn lengthens the charging time. Following these simple suggestions will ensure that you always drive with sufficient power during the colder months of the year.</p>
+            <p class="faq-answer-copy">Depending on the weather forecast at the vehicle location and the battery's state of charge, you will receive a recommendation via the We Connect ID. App (with software 3.0) to preheat or charge the high-voltage battery. In doing so, you will be asked to set a departure time or charge the vehicle in order to avoid limited battery performance due to the cold weather.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4">
+                <span class="faq-question-label">What influence do temperature fluctuations in the vehicle interior have on the range?</span>
+                <svg class="faq-chevron" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 18.9993C11.55 18.9993 11.127 18.8213 10.811 18.4993L1.02502 8.50227L1.97502 7.57227L11.76 17.5683C11.89 17.6993 12.109 17.7003 12.24 17.5673L22.024 7.57227L22.975 8.50227L13.19 18.4983C12.873 18.8223 12.45 18.9993 12 18.9993Z" fill="currentColor"/></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-4" role="region" aria-labelledby="faq-question-4" hidden>
+                <p class="faq-answer-copy">The interior air conditioning, i.e. both cooling and heating, is energy-intensive and drains the battery.</p>
+            <p class="faq-answer-copy">Tip: Make sure that you do not leave the doors and windows open longer than necessary, both in summer and in winter. If your vehicle has a panoramic roof, keep the blind closed as much as possible to reduce temperature fluctuations and avoid unnecessary use of the air conditioning.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5">
+                <span class="faq-question-label">What influence does the driving speed have on the range of my e-vehicle?</span>
+                <svg class="faq-chevron" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 18.9993C11.55 18.9993 11.127 18.8213 10.811 18.4993L1.02502 8.50227L1.97502 7.57227L11.76 17.5683C11.89 17.6993 12.109 17.7003 12.24 17.5673L22.024 7.57227L22.975 8.50227L13.19 18.4983C12.873 18.8223 12.45 18.9993 12 18.9993Z" fill="currentColor"/></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-5" role="region" aria-labelledby="faq-question-5" hidden>
+                <p class="faq-answer-copy">Speed has a much greater impact on energy consumption in e-vehicles than in combustion engines.</p>
+            <p class="faq-answer-copy">Tip: Manage your speed within the applicable speed limits. Reduce speed, especially on the motorway, to help to maximise range</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6">
+                <span class="faq-question-label">What influence does my individual driving style have on the range of my e-vehicle?</span>
+                <svg class="faq-chevron" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 18.9993C11.55 18.9993 11.127 18.8213 10.811 18.4993L1.02502 8.50227L1.97502 7.57227L11.76 17.5683C11.89 17.6993 12.109 17.7003 12.24 17.5673L22.024 7.57227L22.975 8.50227L13.19 18.4983C12.873 18.8223 12.45 18.9993 12 18.9993Z" fill="currentColor"/></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-6" role="region" aria-labelledby="faq-question-6" hidden>
+                <p class="faq-answer-copy">Heavy acceleration increases consumption and heavy braking causes kinetic energy to convert into heat instead of being recuperated into the battery.</p>
+            <p class="faq-answer-copy">Tip: Try to keep as much distance as possible from the car in front so that you don't have to brake as much. When decelerating, it is better to allow the vehicle to coast and naturally slow down where possible – i.e. to cover distances without using the engine. You can also use driving position 'D' on country roads and motorways in order to optimally use the coasting mode of the vehicle. In the city, driving position 'B', with its higher recuperation level, is ideal to help reduce braking processes and convert more kinetic energy.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-7" id="faq-question-7">
+                <span class="faq-question-label">How can I use braking processes while driving to benefit my range?</span>
+                <svg class="faq-chevron" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 18.9993C11.55 18.9993 11.127 18.8213 10.811 18.4993L1.02502 8.50227L1.97502 7.57227L11.76 17.5683C11.89 17.6993 12.109 17.7003 12.24 17.5673L22.024 7.57227L22.975 8.50227L13.19 18.4983C12.873 18.8223 12.45 18.9993 12 18.9993Z" fill="currentColor"/></svg>
+              </button>
+              <div class="faq-answer" id="faq-answer-7" role="region" aria-labelledby="faq-question-7" hidden>
+                <p class="faq-answer-copy">E-vehicles are able to recover energy during the braking process by means of recuperation.</p>
+            <p class="faq-answer-copy">Tip: Use driving position 'B' mode more often to positively influence the battery range.</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
   </div><!-- /range-simulator -->
 </div><!-- /content -->
@@ -1357,8 +1478,7 @@ function updateBatteryOptions() {
   if (!sel) return;
   const opts = batteryOptions[trim] || batteryOptions.Trend;
   const current = sel.value;
-  sel.innerHTML = '<optgroup label="Motor / Battery Capacity">'
-    + opts.map(o => `<option value="${o.value}">${o.label}</option>`).join('') + '</optgroup>';
+  sel.innerHTML = opts.map(o => `<option value="${o.value}">${o.label}</option>`).join('');
   // Restore previous selection if still available, else default to first
   if (opts.some(o => o.value === current)) sel.value = current;
   syncSelectDisabled(sel);
@@ -1502,6 +1622,7 @@ window.addEventListener('DOMContentLoaded', () => {
     PoloTrend: 'The new ID. Polo', PoloLife: 'The new ID. Polo',
     PoloStyle: 'The new ID. Polo', PoloGTI: 'The new ID. Polo'
   };
+  window.trimGroupLabels = trimGroupLabels;
   function updateTrimLabel() {
     const trim = document.getElementById('trim-select')?.value ?? 'Trend';
     if (trimFlLabel) trimFlLabel.textContent = trimGroupLabels[trim] || 'The new ID.3 Neo';
@@ -1525,6 +1646,19 @@ window.addEventListener('DOMContentLoaded', () => {
     PoloStyle_52a: '23.5–21.6 kWh / 100 mi',
     PoloGTI_52b:   '24.6–22.4 kWh / 100 mi',
   };
+  window.consumptionData = consumptionData;
+  const wltpData = {
+    Trend_50: {
+      combined:      '14.1 – 14.0 kWh/100 km',
+      highway:       '18.9 – 18.7 kWh/100 km',
+      countryRoads:  '12.7 – 12.6 kWh/100 km',
+      outskirts:     '10.9 – 10.8 kWh/100 km',
+      cityCenter:    '10.1 – 9.9 kWh/100 km',
+      rangeCombined: '413 – 417 km',
+      rangeCity:     '545 – 553 km',
+    },
+  };
+  window.wltpData = wltpData;
   function updateDisclaimer() {
     if (!disclaimerEl) return;
     const trim = document.getElementById('trim-select')?.value ?? 'Trend';
@@ -1539,6 +1673,33 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('trim-select')?.addEventListener('change', updateDisclaimer);
   document.getElementById('battery-select')?.addEventListener('change', updateDisclaimer);
   updateDisclaimer();
+
+  const FAQ_CHEVRON_DOWN = 'M12 18.9993C11.55 18.9993 11.127 18.8213 10.811 18.4993L1.02502 8.50227L1.97502 7.57227L11.76 17.5683C11.89 17.6993 12.109 17.7003 12.24 17.5673L22.024 7.57227L22.975 8.50227L13.19 18.4983C12.873 18.8223 12.45 18.9993 12 18.9993Z';
+  const FAQ_CHEVRON_UP = 'M12 5.00073C11.55 5.00073 11.127 5.17873 10.811 5.50073L1.02502 15.4977L1.97502 16.4277L11.76 6.43173C11.89 6.30073 12.109 6.29973 12.24 6.43273L22.024 16.4277L22.975 15.4977L13.19 5.50173C12.873 5.17773 12.45 5.00073 12 5.00073Z';
+  function setFaqChevron(btn, expanded) {
+    const path = btn.querySelector('.faq-chevron path');
+    if (path) path.setAttribute('d', expanded ? FAQ_CHEVRON_UP : FAQ_CHEVRON_DOWN);
+  }
+  document.querySelectorAll('.faq-list').forEach((list) => {
+    const questions = list.querySelectorAll('.faq-question');
+    questions.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        questions.forEach((other) => {
+          other.setAttribute('aria-expanded', 'false');
+          setFaqChevron(other, false);
+          const otherAnswer = document.getElementById(other.getAttribute('aria-controls'));
+          if (otherAnswer) otherAnswer.hidden = true;
+        });
+        if (!expanded) {
+          btn.setAttribute('aria-expanded', 'true');
+          setFaqChevron(btn, true);
+          const answer = document.getElementById(btn.getAttribute('aria-controls'));
+          if (answer) answer.hidden = false;
+        }
+      });
+    });
+  });
   stickyBar?.addEventListener('click', () => {
     const target = document.getElementById('model-selection');
     if (!target) return;
@@ -1603,15 +1764,16 @@ function initDistSlider() {
     const centres = [pct1 / 2, (pct1 + pct2) / 2, (pct2 + 100) / 2];
     const widths  = [pct1, pct2 - pct1, 100 - pct2];
 
+    const trackWidthPx = block.getBoundingClientRect().width;
     icons.forEach((icon, i) => {
       if (!icon) return;
       icon.style.left = centres[i] + '%';
       const wPct = widths[i];
       const size = clamp(ICON_MIN + (ICON_MAX - ICON_MIN) * (wPct - 5) / 15, ICON_MIN, ICON_MAX);
-      const opacity = wPct < 4 ? 0 : Math.min(1, (wPct - 4) / 4);
+      const segmentWidthPx = trackWidthPx * wPct / 100;
       icon.style.width  = size + 'px';
       icon.style.height = size + 'px';
-      icon.style.opacity = opacity;
+      icon.style.opacity = segmentWidthPx < size ? '0' : '1';
     });
 
     const v1 = Math.round(pct1), v2 = Math.round(pct2);
@@ -1819,6 +1981,7 @@ function initDistSlider() {
 
   var triggers = Object.keys(MODAL_CONTENT)
     .map(function (id) { return document.getElementById(id); })
+    .concat([document.getElementById('tech-link-btn')])
     .filter(Boolean);
   if (!overlay || !triggers.length) return;
 
@@ -1843,6 +2006,39 @@ function initDistSlider() {
           ul.appendChild(li);
         });
         body.appendChild(ul);
+      } else if (block && block.subtitle !== undefined) {
+        var sub = document.createElement('p');
+        sub.className = 'info-modal-subtitle';
+        sub.textContent = block.subtitle;
+        body.appendChild(sub);
+      } else if (block && block.link) {
+        var linkRow = document.createElement('div');
+        linkRow.className = 'info-modal-link-row';
+        var a = document.createElement('a');
+        a.href = block.link.href || '#';
+        a.textContent = block.link.text;
+        linkRow.appendChild(a);
+        body.appendChild(linkRow);
+      } else if (block && block.sectionHeader !== undefined) {
+        var header = document.createElement('p');
+        header.className = 'info-modal-section-header';
+        header.textContent = block.sectionHeader;
+        body.appendChild(header);
+      } else if (block && block.rows) {
+        var dl = document.createElement('dl');
+        dl.className = 'info-modal-rows';
+        block.rows.forEach(function (row) {
+          var rowEl = document.createElement('div');
+          rowEl.className = 'info-modal-row';
+          var dt = document.createElement('dt');
+          dt.textContent = row.label;
+          var dd = document.createElement('dd');
+          dd.textContent = row.value;
+          rowEl.appendChild(dt);
+          rowEl.appendChild(dd);
+          dl.appendChild(rowEl);
+        });
+        body.appendChild(dl);
       } else {
         var p = document.createElement('p');
         p.textContent = block;
@@ -1853,9 +2049,37 @@ function initDistSlider() {
 
   var focusAnchor = null;
 
+  function getTechDataModalContent() {
+    var trim = document.getElementById('trim-select')?.value ?? 'Trend';
+    var batt = document.getElementById('battery-select')?.value ?? '50';
+    var data = (typeof wltpData !== 'undefined' && wltpData[trim + '_' + batt]) || {};
+    return {
+      title: 'Emissions and consumption',
+      body: [
+        { rows: [
+          { label: 'Hub/Motor',          value: batt + ' kWh' },
+          { label: 'Equipment version',  value: trim.toLowerCase() },
+        ] },
+        { rows: [
+          { label: 'CO₂ emissions combined ①',                       value: '0 g/km' },
+          { label: 'Combined fuel consumption ①',                     value: data.combined      || '–' },
+          { label: 'Highway fuel consumption ①',                      value: data.highway       || '–' },
+          { label: 'Fuel consumption on country roads ①',             value: data.countryRoads  || '–' },
+          { label: 'Consumption on the outskirts of the city ①',      value: data.outskirts     || '–' },
+          { label: 'Consumption in the city center ①',                value: data.cityCenter    || '–' },
+          { label: 'Electric range combined ②',                       value: data.rangeCombined || '–' },
+          { label: 'Electric range city ②',                           value: data.rangeCity     || '–' },
+          { label: 'CO₂ class ①',                                     value: 'A' },
+        ] },
+        { link: { text: 'More about WLTP and emission standards', href: '#' } },
+        { sectionHeader: 'Electricity' },
+      ]
+    };
+  }
+
   function openInfoModal(trigger) {
     lastTrigger = trigger;
-    var content = MODAL_CONTENT[trigger.id] || { title: '', body: [] };
+    var content = trigger.id === 'tech-link-btn' ? getTechDataModalContent() : (MODAL_CONTENT[trigger.id] || { title: '', body: [] });
     title.textContent = content.title;
     renderBody(content.body);
 
