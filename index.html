@@ -757,7 +757,8 @@ input[type="range"] {
   line-height: 120%;
   letter-spacing: calc(-0.02em + 0.02rem);
 }
-.disclaimer { display: flex; gap: 32px; margin-top: 40px; }
+.disclaimer { display: flex; gap: 32px; margin-top: 40px; border-radius: 2px; transition: box-shadow 0.5s; }
+.disclaimer.highlighted { box-shadow: 0 0 0 1.5px #997f67; }
 .disclaimer-num {
   font-family: var(--font-text); font-size: 14px; font-weight: 400;
   color: var(--muted); line-height: 24px; flex-shrink: 0;
@@ -876,7 +877,7 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
 .info-modal-body li:last-child { margin-bottom: 0; }
 .info-modal-subtitle { font-family: var(--font-text); font-weight: 700; font-size: 16px; color: var(--navy-dark); margin: 0 0 16px; }
 .info-modal-link-row { display: flex; justify-content: flex-end; margin: 0 0 16px; }
-.info-modal-link-row a { font-family: var(--font-text); font-size: 14px; color: var(--navy-dark); text-decoration: underline; }
+.info-modal-link-row a { font-family: var(--font-text); font-size: 16px; font-weight: 400; line-height: 1.2; color: var(--navy-dark); text-decoration: none; border-bottom: 1px solid var(--navy-dark); }
 .info-modal-section-header { font-family: var(--font-text); font-weight: 700; font-size: 16px; color: var(--navy-dark); margin: 0 0 8px; }
 .info-modal-rows { display: flex; flex-direction: column; margin: 0 0 16px; }
 .info-modal-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
@@ -2056,11 +2057,11 @@ function initDistSlider() {
     return {
       title: 'Emissions and consumption',
       body: [
+        { link: { text: 'More about WLTP and emission standards', href: '#' } },
+        { sectionHeader: 'Electricity' },
         { rows: [
-          { label: 'Hub/Motor',          value: batt + ' kWh' },
-          { label: 'Equipment version',  value: trim.toLowerCase() },
-        ] },
-        { rows: [
+          { label: 'Hub/Motor',                                        value: batt + ' kWh' },
+          { label: 'Equipment version',                                value: trim.toLowerCase() },
           { label: 'CO₂ emissions combined ①',                       value: '0 g/km' },
           { label: 'Combined fuel consumption ①',                     value: data.combined      || '–' },
           { label: 'Highway fuel consumption ①',                      value: data.highway       || '–' },
@@ -2071,8 +2072,6 @@ function initDistSlider() {
           { label: 'Electric range city ②',                           value: data.rangeCity     || '–' },
           { label: 'CO₂ class ①',                                     value: 'A' },
         ] },
-        { link: { text: 'More about WLTP and emission standards', href: '#' } },
-        { sectionHeader: 'Electricity' },
       ]
     };
   }
@@ -2131,6 +2130,19 @@ function initDistSlider() {
     if (e.key === 'Escape' && modalIsOpen) closeInfoModal();
   });
 })();
+</script>
+<script>
+  document.querySelectorAll('a.ref-badge[href^="#"]').forEach(function(badge) {
+    badge.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = document.getElementById(this.getAttribute('href').slice(1));
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.classList.add('highlighted');
+      clearTimeout(target._ht);
+      target._ht = setTimeout(function() { target.classList.remove('highlighted'); }, 2500);
+    });
+  });
 </script>
 </body>
 </html>
