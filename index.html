@@ -416,6 +416,18 @@ body {
   display: block;
 }
 
+/* Clips the dashed dividers to the block's own rounded corners — a divider
+   dragged to 0%/100% would otherwise poke its straight line out past the
+   curve, since .dist-block itself stays overflow:visible (it needs that for
+   the thumbs, which are centred ON its top/bottom edge and hang half outside). */
+.dist-divider-clip {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 /* Dashed dividers — full height, moved by JS */
 .dist-divider {
   position: absolute;
@@ -978,8 +990,10 @@ html { scroll-padding-top: 72px; scroll-padding-bottom: 140px; }
             <div class="dist-block" id="dist-block">
 
               <!-- Dashed dividers — moved by JS -->
-              <div class="dist-divider" id="dist-divider-1" style="left:33.33%;"></div>
-              <div class="dist-divider" id="dist-divider-2" style="left:66.66%;"></div>
+              <div class="dist-divider-clip">
+                <div class="dist-divider" id="dist-divider-1" style="left:33.33%;"></div>
+                <div class="dist-divider" id="dist-divider-2" style="left:66.66%;"></div>
+              </div>
 
               <!-- Knob 1: top edge -->
               <button class="dist-thumb" id="dist-thumb-1"
