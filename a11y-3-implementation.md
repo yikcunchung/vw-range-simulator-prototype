@@ -15,20 +15,19 @@ styled-components.
 
 ## Start here — the defect that shipped, and that no tool caught
 
-**16 decorative inline `<svg>`s were exposed to assistive technology as unnamed graphics**, and
-**not one tool in the required toolchain saw them.** axe reported 0 violations at 98 rules. WAVE
-reported 0 errors. Nu reported 0 errors. The accessibility tree was the only thing that caught it.
+**16 decorative inline `<svg>`s were exposed as unnamed graphics — not one required-toolchain tool
+saw them:** axe 0 violations/98 rules, WAVE 0 errors, Nu 0 errors. Only the accessibility tree
+caught it.
 
-Chrome maps a bare `<svg>` to `role=image`, `name=""`, `ignored=false` — it is **not** decorative by
-default. `svg-img-alt` and `role-img-alt` are both **inapplicable** to an `<svg>` with no `role`
-attribute, and `image-alt` only inspects `<img>`, so the whole class is invisible to scanners.
+Chrome maps a bare `<svg>` to `role=image`, `name=""`, `ignored=false` — **not** decorative by
+default. `svg-img-alt` and `role-img-alt` are both **inapplicable** to a roleless `<svg>`, and
+`image-alt` only inspects `<img>`, so the whole class is invisible to scanners.
 
-Fixed with `aria-hidden="true"`. **SC 1.1.1 is the rule; the accessibility-tree assertion in the
-Definition of Done is the check that keeps it fixed.** The pattern was already understood in this
-codebase — every `.q-icon` SVG carried `aria-hidden="true"` already. These 16 were simply missed.
+Fixed with `aria-hidden="true"`. **SC 1.1.1 is the rule; the AX-tree assertion in the Definition of
+Done is what keeps it fixed.** Every `.q-icon` SVG already carried `aria-hidden="true"` — these 16
+were simply missed.
 
-**Before quoting any figure in this pack, confirm the local checkout matches the deployed
-build.** They have diverged before without anyone noticing.
+**Before quoting any figure in this pack, confirm the local checkout matches the deployed build.**
 
 ---
 # 1. Semantics and naming
@@ -51,10 +50,10 @@ assistive technology as an unnamed graphic** — it is not "decorative by defaul
 <svg role="img" aria-label="Volkswagen" width="32" height="32">…</svg>
 ```
 
-> **No scanner catches this.** `svg-img-alt` and `role-img-alt` are **inapplicable** to an `<svg>`
-> with no `role`; `image-alt` only inspects `<img>`. axe, WAVE and Nu all returned clean on pages
-> carrying up to 16 of these. **The accessibility tree is the only check that works** — assert
-> `0` nodes with `role=image` that are unnamed and not `ignored`.
+> **No scanner catches this.** `svg-img-alt`/`role-img-alt` are **inapplicable** to a roleless
+> `<svg>`; `image-alt` only inspects `<img>`. axe, WAVE, Nu all returned clean carrying up to 16 of
+> these. **The AX tree is the only check that works** — assert `0` unnamed, non-`ignored`
+> `role=image` nodes.
 
 **In React:** put it in the icon component itself, so it cannot be forgotten per call site.
 
@@ -125,9 +124,9 @@ skip link as the **first** tab stop, pointing at an id that exists.
 The region must already be in the DOM at load — injecting it and writing to it in the same tick is
 not announced. Write to it from **every** path that changes the result, not just the common one.
 
-> **Keep the `.sr-only` clip.** `position:absolute; width:1px; height:1px; clip:rect(0,0,0,0);
-> clip-path:inset(50%); white-space:nowrap`. Set an explicit `color` on it — a clipped region that
-> inherits a matching colour reads as a 1:1 contrast error to WAVE even though nothing renders.
+> **Keep the `.sr-only` clip** (`position:absolute;width:1px;height:1px;clip:rect(0,0,0,0);
+> clip-path:inset(50%);white-space:nowrap`) and set an explicit `color` on it — a clipped region
+> inheriting a matching colour reads as a 1:1 contrast error to WAVE even though nothing renders.
 
 ---
 
@@ -168,8 +167,8 @@ path that can change it — keyboard, drag, and click-on-track:
 `aria-valuenow={value}`, so desync is impossible.
 
 > **A CDP caveat, not a defect:** `Accessibility.getPartialAXTree` reports `valuetext: ""` for
-> *every* ARIA widget, even when `aria-valuetext` is set. Whether it reaches the platform API is not
-> measurable over CDP — it needs a real screen reader. Do not read that empty string as a failure.
+> *every* ARIA widget, even with `aria-valuetext` set — not measurable over CDP, needs a real
+> screen reader. Do not read that empty string as a failure.
 
 ---
 
@@ -177,30 +176,24 @@ path that can change it — keyboard, drag, and click-on-track:
 
 **Level A**
 
-`#battery-select` is rebuilt from `batteryOptions[trim]` on every trim change. Some trims (e.g.
-Trend) have exactly one battery — presenting that as an interactive dropdown offers a "choice" with
-nothing to actually choose:
-
 ```js
 sel.disabled = opts.length === 1;
 ```
 
-The native HTML `disabled` attribute is sufficient — no extra ARIA is needed, and the browser
-correctly removes the control from the tab order and exposes its disabled state to the accessibility
-tree on its own. Toggle it every time the option list is rebuilt, not just once at load, since the
-same select must re-enable the moment a multi-option trim is selected.
+`#battery-select` rebuilds from `batteryOptions[trim]` on every trim change; some trims (e.g.
+Trend) have exactly one battery, not a real choice. The native `disabled` attribute is sufficient —
+no extra ARIA needed, the browser removes it from the tab order on its own. Toggle on every
+rebuild, not just at load, so it re-enables the moment a multi-option trim is selected.
 
-> **Disabling a currently-focused control forces a browser-native blur to `<body>`.** If the user is
-> tabbing through the form when a rebuild disables the control they're on, focus moves away
-> immediately — expected browser behaviour, not a bug, but any test asserting "Tab always reaches
-> this control" needs to branch on whether it's enabled first.
+> **Disabling a currently-focused control forces a native blur to `<body>`.** If a rebuild disables
+> the control the user is tabbing through, focus moves away immediately — expected, not a bug, but
+> a "Tab always reaches this control" test needs to branch on enabled state first.
 
-> **Chromium's own UA stylesheet applies `opacity: 0.7` to `:disabled` form controls**, regardless of
-> author `color`. Matching an exact disabled-state color from a design spec (here: value text
-> `rgb(96,101,116)`, border `rgb(161,164,172)`, label stays full navy `rgb(27,34,54)`) requires an
-> explicit `opacity: 1` override on the control, or the browser's own dimming stacks on top of an
-> already-correct color and renders visibly lighter/greyer than specified. Verify with
-> `getComputedStyle(el).opacity`, not just by reading the CSS you wrote.
+> **Chromium's UA stylesheet applies `opacity:0.7` to `:disabled` controls**, regardless of author
+> `color`. Matching an exact disabled-state spec colour (here: value `rgb(96,101,116)`, border
+> `rgb(161,164,172)`, label stays navy `rgb(27,34,54)`) needs an explicit `opacity:1` override, or
+> the browser's dimming stacks on top and renders lighter/greyer. Verify via
+> `getComputedStyle(el).opacity`.
 
 ---
 
@@ -218,16 +211,14 @@ with CSS `order`.
 
 **Level AA**
 
-`outline: 2px solid var(--focus-orange); outline-offset: 0`. Apply it to **every** focusable thing
-including skip links and inline links — a control that falls back to the browser's default ring
-still passes, but it is a visible inconsistency and the first thing an auditor notices. (This app's
-ring was unified from an earlier navy `#293043`/3px-offset draft to `--focus-orange` `#C86C03`/0
-offset — match whatever the current design tokens say, but keep it the *same* colour and offset
-everywhere.)
+`outline: 2px solid var(--focus-orange); outline-offset: 0`, applied to **every** focusable thing
+incl. skip links and inline links — a default-ring fallback still passes but is a visible
+inconsistency, the first thing an auditor notices. (Unified from an earlier navy `#293043`/3px-offset
+draft to `--focus-orange`/0 offset — match current design tokens, but keep colour+offset uniform.)
 
-**Never remove an outline without replacing it.** If the real control is a visually hidden
-`<input>` behind a styled surrogate, style the ring on an ancestor that contains the input, so it
-still fires when the surrogate itself has no outline styling of its own:
+**Never remove an outline without replacing it.** If the real control is a hidden `<input>` behind
+a styled surrogate, style the ring on an ancestor containing the input, so it fires even though the
+surrogate itself has no outline of its own:
 
 ```css
 .vw-switch:has(input:focus-visible) { outline: 2px solid var(--focus-orange); outline-offset: 0; }
@@ -300,8 +291,7 @@ on the neighbour:
   not intersect the neighbour's **box** — i.e. **≥12px from centre to box edge**
 - against **another undersized** target: **≥24px centre-to-centre**
 
-Using centre-to-centre against a full-size neighbour is the wrong test and gives a falsely
-comfortable number.
+Using centre-to-centre against a full-size neighbour is the wrong test — falsely comfortable.
 
 ---
 
@@ -334,8 +324,8 @@ Those must be resolved by hand, on real pixels.
 **How to measure without producing a false result:**
 
 - `Page.captureScreenshot` `clip` is **document-absolute**; `getBoundingClientRect()` is
-  **viewport-relative**. Screenshot the viewport and crop in PIL with viewport-relative coordinates.
-  A ratio of exactly `1.00:1` with one unique colour means your crop missed.
+  **viewport-relative** — screenshot the viewport, crop in PIL with viewport-relative coords. A
+  ratio of exactly `1.00:1` with one unique colour means the crop missed.
 - Crop to the **glyph band** — the union of `Range.getClientRects()` over the text nodes — so the
   element's own border is excluded. A 1px border can occupy enough of a padding-box crop to be
   picked as "the background" and produce a false failure.
@@ -377,20 +367,17 @@ p { margin-bottom:2em !important; }
 
 Nothing may newly clip, no control may be lost, no horizontal scroll may appear.
 
-> **Build target sizes out of `padding`, not `line-height`.** This criterion invites the user to
-> override `line-height`, so a 24px target built on line-height collapses under the very override
-> you are being tested against. Padding is unaffected.
+> **Build target sizes from `padding`, not `line-height`.** This criterion invites overriding
+> `line-height`, so a 24px target built on line-height collapses under the very override being
+> tested — padding is unaffected.
 
 > **Fix the width first, not just the recovery path.** A `<select>`'s floating label (e.g. "Motor /
-> Battery Capacity", or a value like "The new ID.3 Neo") can run out of room under these overrides
-> if two selects are forced to share a row. `.select-group` stacks them vertically, unconditionally
-> (no breakpoint gating — this page's own grid makes available width non-monotonic across
-> viewports, so no single breakpoint threshold holds), which gives each label the full row width
-> everywhere and eliminates the truncation outright — verified zero clipping at every tested width.
+> Battery Capacity") can run out of room if two selects share a row. `.select-group` stacks them
+> vertically, unconditionally (this grid's available width is non-monotonic across viewports, so no
+> single breakpoint holds) — zero clipping verified at every tested width.
 >
-> As a secondary, belt-and-suspenders safeguard (for if content ever grows past the stacked width),
-> wrap that select's `<option>`s in an `<optgroup label="…">` carrying the identical text, so opening
-> the select (its own normal operation) reveals it in full:
+> As a belt-and-suspenders safeguard, wrap that select's `<option>`s in a matching `<optgroup
+> label="…">`, so opening the select (its own normal operation) reveals the text in full:
 > ```html
 > <select aria-labelledby="battery-fl-label">
 >   <optgroup label="Motor / Battery Capacity">
@@ -398,10 +385,9 @@ Nothing may newly clip, no control may be lost, no horizontal scroll may appear.
 >   </optgroup>
 > </select>
 > ```
-> Do this in **every** place that rebuilds the select's `innerHTML` (a trim-change handler, etc.) —
-> a static markup fix alone will be silently undone the moment the options are rebuilt in JS. Treat
-> the optgroup as a safety net, not the primary fix: a label with no matching optgroup, and no
-> layout fix either, has no escape — it must actually fit, or the criterion is a real failure.
+> Do this everywhere the select's `innerHTML` is rebuilt — a static fix alone is undone once JS
+> rebuilds the options. The optgroup is a safety net, not the primary fix: without a layout fix
+> too, a label must actually fit, or the criterion is a real failure.
 
 ---
 
@@ -453,12 +439,10 @@ No `@media (orientation:)` rule that hides or restricts content.
 
 # 7. App-specific notes
 
-**Two patterns now, not three — occupancy stopped being a toggle.** `#speed-toggle` and
-`#ac-toggle` are visually hidden `<input type="checkbox">`s (1×1, `clip-path: inset(50%)`) inside a
-`<label class="vw-switch">` that draws the visible switch. Occupancy (`#occ-1p` / `#occ-full`) is a
-native two-radio `role="radiogroup"` instead — it picks one of two *named* states, not an on/off
-property, so `role="switch"` was the wrong shape for it. Keep these two patterns straight; they pass
-the same criteria for different reasons.
+**Two patterns, not three.** `#speed-toggle`/`#ac-toggle` are hidden `<input type="checkbox">`s
+(1×1, `clip-path:inset(50%)`) inside `<label class="vw-switch">`. Occupancy (`#occ-1p`/`#occ-full`)
+is a native two-radio `role="radiogroup"` — one of two *named* states, not on/off, so
+`role="switch"` was the wrong shape.
 
 ```html
 <label class="vw-switch">
@@ -485,36 +469,28 @@ the same criteria for different reasons.
 }
 ```
 
-1. **SC 2.5.8** — the input is 1×1, but the input is not the target. `label.vw-switch` is a fixed
-   **60 × 24** (it used to stretch to the row's full width — `align-self: flex-start` stopped that,
-   see the CSS comment on `.vw-switch`). `label.vw-toggle-opt` is text-sized and was found this
-   session to be only **~20px tall** — under the 24px floor, invisible to the test suite because its
-   target-size query selector (`label.vw-toggle`) didn't match the real class (`vw-toggle-opt`).
-   Fixed both: `.vw-toggle-opt` now gets `display:inline-flex; align-items:center; min-height:24px`
-   (24 × 24 minimum, verified 59.56×24 and 25.16×24 for the two options), and the test selector was
-   corrected. **Lesson repeated from the switch:** build the height from an explicit box property,
-   not from line-height, and don't assume a selector still matches the class you renamed.
-2. **SC 2.4.7** — the audited ring is `2px solid #C86C03` (`--focus-orange`, matches nala's focus
-   colour) at `outline-offset: 0`, drawn via `:has(input:focus-visible)` on the label/container
-   itself. Assert the *computed* colour (`rgb(200, 108, 3)`) after a real `Tab`, never a stylesheet
-   text match — `:focus-visible` does not match a programmatic `.focus()` at all.
-3. **SC 2.1.1** — `Space` toggles `#speed-toggle` / `#ac-toggle`, because each is a real
-   `<input type="checkbox">`. The occupancy radiogroup does **not** need `Space`: arrow keys move
-   the native selection between the two radios, which is the correct (and sufficient) keyboard
-   path for a `radiogroup`.
+1. **SC 2.5.8** — input is 1×1, target is `label.vw-switch`, fixed **60×24** (`align-self:
+   flex-start` stops it stretching to the row, see CSS comment on `.vw-switch`). `label.vw-toggle-opt`
+   was found at only **~20px tall** — test selector `label.vw-toggle` didn't match the real class
+   (`vw-toggle-opt`). Fixed: `display:inline-flex;align-items:center;min-height:24px` → 59.56×24 /
+   25.16×24, selector corrected. **Lesson:** build height from an explicit box property, not
+   line-height, and don't assume a selector still matches a renamed class.
+2. **SC 2.4.7** — audited ring `2px solid #C86C03` (`--focus-orange`, matches nala's focus colour),
+   `outline-offset:0`, drawn via `:has(input:focus-visible)` on the label/container. Assert the
+   *computed* colour (`rgb(200,108,3)`) after a real `Tab` — `:focus-visible` never matches `.focus()`.
+3. **SC 2.1.1** — `Space` toggles `#speed-toggle`/`#ac-toggle` (real `<input type="checkbox">`).
+   Occupancy radiogroup needs no `Space`: arrow keys move the native selection, the correct and
+   sufficient path for a `radiogroup`.
 
-**Do not "simplify" either pattern to a bare `<div role="switch">`/`role="radio">`.** You would lose
-native `Space`/arrow-key handling and the label-as-target geometry, and have to rebuild both by hand.
+**Don't "simplify" either pattern to a bare `<div role="switch">`/`role="radio">`** — you'd lose
+native `Space`/arrow-key handling and the label-as-target geometry, and rebuild both by hand.
 
-**`aria-labelledby` wins over the wrapping `<label>`.** The `sr-only` spans ("Motorway driving",
-"Heating or air conditioning") sit in an *unused* name source for the two switches — the exposed
-name comes from `aria-labelledby`. They are still worth keeping: they give the `<label>` non-empty
-text content, which is what WAVE's empty-label heuristic looks at. Just do not expect them to change
-the name. The occupancy radios are the opposite case: each has **no** `aria-label`/`aria-labelledby`
-at all, so its name comes from the wrapping `<label>` itself — "1 person" / "Full" exactly.
+**`aria-labelledby` wins over the wrapping `<label>`.** The switches' `sr-only` spans are an
+*unused* name source (exposed name comes from `aria-labelledby`); kept only because they give
+`<label>` non-empty text (WAVE's empty-label heuristic). Occupancy radios are the opposite: no
+`aria-label`/`aria-labelledby` at all, name comes from the `<label>` — "1 person"/"Full" exactly.
 
 **SC 2.5.3 is no longer a decision on this app.** The old single-switch occupancy control showed
-"1 person" / "Full" as the two *values* of one control named by the question — a defensible but
-arguable reading. Splitting it into two native radios removed the ambiguity outright: each radio's
-own visible label ("1 person", "Full") **is** its own accessible name, verbatim. See
-`a11y-1-criteria.md`.
+"1 person"/"Full" as two *values* of one control — a defensible but arguable reading. Splitting into
+two native radios removed the ambiguity outright: each radio's visible label **is** its accessible
+name, verbatim. See `a11y-1-criteria.md`.
