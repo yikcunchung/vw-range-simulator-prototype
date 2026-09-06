@@ -296,7 +296,7 @@ body {
 }
 .q-icon-btn { position:relative; display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; color:rgb(41,48,67); background:transparent; border:none; padding:0; cursor:pointer; flex-shrink:0; margin-left:4px; vertical-align:middle; -webkit-tap-highlight-color:transparent; }
 .q-icon { width:24px; height:24px; display:block; pointer-events:none; }
-.q-icon-btn:focus-visible { outline: 2px solid var(--focus-orange); border-radius: 50%; }
+.q-icon-btn:focus-visible { outline: 3px solid var(--focus-orange); border-radius: 50%; }
 
 /* ── Floating label select ── */
 .fl-select { position: relative; overflow: visible; }
@@ -734,7 +734,7 @@ input[type="range"] {
   color: var(--navy);
 }
 .cta-button:focus-visible {
-  outline: 2px solid var(--focus-orange); outline-offset: 0;
+  outline: 3px solid var(--focus-orange); outline-offset: 0;
 }
 
 /* ── Sticky result bar (mobile/tablet, <960px) ── */
@@ -784,7 +784,7 @@ input[type="range"] {
 /* ---- a11y additions (WCAG 2.2 AA) ---- */
 /* SC 2.4.7: .fl-select select sets outline:none and the JS that was meant to
    replace it never existed, so these drew 0 indicator pixels. */
-.fl-select select:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 0; }
+.fl-select select:focus-visible { outline: 3px solid var(--focus-orange); outline-offset: 0; }
 /* SC 2.4.7: input[type=range] is opacity:0 over a decorative thumb, so its UA
    ring renders fully transparent. Forward focus to the visible thumb. */
 input[type="range"]:focus-visible ~ .slider-thumb {
