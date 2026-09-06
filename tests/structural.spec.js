@@ -248,7 +248,10 @@ test.describe('names', () => {
     // this check passes while testing nothing.
     expect(rows.map((r) => r.id).sort(),
       'the SC 2.5.3 harness did not match the expected control set').toEqual([
-      'ac-toggle', 'battery-select', 'cta-button', 'occ-1p', 'occ-full', 'speed-toggle',
+      'ac-toggle', 'battery-select', 'cta-button',
+      'faq-question-1', 'faq-question-2', 'faq-question-3', 'faq-question-4',
+      'faq-question-5', 'faq-question-6', 'faq-question-7',
+      'occ-1p', 'occ-full', 'speed-toggle', 'tech-link-btn',
       'temp-slider', 'trim-select', 'tyre-select',
     ]);
     const failures = rows
