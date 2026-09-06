@@ -17,15 +17,13 @@ styled-components.
 
 **16 decorative inline `<svg>`s were exposed as unnamed graphics — not one required-toolchain tool
 saw them:** axe 0 violations/98 rules, WAVE 0 errors, Nu 0 errors. Only the accessibility tree
-caught it.
-
-Chrome maps a bare `<svg>` to `role=image`, `name=""`, `ignored=false` — **not** decorative by
-default. `svg-img-alt` and `role-img-alt` are both **inapplicable** to a roleless `<svg>`, and
-`image-alt` only inspects `<img>`, so the whole class is invisible to scanners.
+caught it — Chrome maps a bare `<svg>` to `role=image`, `name=""`, `ignored=false` (**not**
+decorative by default); `svg-img-alt`/`role-img-alt` are **inapplicable** to a roleless `<svg>`,
+`image-alt` only inspects `<img>`.
 
 Fixed with `aria-hidden="true"`. **SC 1.1.1 is the rule; the AX-tree assertion in the Definition of
-Done is what keeps it fixed.** Every `.q-icon` SVG already carried `aria-hidden="true"` — these 16
-were simply missed.
+Done is what keeps it fixed.** Every `.q-icon` SVG already carried it — these 16 were simply
+missed.
 
 **Before quoting any figure in this pack, confirm the local checkout matches the deployed build.**
 
@@ -213,8 +211,8 @@ with CSS `order`.
 
 `outline: 2px solid var(--focus-orange); outline-offset: 0`, applied to **every** focusable thing
 incl. skip links and inline links — a default-ring fallback still passes but is a visible
-inconsistency, the first thing an auditor notices. (Unified from an earlier navy `#293043`/3px-offset
-draft to `--focus-orange`/0 offset — match current design tokens, but keep colour+offset uniform.)
+inconsistency, the first thing an auditor notices. Match current design tokens; keep colour+offset
+uniform site-wide.
 
 **Never remove an outline without replacing it.** If the real control is a hidden `<input>` behind
 a styled surrogate, style the ring on an ancestor containing the input, so it fires even though the
@@ -470,11 +468,10 @@ is a native two-radio `role="radiogroup"` — one of two *named* states, not on/
 ```
 
 1. **SC 2.5.8** — input is 1×1, target is `label.vw-switch`, fixed **60×24** (`align-self:
-   flex-start` stops it stretching to the row, see CSS comment on `.vw-switch`). `label.vw-toggle-opt`
-   was found at only **~20px tall** — test selector `label.vw-toggle` didn't match the real class
-   (`vw-toggle-opt`). Fixed: `display:inline-flex;align-items:center;min-height:24px` → 59.56×24 /
-   25.16×24, selector corrected. **Lesson:** build height from an explicit box property, not
-   line-height, and don't assume a selector still matches a renamed class.
+   flex-start` stops it stretching to the row). `label.vw-toggle-opt` was found at only **~20px
+   tall** — test selector didn't match the real class (`vw-toggle-opt`). Fixed:
+   `display:inline-flex;align-items:center;min-height:24px` → 59.56×24/25.16×24, selector corrected.
+   **Lesson:** build height from an explicit box property, not line-height.
 2. **SC 2.4.7** — audited ring `2px solid #C86C03` (`--focus-orange`, matches nala's focus colour),
    `outline-offset:0`, drawn via `:has(input:focus-visible)` on the label/container. Assert the
    *computed* colour (`rgb(200,108,3)`) after a real `Tab` — `:focus-visible` never matches `.focus()`.
@@ -483,14 +480,13 @@ is a native two-radio `role="radiogroup"` — one of two *named* states, not on/
    sufficient path for a `radiogroup`.
 
 **Don't "simplify" either pattern to a bare `<div role="switch">`/`role="radio">`** — you'd lose
-native `Space`/arrow-key handling and the label-as-target geometry, and rebuild both by hand.
+native `Space`/arrow-key handling and label-as-target geometry, rebuilding both by hand.
 
 **`aria-labelledby` wins over the wrapping `<label>`.** The switches' `sr-only` spans are an
-*unused* name source (exposed name comes from `aria-labelledby`); kept only because they give
-`<label>` non-empty text (WAVE's empty-label heuristic). Occupancy radios are the opposite: no
-`aria-label`/`aria-labelledby` at all, name comes from the `<label>` — "1 person"/"Full" exactly.
+*unused* name source (exposed name comes from `aria-labelledby`), kept only for WAVE's empty-label
+heuristic. Occupancy radios are the opposite: no `aria-label`/`aria-labelledby`, name comes from the
+`<label>` — "1 person"/"Full" exactly.
 
-**SC 2.5.3 is no longer a decision on this app.** The old single-switch occupancy control showed
-"1 person"/"Full" as two *values* of one control — a defensible but arguable reading. Splitting into
-two native radios removed the ambiguity outright: each radio's visible label **is** its accessible
-name, verbatim. See `a11y-1-criteria.md`.
+**SC 2.5.3 is no longer a decision on this app.** The old single-switch showed "1 person"/"Full"
+as two *values* of one control — arguable. Splitting into two native radios removed the ambiguity:
+each radio's visible label **is** its accessible name, verbatim. See `a11y-1-criteria.md`.

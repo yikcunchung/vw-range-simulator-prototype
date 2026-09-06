@@ -1,23 +1,23 @@
 # A11y 2 of 3 — What the automated tests cover, and what they cannot
 
 **App:** VW Range Simulator (`range-simulator`).
-**Audited:** 2026-08-22 against the live deployment, headless Chrome 151.0.7922.174, axe-core 4.13.0
-(`axe.version` read from the engine, not the bundle filename).
+**Audited:** 2026-08-22 against the live deployment, headless Chrome 151.0.7922.174, axe-core
+4.13.0 (`axe.version` read from the engine).
 **Deployed at:** https://yikcunchung.github.io/vw-range-simulator-prototype/
 **Companions:** `a11y-1-criteria.md` (every criterion) · `a11y-3-implementation.md` (what to build).
 
 > **A clean automated run is necessary and nowhere near sufficient.** This app scores 0 axe
-> violations, 0 WAVE errors, 0 HTML validity errors — yet that missed the unnamed-graphic defect
-> the AX tree found, can't test SC 2.5.3, can't judge if a name is *correct* vs merely present, and
-> can't say what a screen reader actually announces.
+> violations, 0 WAVE errors, 0 HTML errors — yet missed the unnamed-graphic defect the AX tree
+> found, can't test SC 2.5.3, can't judge if a name is *correct* vs merely present, and can't say
+> what a screen reader announces.
 
 ---
 
 # 0. Scope of this evidence — read before quoting a number
 
 Standalone page, so `axe.run(document)` covers the whole conformance surface — no
-component-versus-page split. Everything below describes the **deployed** build; confirm the local
-checkout matches it before quoting a number — the two have diverged before without anyone noticing.
+component-vs-page split. Everything below describes the **deployed** build; confirm the local
+checkout matches it before quoting a number — the two have diverged before, unnoticed.
 
 ---
 
@@ -44,10 +44,10 @@ checkout matches it before quoting a number — the two have diverged before wit
 
 ### NVDA vs VoiceOver — a deviation to record
 
-**VoiceOver run instead of NVDA — record as deviation, not substitution.** The two disagree where
-this app gets interesting: `<select>` named via `aria-labelledby`, live-region politeness, and
-hidden-`<input>`-behind-styled-`<label>` controls. Browser differs too (NVDA: Firefox/Chrome,
-VoiceOver: Safari). Budget an NVDA pass before formal sign-off.
+**VoiceOver run instead of NVDA — record as deviation, not substitution.** The two disagree on
+`<select>` naming via `aria-labelledby`, live-region politeness, and hidden-input-behind-styled-label
+controls; browser differs too (NVDA: Firefox/Chrome, VoiceOver: Safari). Budget an NVDA pass before
+sign-off.
 
 ---
 
@@ -55,8 +55,8 @@ VoiceOver: Safari). Budget an NVDA pass before formal sign-off.
 
 ## axe-core — 0 violations
 
-Bare `axe.run(document)` plus the default-disabled rules force-enabled (98 rules).
-Viewports: 1440×900, 768×1024, 390×844, 320×640, and 320×256 @ dsf 4 (literal 400% zoom).
+Bare `axe.run(document)` plus default-disabled rules force-enabled (98 rules). Viewports:
+1440×900, 768×1024, 390×844, 320×640, 320×256 @ dsf 4 (literal 400% zoom).
 
 | Measure | Value |
 |---|---|
@@ -70,10 +70,10 @@ Viewports: 1440×900, 768×1024, 390×844, 320×640, and 320×256 @ dsf 4 (liter
 
 | Measure | Value |
 |---|---|
-| Nodes (1440×900) | 241 |
+| Nodes (1440×900) | 241 (not re-verified this pass — see `a11y-1-criteria.md` "Decisions") |
 | Named interactive / graphic nodes | 34 |
 | **Unnamed** | **0** |
-| Focusable controls | 16 |
+| Focusable controls | 26 (Tab walk, default state — §6) |
 
 > **This is where the one real defect was found.** Before the fix, **16 `role=image` nodes were exposed unnamed** — invisible to axe, WAVE and Nu alike. See trap 10.
 
@@ -83,8 +83,7 @@ Viewports: 1440×900, 768×1024, 390×844, 320×640, and 320×256 @ dsf 4 (liter
 |---|---|---|---|---|---|
 | **0** | **0** | 0 | 7 | 3 | 28 |
 
-Confirmed to have analysed the real page — control count and document title read back out of
-WAVE's own iframe, not assumed.
+Confirmed against the real page — control count and title read back from WAVE's own iframe, not assumed.
 
 ## Nu HTML validator — 0 errors
 
@@ -94,10 +93,10 @@ checked and kept.
 ## Contrast — the `incomplete` bucket resolved by hand
 
 **All 18 `incomplete` nodes resolve to a pass — worst 14.50:1** vs 4.5:1 required (every element
-≤16px, so the 3:1 large-text threshold never applies). 16 are gradient-background, 2 overlap — axe
-never computed a failing ratio here, just an undecidable one; these are **not passes** until a
-human resolves them. Measured on composited pixels: PIL crop to viewport-relative coordinates,
-foreground = the glyph band, background = dominant colour of a text-forced-transparent capture.
+≤16px, so 3:1 large-text never applies). 16 are gradient-background, 2 overlap — axe never computed
+a failing ratio, just an undecidable one; **not a pass** until resolved by hand. Measured on
+composited pixels: PIL crop to viewport-relative coords, foreground = glyph band, background =
+dominant colour of a text-forced-transparent capture.
 
 ## Orientation and text spacing
 
@@ -190,8 +189,8 @@ WAVE, Nu saw none of them.
 
 **Real screen-reader/AI-guided output requires a human pass.** The AX tree confirms what's
 *exposed*; NVDA, JAWS and VoiceOver differ in what they *announce*, and axe's AI-guided tests still
-misjudge decorative elements (§9.3). VoiceOver, WAVE (extension), and axe DevTools all now run
-manually — §9. **NVDA remains the one outstanding instrument.**
+misjudge decorative elements (§9.3). **NVDA remains the one outstanding instrument** — VoiceOver,
+WAVE, and axe DevTools all now run manually, §9.
 
 **A name can be present, unique, and wrong.** Every automated check here passes on a control
 labelled "button". Names must be read against what they describe.
@@ -203,12 +202,9 @@ labelled "button". Names must be read against what they describe.
 # 6. Manual testing — what to do
 
 **All three (VoiceOver, WAVE, axe DevTools) have now been run — results in §9. NVDA remains
-outstanding** — §1.
-
-**The reusable procedure (Step 0, VoiceOver/WAVE/axe DevTools runs, sign-off checklist) lives
-centrally** in `../audit-evidence/manual-testing-guide.md` — it's identical across all five sibling
-apps, so it's maintained once there instead of copied per app. What follows here is only what's
-specific to range-simulator.
+outstanding** — §1. **The reusable procedure lives centrally** in
+`../audit-evidence/manual-testing-guide.md`, identical across all five sibling apps and maintained
+once there. What follows is only what's specific to range-simulator.
 
 ## App-specific Step 0
 
@@ -216,8 +212,10 @@ specific to range-simulator.
 - **Confirm on screen:** 7 info-modal triggers (`info-btn-distance`, `info-btn-speed`,
   `info-btn-tyres`, `info-btn-temp`, `info-btn-ac`, `info-btn-occ`, `info-btn-range`), the
   temperature slider, the occupancy radiogroup ("1 person"/"Full"), two switches (motorway speed,
-  heating/AC), and the trim/battery selects.
-- **18 Tab stops** total.
+  heating/AC), the trim/battery selects, `tech-link-btn`, the ref-badge link, the CTA, and 7 FAQ
+  accordion questions.
+- **26 Tab stops** total (default trim; battery-select and the unchecked occupancy radio are
+  disabled/off the roving tabindex at default state).
 
 ## App-specific notes for the central procedure's Run 3 (axe DevTools)
 
@@ -271,9 +269,9 @@ is exactly what scores clean on a build with a Level A naming failure.
 ## 9.1 Screen reader — VoiceOver / Safari, complete
 
 VoiceOver Run 1 completed against the live build: Tab-stop names/roles/values, the 7 info-modals'
-open/close/focus-trap behaviour, the occupancy radiogroup, both switches. See
-`a11y-1-criteria.md` for the naming/role decisions this drove (tyre-select, temp-slider, occupancy
-radiogroup role, toggle naming pattern).
+open/close/focus-trap behaviour, the occupancy radiogroup, both switches. See `a11y-1-criteria.md`
+for the naming/role decisions this drove (tyre-select, temp-slider, occupancy radiogroup, toggle
+naming).
 
 ## 9.2 WAVE 3.3.1.0 — extension, complete
 
