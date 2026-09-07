@@ -51,7 +51,7 @@ with PAC.
 
 | SC | Name | Lvl | Relevant | Status | Evidence / what to do |
 |---|---|---|---|---|---|
-| **1.3.1** | Info and Relationships | A | Yes | ✅ Pass | One `h1`, `role="banner"` topbar, `main`; 3 named `<select>`s, 2 labelled switches, 1 labelled radiogroup (occupancy). axe: 0 violations, 98 rules. |
+| **1.3.1** | Info and Relationships | A | Yes | ✅ Pass | One `h1`, `role="banner"` topbar, `main`; 3 named `<select>`s, 2 labelled switches, 1 labelled radiogroup (occupancy), 7 FAQ items each `role="group"` around its question+answer. axe: 0 violations, 98 rules. |
 | **1.3.2** | Meaningful Sequence | A | Yes | ✅ Pass* | DOM order matches visual order; 26 Tab stops follow the question sequence top to bottom. |
 | **1.3.3** | Sensory Characteristics | A | Yes | ✅ Pass* | No instruction relies on shape, size or position. |
 | **1.3.4** | Orientation | AA | Yes | ✅ Pass | No `@media (orientation:)` rule exists anywhere. Nothing locks orientation. |
