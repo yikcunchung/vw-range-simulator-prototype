@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+<meta name="description" content="Configure your Volkswagen ID. Polo — choose your trim.">
+<title>Configure your Volkswagen | ID. Polo — Trim</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Fonts ── */
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Head'; src:url('assets/fonts/vwhead-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'VW Text'; src:url('assets/fonts/vwtext-bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+
+:root {
+  --bg: rgba(246,245,242,1);
+  --white: #fff;
+  --navy: rgba(27,34,54,1);
+  --navy-dark: rgba(41,48,67,1);
+  --border-light: rgba(208,209,213,1);
+  --border-input: rgba(161,164,172,1);
+  --muted: rgba(96,101,116,1);
+  --focus-orange: #C86C03;
+  --pill-gray: rgb(231,232,234);
+  --pill-purple: rgb(122,55,181);
+  --pill-yellow: rgb(255,209,0);
+  --step-active-bg: rgb(235,229,220);
+  --font-text: 'VW Text','Inter',-apple-system,sans-serif;
+  --font-head: 'VW Head','Inter',-apple-system,sans-serif;
+}
+
+body {
+  font-family: var(--font-text);
+  background: var(--bg);
+  color: var(--navy);
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+}
+
+/* ════════════════════════════
+   TOPBAR — reused from range-simulator
+════════════════════════════ */
+#topbar {
+  background: white;
+  border-bottom: 1px solid var(--border-light);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 64px;
+  width: 100%;
+  flex-shrink: 0;
+  position: sticky; top: 0; z-index: 20;
+  -webkit-font-smoothing: antialiased;
+  color: #293043;
+}
+.topbar-container {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%;
+  padding: 0 4.16vw;
+  box-sizing: border-box;
+}
+.topbar-left { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+.topbar-logo-col { display: flex; align-items: center; gap: 20px; min-height: 40px; flex-shrink: 0; }
+.topbar-logo-col svg { display: block; width: 32px; height: 32px; }
+.topbar-tabs-col { display: flex; align-items: center; min-height: 40px; }
+.topbar-tabs { display: flex; gap: 20px; align-items: center; flex-shrink: 0; }
+.topbar-tab {
+  display: flex; align-items: center; justify-content: center;
+  padding: 8px 0; flex-shrink: 0;
+  font-family: 'VW Text', 'Inter', -apple-system, sans-serif;
+  font-weight: 700; font-style: normal;
+  font-size: 16px; line-height: 1.2;
+  color: #293043; white-space: nowrap;
+  cursor: pointer; background: none; border: none;
+}
+@media (max-width: 767px) { .topbar-tab { display: none; } }
+.topbar-actions-col { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; min-height: 40px; flex-shrink: 0; }
+.topbar-actions { display: flex; gap: 16px; align-items: center; flex-shrink: 0; }
+.topbar-cta {
+  width: 32px; height: 32px; flex-shrink: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none;
+}
+.topbar-cta svg { width: 24px; height: 24px; display: block; flex-shrink: 0; }
+.topbar-tab:focus-visible, .topbar-cta:focus-visible { outline: 3px solid var(--focus-orange); border-radius: 4px; }
+
+/* ════════════════════════════
+   STEP NAVIGATION
+════════════════════════════ */
+.step-nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border-input);
+  position: sticky; top: 64px; z-index: 19;
+}
+.step-nav-inner {
+  display: flex; align-items: center; gap: 12px;
+  height: 52px; padding: 0 4.16vw;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.step-nav-inner::-webkit-scrollbar { display: none; }
+.step-btn {
+  font-family: var(--font-text); font-size: 16px; font-weight: 400;
+  color: var(--navy-dark); background: transparent; border: none;
+  border-radius: 8px; padding: 8px 16px; cursor: pointer;
+  white-space: nowrap; flex-shrink: 0;
+}
+.step-btn.is-active { background: var(--step-active-bg); font-weight: 700; }
+.step-btn:focus-visible { outline: 3px solid var(--focus-orange); outline-offset: 0; }
+
+/* ════════════════════════════
+   MAIN LAYOUT
+════════════════════════════ */
+#content { background: var(--bg); }
+.config-main { padding-inline: 4.16vw; }
+
+.config-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 32px;
+}
+
+@media (min-width: 960px) {
+  .config-grid {
+    display: grid;
+    grid-template: "media header" "media trims" / 1fr 460px;
+    column-gap: 48px;
+    row-gap: 0;
+    align-items: start;
+    /* No top padding here — the media column's natural (pre-scroll) position
+       must exactly equal its sticky top (117px = 64px topbar + 53px step-nav), or it
+       visibly jumps the instant scrolling starts, before the sticky clamp engages. */
+    padding-top: 0;
+  }
+  .media-col {
+    grid-area: media; position: sticky; top: 117px; align-self: start;
+    height: calc(100vh - 117px - 74px);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .trims-header { grid-area: header; padding-top: 40px; padding-bottom: 24px; }
+  .trims-col { grid-area: trims; }
+}
+
+/* ── Media column ── */
+/* Aspect ratio mirrors live: 3/4 mobile, 3/2 tablet, unset (full-bleed,
+   fills the sticky media-col's own width/height) on desktop — confirmed
+   verbatim against volkswagen.de/konfigurator's .gKZlva/.eqjxfu rules. */
+.media-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: var(--bg);
+  border-radius: 20px;
+  overflow: hidden;
+}
+@media (min-width: 560px) and (max-width: 959px) {
+  .media-frame { aspect-ratio: 3 / 2; }
+}
+@media (min-width: 960px) {
+  .media-frame { aspect-ratio: unset; width: 100%; height: 100%; border-radius: 0; }
+}
+.media-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.media-actions {
+  display: flex; gap: 8px;
+}
+/* Desktop: overlay pill sitting inside the gallery frame, bottom-right —
+   restored original desktop treatment. Below 960px this element lives
+   inside .media-footer-row instead (moved by JS), where the plain flex
+   row above applies with no background/positioning. */
+@media (min-width: 960px) {
+  .media-frame .media-actions {
+    position: absolute; right: 16px; bottom: 16px; z-index: 2;
+    background: var(--white); border-radius: 100px; padding: 4px 8px;
+  }
+}
+.media-action-btn-wrap { width: 32px; height: 32px; display: block; }
+.media-action-btn {
+  width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy-dark);
+  padding: 0;
+}
+.media-action-btn svg { width: 24px; height: 24px; display: block; }
+/* Active state is a colour change on the icon itself (currentColor fill),
+   confirmed on the live configurator — rgb(115,62,1), the same accent used
+   for hover elsewhere — not a background/border wrapper. */
+.media-action-btn[aria-pressed="true"] { color: rgb(115,62,1); }
+.media-action-btn:hover { color: rgb(115,62,1); background: transparent; }
+.media-action-btn:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 0; }
+
+/* Fullscreen button — top-right corner of the frame. The button itself is
+   always transparent with a navy icon that shifts to accent brown on hover
+   (verbatim from the live configurator's .LnznQ class), sitting inside a
+   white circular backing (44x44, border-radius:100%). Corrected: verified
+   with a real mouse move (not a stale synthetic hover) that this whole
+   wrapper is opacity:0 by default and only opacity:1 on hover/focus-within
+   of the image — it is hover-revealed, not always visible. */
+.media-fullscreen-btn-wrap {
+  position: absolute; top: 16px; right: 16px; z-index: 2;
+  width: 44px; height: 44px; border-radius: 100%; background: var(--white);
+  opacity: 0; transition: opacity 250ms ease-in-out;
+}
+.media-fullscreen-btn {
+  width: 44px; height: 44px; border-radius: 50%; border: none; background: transparent;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy-dark);
+  padding: 0;
+}
+.media-fullscreen-btn svg { width: 24px; height: 24px; display: block; }
+.media-fullscreen-btn:hover { color: rgb(115,62,1); }
+.media-fullscreen-btn:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+
+/* Gallery prev/next arrows — same pattern: transparent button (accent-brown
+   icon on hover) inside a white circular wrapper, and the wrapper itself is
+   hover/focus-revealed (opacity 0→1), confirmed via a real mouse.move to the
+   image centre on the live configurator. */
+.tf-arrow-wrap {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 44px; border-radius: 100%; background: var(--white);
+  z-index: 2;
+  opacity: 0; transition: opacity 250ms ease-in-out;
+}
+.tf-arrow-wrap--next { right: 16px; }
+.tf-arrow-wrap--prev { left: 16px; }
+/* :focus-within (not :focus-visible) would keep these revealed after a plain
+   mouse click, since clicking a button also focuses it natively — the
+   overlay would then only hide on a second click elsewhere, not on
+   mouse-leave. :has(:focus-visible) only matches keyboard-intent focus, so
+   Tab still keeps the controls visible for keyboard users without that
+   mouse-click stickiness. */
+.media-frame:hover .tf-arrow-wrap,
+.media-frame:has(:focus-visible) .tf-arrow-wrap,
+.media-frame:hover .media-fullscreen-btn-wrap,
+.media-frame:has(:focus-visible) .media-fullscreen-btn-wrap,
+.media-frame:hover .tf-dots-wrap,
+.media-frame:has(:focus-visible) .tf-dots-wrap {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tf-arrow-wrap, .media-fullscreen-btn-wrap, .tf-dots-wrap { transition: none; }
+}
+.tf-next, .tf-prev {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: transparent; border: 0; padding: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--navy-dark);
+}
+.tf-next svg, .tf-prev svg { width: 24px; height: 24px; display: block; }
+.tf-next:hover, .tf-prev:hover { color: rgb(115,62,1); background: transparent; }
+.tf-next:focus-visible, .tf-prev:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+
+/* Lentils — at mobile widths, sit inline in the gallery's own footer row
+   alongside the mode-icons. At desktop, the wrapper (moved into .media-frame
+   by JS) becomes a hover-revealed white pill overlay, matching the arrow/
+   fullscreen-button treatment above: centered horizontally, and vertically
+   aligned with the icon-buttons pill at the same bottom offset. */
+.media-footer-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 12px;
+}
+.tf-dots-wrap { display: contents; }
+@media (min-width: 960px) {
+  .media-frame .tf-dots-wrap {
+    display: block; position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 2;
+    background: var(--white); border-radius: 100px; padding: 4px 8px;
+    opacity: 0; transition: opacity 250ms ease-in-out;
+  }
+}
+.tf-dots {
+  position: relative; height: 32px; flex-shrink: 0;
+  display: flex; align-items: center;
+}
+.tf-dot {
+  width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; padding: 0; cursor: pointer;
+  outline-style: solid; outline-width: 3px; outline-color: transparent; outline-offset: -6px;
+  transition: outline-offset 300ms;
+}
+.tf-dot-visual { width: 6px; height: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.tf-dot-fill { width: 100%; height: 100%; border-radius: 50%; background: var(--navy-dark); transition: transform 300ms; }
+.tf-dot[data-current] .tf-dot-fill { transform: scale(2); }
+.tf-dot[data-current] { outline-offset: -3px; }
+.tf-dot:focus-visible { outline-color: var(--focus-orange); }
+@media (prefers-reduced-motion: reduce) { .tf-dot, .tf-dot-fill { transition: none; } }
+
+/* ── Trims column ── */
+.trims-col { display: flex; flex-direction: column; gap: 16px; }
+.trims-header { display: flex; flex-direction: column; gap: 0; }
+.model-name { font-family: var(--font-text); font-size: 16px; font-weight: 700; color: var(--navy); }
+.trims-heading {
+  font-family: var(--font-head); font-size: 34px; font-weight: 300; color: var(--navy);
+  line-height: 1.2; display: flex; align-items: baseline; gap: 8px;
+}
+.trims-heading strong { font-weight: 700; }
+@media (max-width: 767px) { .trims-heading { font-size: 28px; } }
+
+.trims-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+@media (max-width: 959px) {
+  .trims-header { order: -1; padding: 32px 0 0; }
+  .media-col { margin-inline: -4.16vw; }
+  .media-frame { border-radius: 0; }
+  .media-footer-row { padding-inline: 4.16vw; }
+  .trims-list {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin-inline: -4.16vw;
+    padding-inline: 4.16vw;
+    padding-bottom: 8px;
+  }
+  .trims-list::-webkit-scrollbar { display: none; }
+  .trim-card, .trim-card--upsell {
+    min-width: 83.33vw; /* <560px: one card per view, matching live */
+  }
+}
+@media (min-width: 560px) and (max-width: 959px) {
+  .trim-card, .trim-card--upsell {
+    min-width: 41.66vw; /* ≥560px: two cards per view, matching live */
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+}
+
+/* Upsell / battery-variant card — outlined, blends with page bg */
+.trim-card--upsell {
+  border: 1px solid var(--border-input);
+  border-radius: 12px;
+  background: var(--bg);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+  cursor: pointer;
+}
+
+/* Trim option card — white surface, subtle shadow */
+.trim-card {
+  position: relative;
+  border: none;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: 0 2px 4px 0 rgba(49,25,2,0.06);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+  cursor: pointer;
+  /* Keeps a focused/scrolled-into-view card clear of the sticky topbar+step-nav
+     above and the sticky bottom bar below. */
+  scroll-margin-block: 140px 100px;
+}
+/* Hover + selected — verbatim from the live configurator's own trim cards: an
+   ::after overlay carrying the accent ring, confirmed via computed styles on
+   volkswagen.co.uk. Two separate rules there: a hover-only 1px ring for
+   unselected cards, and a permanent 2px ring (--card-selected-border-color,
+   #997f67) for the selected card — hover itself never applies to the
+   selected card. The upsell/battery-variant card (a different component
+   there) genuinely has no hover treatment on the live site, so it's left
+   plain here too. */
+.trim-card::after {
+  content: ""; position: absolute; inset: 0; border-radius: 12px;
+  box-shadow: none; pointer-events: none;
+  transition: box-shadow 0.3s ease-out;
+}
+.trim-card:hover:not([aria-selected="true"])::after {
+  box-shadow: #997f67 0 0 0 1px inset, 0 4px 10px 0 rgba(49,25,2,0.16);
+}
+.trim-card[aria-selected="true"]::after {
+  box-shadow: #997f67 0 0 0 2px inset;
+}
+.trim-card:focus-visible, .trim-card--upsell:focus-visible { outline: 3px solid var(--focus-orange); outline-offset: 0; }
+
+.trim-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.trim-card-title { font-family: var(--font-text); font-size: 18px; font-weight: 700; color: var(--navy); }
+/* Info icon — reused verbatim from range-simulator's .q-icon-btn/.q-icon (same brand component) */
+.q-icon-btn { position:relative; display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; color:rgb(41,48,67); background:transparent; border:none; padding:0; cursor:pointer; flex-shrink:0; vertical-align:middle; -webkit-tap-highlight-color:transparent; }
+.q-icon { width:24px; height:24px; display:block; pointer-events:none; }
+.q-icon-btn:focus-visible { outline: 3px solid var(--focus-orange); border-radius: 50%; }
+
+.trim-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.tag { display: inline-flex; align-items: center; font-family: var(--font-text); font-size: 14px; font-weight: 400; line-height: 1.2; padding: 4px 12px; border-radius: 100px; }
+.tag--status { background: var(--pill-purple); color: #fff; }
+.tag--status-neutral { background: var(--pill-gray); color: var(--navy); }
+.tag--electric { background: var(--pill-yellow); color: var(--navy); }
+
+.trim-card-hr { border: none; border-top: 1px solid var(--border-light); }
+
+.trim-desc { font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy); line-height: 1.5; }
+.trim-desc sup { font-size: 0.7em; }
+
+.more-info-link {
+  align-self: flex-start;
+  font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy-dark);
+  border: 1px solid var(--navy-dark); border-radius: 100px; padding: 4px 16px;
+  text-decoration: none; background: transparent; cursor: pointer;
+}
+.more-info-link:hover { background: #CCBDAB; border-color: transparent; }
+.more-info-link:focus-visible { outline: 3px solid var(--focus-orange); }
+
+.batteries-heading { font-family: var(--font-text); font-size: 14px; font-weight: 700; color: var(--navy); letter-spacing: 0.02em; }
+.battery-type-tags { display: flex; gap: 8px; }
+.tag--battery-type { background: var(--pill-gray); color: var(--navy); border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; }
+.tag--battery-type svg { width: 12px; height: 12px; }
+
+/* Exact from live DOM: the real spec block is a <dl> grid with row-gap:8px,
+   column-gap:12px, and zero padding on the cells themselves — not per-row
+   padding, which was doubling the vertical gap. */
+.spec-rows { display: flex; flex-direction: column; gap: 8px; }
+.spec-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+}
+.spec-label { display: flex; align-items: center; gap: 4px; font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy); }
+.spec-label svg { width: 24px; height: 24px; flex-shrink: 0; }
+.spec-value { font-family: var(--font-text); font-size: 16px; font-weight: 700; color: var(--navy-dark); text-align: right; }
+
+/* Drawer's Batteries section uses its own row treatment — a divider + 16px
+   vertical padding per row — distinct from the trim-card's compact, divider-
+   less spec-rows (confirmed separately on the live site: the trim card has
+   none, the drawer does). */
+.drawer-body .spec-rows { gap: 0; }
+.drawer-body .spec-row { padding: 16px 0; border-bottom: 1px solid var(--border-light); }
+
+/* ════════════════════════════
+   STICKY BOTTOM BAR
+════════════════════════════ */
+.bottom-bar {
+  position: sticky; bottom: 0; z-index: 15;
+  background: var(--white);
+  border-top: 1px solid var(--border-input);
+}
+.bottom-bar-inner {
+  display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  height: 74px;
+  padding-inline: 4.16vw;
+}
+.compare-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy-dark);
+  text-decoration: underline; cursor: pointer;
+}
+.compare-link svg { width: 24px; height: 24px; }
+.compare-link:focus-visible { outline: 2px solid var(--focus-orange); }
+.bottom-bar-sep { width: 1px; height: 24px; background: var(--border-input); }
+.powertrain-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 44px; padding: 0 32px; border-radius: 100px; border: none;
+  background: var(--navy-dark); color: #fff;
+  font-family: var(--font-text); font-size: 16px; font-weight: 400; cursor: pointer;
+}
+.powertrain-btn svg { width: 24px; height: 24px; }
+.powertrain-btn:hover { background: var(--navy); }
+.powertrain-btn:focus-visible { outline: 3px solid var(--focus-orange); }
+
+@media (max-width: 767px) {
+  .bottom-bar-inner { justify-content: space-between; padding: 16px 4.16vw; }
+  .compare-link span { display: none; }
+}
+
+/* ── Skip link ── */
+.skip-link {
+  position:absolute; left:8px; top:-40px; z-index:9999;
+  background:#1B2236; color:#fff; padding:8px 16px; border-radius:0 0 8px 8px;
+  font-family:var(--font-text,sans-serif); font-size:14px; text-decoration:none;
+  transition:top 0.15s;
+}
+.skip-link:focus { top:0; }
+.skip-link:focus-visible { outline: 2px solid var(--focus-orange); }
+
+/* ════════════════════════════
+   INFO DRAWER — recreated from the live configurator's "More information"
+   panel: a fixed, full-height, half-viewport-width drawer sliding in over a
+   dimmed backdrop, confirmed via live DOM measurements.
+════════════════════════════ */
+.drawer-backdrop {
+  position: fixed; inset: 0; background: rgba(17,25,46,0.6);
+  z-index: 100; opacity: 0; pointer-events: none; transition: opacity 250ms ease-in-out;
+}
+.drawer-backdrop.is-open { opacity: 1; pointer-events: auto; }
+
+.drawer-panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 50vw; max-width: 768px;
+  background: var(--bg);
+  z-index: 101;
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
+}
+.drawer-panel.is-open { transform: translateX(0); }
+@media (max-width: 959px) { .drawer-panel { width: 75vw; max-width: none; } }
+/* Not literal 100vw — live always leaves a slim backdrop margin visible,
+   even at the narrowest width, sized to the same 4.16vw grid margin used
+   everywhere else (confirmed 4.17vw at both 390px and 320px on live). */
+@media (max-width: 559px) { .drawer-panel { width: calc(100vw - 4.16vw); } }
+@media (prefers-reduced-motion: reduce) { .drawer-backdrop, .drawer-panel { transition: none; } }
+
+.drawer-header {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  padding: 8px 4.16vw;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-input);
+}
+.drawer-title { font-family: var(--font-head); font-size: 22px; color: var(--navy); }
+.drawer-title strong { font-weight: 700; }
+.drawer-title span { font-weight: 400; }
+.drawer-close {
+  width: 44px; height: 44px; border-radius: 50%; border: none; background: transparent;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy-dark);
+  padding: 0; flex-shrink: 0;
+}
+.drawer-close svg { width: 24px; height: 24px; display: block; }
+.drawer-close:hover { color: rgb(115,62,1); }
+.drawer-close:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+
+.drawer-body { flex: 1; overflow-y: auto; padding: 24px 4.16vw 40px; }
+
+.drawer-bottom-bar {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  height: 74px;
+  padding-inline: 4.16vw;
+  background: var(--white);
+  border-top: 1px solid var(--border-input);
+}
+.drawer-bottom-bar .compare-link, .drawer-bottom-bar .powertrain-btn { flex-shrink: 0; }
+
+/* ════════════════════════════
+   SIMULATE DRAWER — second flyout, stacked on top of the info drawer.
+   Same slide-in mechanics as .drawer-panel/.drawer-backdrop, one z-index
+   layer higher so both can be open at once (see [[project-vw-emobility]]
+   Simulate CTA). ════════════════════════════ */
+/* No extra dimming layer — the info drawer's own backdrop underneath
+   already darkened the page, so this one stays purely a click-to-close
+   catcher (transparent, no visible shim stacking on top). */
+.drawer-backdrop--2 { z-index: 102; background: transparent; }
+.drawer-panel--2 { z-index: 103; }
+
+/* ── NaLa (ported from emobility/nala/index.html) — mobile layout only.
+   The source app's desktop min-width enhancements are intentionally
+   omitted so the embedded panel always renders in mobile mode regardless
+   of drawer width. The result number's font-size is the one exception:
+   the drawer itself grows well past a phone's width (75vw, then 50vw/
+   768px-cap), so --nala-super still scales up at those same breakpoints
+   the drawer's own width already uses, even though the layout doesn't. */
+.nala {
+  --nala-h3: 28px;
+  --nala-super: 44px;
+  --nala-pad-block: 24px;
+  --nala-pad-panel: 20px;
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 560px) { .nala { --nala-super: 48px; } }
+@media (min-width: 960px) { .nala { --nala-super: 52px; } }
+.nala-top { padding-block: var(--nala-pad-block); width: 100%; }
+.nala-question { display: flex; flex-direction: column; gap: 24px; width: 100%; }
+.nala-headline {
+  font-family: var(--font-head); font-weight: 700; font-size: var(--nala-h3);
+  line-height: 1.2; color: var(--navy); width: 100%; overflow-wrap: break-word;
+}
+.nala-sentence { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; align-content: center; width: 100%; }
+/* Range vs capacity question variables share one sentence flex row — each
+   mode-span is display:contents so its words/selects wrap individually
+   like any other sentence child, and [hidden] (higher specificity) wins
+   over that contents display when a mode is switched off. */
+.nala-mode-range, .nala-mode-capacity { display: contents; }
+.nala-mode-range[hidden], .nala-mode-capacity[hidden] { display: none; }
+.nala-word { font-family: var(--font-text); font-weight: 400; font-size: 16px; line-height: 1.5; color: var(--navy); white-space: nowrap; }
+.nala-word-short { display: none; }
+@media (max-width: 400px) {
+  .nala-word-long  { display: none; }
+  .nala-word-short { display: inline; }
+}
+
+.fl-select { position: relative; overflow: visible; display: inline-block; vertical-align: middle; }
+.fl-select select {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  padding: 20px 69px 0 15px;
+  font-family: var(--font-text); font-size: 16px; font-weight: 400; color: rgba(0,14,38,1);
+  background: transparent; border: 1px solid var(--border-input); border-radius: 8px;
+  appearance: none; cursor: pointer; outline: none; text-overflow: ellipsis; box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+.fl-select:hover select { border-color: rgba(153,127,103,1); color: rgba(115,62,1,1); }
+.fl-select:hover .fl-label { color: rgba(115,62,1,1); }
+.fl-select:hover .fl-chevron svg path { fill: rgba(115,62,1,1); }
+/* A select scoped down to a single option (e.g. the Simulate panel's
+   Model field, locked to whichever trim's drawer it opened from) offers
+   no real choice — signal that instead of showing the same active/hover
+   affordance as a real, changeable select. */
+.fl-select select:disabled { cursor: not-allowed; color: rgba(0,14,38,0.5); }
+.fl-select:hover select:disabled { border-color: var(--border-input); color: rgba(0,14,38,0.5); }
+.fl-select:has(select:disabled) .fl-chevron { opacity: 0.4; }
+.fl-label {
+  position: absolute; top: 6px; left: 16px;
+  font-family: var(--font-text); font-size: 12px; line-height: 18px; font-weight: 400; color: rgba(0,30,80,1);
+  pointer-events: none; overflow: hidden; transition: color 0.15s;
+  z-index: 1; right: 52px; white-space: nowrap; text-overflow: ellipsis;
+}
+.fl-chevron {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none;
+  display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; z-index: 1;
+}
+.fl-chevron svg { display: block; width: 24px; height: 24px; }
+.fl-chevron svg path { transition: fill 0.15s; }
+.fl-sizer { display: block; height: 50px; padding: 0 72px 0 16px; font-family: var(--font-text); font-size: 16px; font-weight: 400; white-space: nowrap; visibility: hidden; }
+.fl-sizer > span { display: block; }
+.fl-sizer .fl-sizer-sub { font-size: 12px; }
+
+.nala-result { background: var(--white); border-radius: 12px; padding: var(--nala-pad-panel); width: 100%; display: flex; flex-direction: column; }
+.nala-result-row { display: flex; gap: 24px; align-items: flex-end; justify-content: center; width: 100%; }
+.nala-result-cta { display: flex; flex-direction: column; gap: 24px; align-items: center; flex: 1 0 0; min-width: 0; }
+.nala-readout { display: flex; flex-direction: column; align-items: center; }
+.nala-result-label { display: flex; align-items: center; }
+.nala-result-label-text { font-family: var(--font-text); font-weight: 700; font-size: 16px; line-height: 1.2; color: var(--navy); white-space: nowrap; }
+.nala-value { font-family: var(--font-head); font-weight: 700; font-size: var(--nala-super); line-height: 1.2; color: var(--navy); }
+.nala-value-reel { display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
+.nala-unit { font-size: inherit; font-weight: 700; margin-left: 8px; color: var(--navy); }
+
+.slot-digit { display: inline-block; overflow: hidden; height: 1em; vertical-align: top; flex-shrink: 0; }
+.slot-reel { display: flex; flex-direction: column; transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+.slot-reel span { display: block; height: 1em; line-height: 1; text-align: center; }
+.nala-time-sep { margin: 0 1px; }
+
+/* Nala's info button is navy-on-white (light result panel) — scoped to .nala
+   in case it ever needs to diverge from the trim cards' own .q-icon-btn. */
+.nala .q-icon-btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  color: var(--navy); background: transparent; border: none; padding: 0;
+  cursor: pointer; flex-shrink: 0; vertical-align: middle; -webkit-tap-highlight-color: transparent;
+}
+.nala .q-icon { width: 24px; height: 24px; display: block; pointer-events: none; }
+
+.nala-cta {
+  width: 100%; min-height: 44px; border: 1px solid var(--navy); border-radius: 100px;
+  background: transparent; color: var(--navy);
+  font-family: var(--font-text); font-size: 16px; font-weight: 400; line-height: 1.2;
+  padding: 11px 31px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  text-decoration: none; box-sizing: border-box;
+}
+.nala-cta:hover { background: #CCBDAB; border-color: transparent; color: var(--navy); }
+
+.nala-consumption { display: none; font-family: var(--font-text); font-weight: 400; font-size: 16px; line-height: 1.2; color: var(--muted); text-align: right; white-space: pre-wrap; flex: 0 0 456px; width: 456px; }
+
+.fl-select select:focus-visible { outline: 3px solid var(--focus-orange); }
+.nala-result .q-icon-btn:focus-visible, .nala-result .nala-cta:focus-visible { outline: 3px solid var(--focus-orange); outline-offset: 0; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); clip-path: inset(50%); border: 0; white-space: nowrap; }
+#nala-live { color: var(--navy); }
+
+/* ── Range info modal (nested inside the Simulate drawer) ── */
+#nala-range-overlay { position: fixed; inset: 0; z-index: 110; }
+#nala-range-overlay[hidden] { display: none; }
+#nala-range-backdrop { position: absolute; inset: 0; background: rgba(27,34,54,0.6); }
+#nala-range-modal {
+  position: absolute; top: 50%; left: 50%; overflow-y: auto; max-height: calc(100% - 24px);
+  width: 91.66vw; background-color: rgb(255,255,255); border-radius: 20px; opacity: 0;
+  transform: translate(-50%, -50%) translateY(12px); transition: opacity 300ms, transform 300ms;
+  padding-bottom: 24px; outline: none; z-index: 1;
+}
+#nala-range-overlay.is-open #nala-range-modal { opacity: 1; transform: translate(-50%, -50%) translateY(0px); }
+@media (min-width: 560px) { #nala-range-modal { width: 83.33vw; max-height: calc(100% - 40px); } }
+@media (min-width: 960px) { #nala-range-modal { width: 66.66vw; } }
+.nala-modal-header { display: flex; position: sticky; z-index: 1; top: 0; align-items: center; justify-content: space-between; padding-block: 24px; padding-inline: min(4.16vw, 106.66px); background-color: rgb(255,255,255); }
+.nala-modal-title { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.38rem, 1.22rem + 0.44vw, 1.75rem); line-height: 120%; letter-spacing: calc(-0.02em + 0.02rem); color: var(--navy); }
+.nala-modal-close { flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; color: var(--navy); border-radius: 50%; padding: 0; -webkit-tap-highlight-color: transparent; }
+.nala-modal-close:focus-visible { outline: 2px solid var(--focus-orange); }
+.nala-modal-body:focus-visible { outline: 2px solid var(--focus-orange); border-radius: 4px; }
+.nala-modal-body { font-family: var(--font-text); font-weight: 400; font-size: 16px; line-height: 1.5; color: var(--navy); background-color: rgb(255,255,255); padding: 0 min(4.16vw, 106.66px); }
+
+.ref-badge-wrapper { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; background: none; border: none; padding: 0; }
+.ref-badge-wrapper:hover .ref-badge, .ref-badge-wrapper:active .ref-badge { background: #997F67; }
+.ref-badge-wrapper:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+.ref-badge { width: 16px; height: 16px; border-radius: 100px; background: var(--border-light); color: var(--navy); font-family: var(--font-text); font-size: 10px; font-weight: 400; display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
+
+#nala-disclaimer {
+  display: flex; position: fixed; bottom: 0; left: calc(100vw / 12); right: calc(100vw / 12);
+  flex-flow: column; align-self: flex-end; max-height: 40vh; background-color: rgba(0,0,0,0.85);
+  border-radius: 4px 4px 0 0; box-shadow: rgba(9,13,24,0.08) 0px 16px 56px 0px; opacity: 0;
+  transform: translateY(24px); transition: opacity 300ms, transform 300ms; z-index: 1000;
+}
+#nala-disclaimer[hidden] { display: none; }
+#nala-disclaimer.is-open { opacity: 1; transform: translateY(0px); }
+#nala-disclaimer.highlighted { outline: 1.5px solid #997f67; }
+.nala-disclaimer-row { display: flex; align-items: stretch; min-height: 0; }
+.nala-disclaimer-body { flex: 1 1 0; min-width: 0; min-height: 0; padding: 16px 48px 16px 16px; display: flex; flex-direction: column; }
+.nala-disclaimer-text { display: grid; min-height: 0; margin: 0; padding: 0; grid-template-columns: max-content 1fr; gap: 12px 8px; color: rgb(255,255,255); word-break: break-word; }
+.nala-disclaimer-i { align-self: end; font-family: var(--font-text); font-weight: normal; font-size: 0.88rem; line-height: 150%; letter-spacing: calc(-0.02em + 0.02rem); color: rgb(255,255,255); padding-right: 16px; }
+#nala-disclaimer-content { overflow-y: auto; min-height: 0; max-height: calc(40vh - 32px); scrollbar-width: thin; }
+#nala-disclaimer-content:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+.nala-disclaimer-copy { margin: unset; font-family: var(--font-text); font-weight: normal; font-size: 0.88rem; line-height: 150%; letter-spacing: calc(-0.02em + 0.02rem); color: rgb(255,255,255); }
+.nala-disclaimer-close-wrap { padding: 12px 12px 12px 0; display: flex; align-items: flex-start; flex-shrink: 0; align-self: stretch; }
+.nala-disclaimer-close { background: none; border: none; padding: 0; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+.nala-disclaimer-close:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+
+.drawer-tabs { display: flex; gap: 32px; border-bottom: 1px solid var(--border-light); margin-bottom: 24px; }
+.drawer-tab {
+  font-family: var(--font-head); font-size: 18px; font-weight: 300; color: var(--navy);
+  background: none; border: none; padding: 8px 0 16px; cursor: pointer;
+  border-bottom: 3px solid transparent; margin-bottom: -1px;
+}
+.drawer-tab.is-active { font-weight: 700; border-bottom-color: var(--navy); }
+.drawer-tab:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+
+.drawer-subheading { font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy); margin-bottom: 8px; }
+
+.drawer-feature-list { list-style: none; }
+.drawer-feature-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 16px 0; border-bottom: 1px solid var(--border-light);
+}
+.drawer-feature-item svg { width: 24px; height: 24px; flex-shrink: 0; color: #997f67; }
+.drawer-feature-item span { flex: 1; font-family: var(--font-text); font-size: 16px; color: var(--navy); }
+.drawer-feature-item .drawer-chevron { width: 24px; height: 24px; flex-shrink: 0; color: var(--navy); }
+.drawer-feature-item[hidden] { display: none; }
+
+/* Standard-equipment accordion rows — uppercase bold category headers with a
+   chevron-down, distinct from the Key-Features checklist rows. */
+.drawer-equipment-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 16px 0; border-bottom: 1px solid var(--border-light);
+  background: none; border-left: none; border-right: none; border-top: none;
+  width: 100%; text-align: left; cursor: pointer;
+}
+.drawer-equipment-item span {
+  font-family: var(--font-text); font-size: 14px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy);
+}
+.drawer-equipment-item svg { width: 24px; height: 24px; flex-shrink: 0; color: var(--navy); }
+.drawer-equipment-item:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+
+.drawer-show-more {
+  display: flex; align-items: center; gap: 4px; margin: 24px auto 0;
+  font-family: var(--font-text); font-size: 16px; color: var(--navy-dark);
+  border: 1px solid var(--navy-dark); border-radius: 100px; padding: 4px 16px;
+  background: transparent; cursor: pointer;
+}
+.drawer-show-more:hover { background: #CCBDAB; border-color: transparent; }
+.drawer-show-more:focus-visible { outline: 3px solid var(--focus-orange); }
+.drawer-show-more[hidden] { display: none; }
+.spec-row-left { display: flex; align-items: center; gap: 24px; }
+.spec-row-right { display: flex; align-items: baseline; gap: 20px; }
+/* Link-style CTA — reused verbatim from range-simulator's .tech-link (label + 1px underline rect). */
+.drawer-simulate-btn { display: inline-flex; flex-direction: column; gap: 1px; cursor: pointer; width: fit-content; background: none; border: none; padding: 0; font: inherit; }
+.drawer-simulate-btn:focus-visible { outline: 3px solid var(--focus-orange); outline-offset: 2px; border-radius: 2px; }
+.drawer-simulate-btn-label { font-family: var(--font-text); font-size: 16px; font-weight: 400; color: var(--navy-dark); line-height: 1.6; }
+.drawer-simulate-btn-stroke { height: 1px; background: var(--navy-dark); }
+
+.drawer-batteries-heading, .drawer-explore-heading {
+  font-family: var(--font-text); font-size: 18px; font-weight: 700; color: var(--navy);
+  border-bottom: 1px solid var(--navy); padding-bottom: 8px; margin: 32px 0 0;
+}
+
+.drawer-teaser {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--white); border-radius: 12px; padding: 12px 16px 12px 12px;
+  margin-top: 16px; text-decoration: none; cursor: pointer;
+}
+.drawer-teaser-icon {
+  width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+  background: rgb(240,130,3);
+  display: flex; align-items: center; justify-content: center; color: var(--navy);
+}
+.drawer-teaser-icon svg { width: 24px; height: 24px; }
+.drawer-teaser-text { flex: 1; display: flex; flex-direction: column; }
+.drawer-teaser-title { font-family: var(--font-text); font-size: 14px; font-weight: 700; text-transform: uppercase; color: var(--navy); }
+.drawer-teaser-subtitle { font-family: var(--font-text); font-size: 16px; color: var(--muted); }
+.drawer-teaser-external { width: 24px; height: 24px; flex-shrink: 0; color: var(--navy); }
+.drawer-teaser:focus-visible { outline: 2px solid var(--focus-orange); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<!-- ════ TOPBAR ════ -->
+<div id="topbar" role="banner">
+  <div class="topbar-container">
+    <div class="topbar-left">
+      <div class="topbar-logo-col">
+        <div style="width:32px;height:32px;flex-shrink:0;">
+          <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15.9998 0.666626C24.4877 0.666626 31.3336 7.51169 31.3337 15.9996C31.3337 24.4877 24.4879 31.3336 15.9998 31.3336C7.51181 31.3334 0.666748 24.4876 0.666748 15.9996C0.666923 7.5118 7.51192 0.6668 15.9998 0.666626ZM20.8738 26.8971C20.7643 27.1161 20.6544 27.2809 20.3806 27.2809C20.1071 27.2807 19.9979 27.116 19.8884 26.8971L16.1648 18.7379C16.11 18.6832 16.1093 18.5739 15.9998 18.5739C15.9451 18.5741 15.8903 18.6287 15.8357 18.7379L12.1667 26.8971C12.0572 27.1161 11.9474 27.2809 11.6736 27.2809C11.4 27.2808 11.2909 27.1161 11.1814 26.8971L3.29565 11.5641C2.80283 12.9878 2.52909 14.4664 2.52905 15.9996C2.52905 23.3924 8.60705 29.5258 15.9998 29.526C23.3926 29.526 29.4714 23.3925 29.5261 15.9996C29.5261 14.4117 29.2523 12.933 28.7595 11.5641L20.8738 26.8971ZM17.6433 14.6862C17.5338 14.905 17.4237 14.9596 17.2595 14.9596H14.741C14.5768 14.9596 14.4666 14.9049 14.3572 14.6862L9.48315 4.17151C7.45707 5.3215 5.70447 6.96481 4.49976 8.93616L11.4001 22.1881C11.4548 22.2429 11.4549 22.3521 11.5642 22.3522C11.6736 22.3522 11.6737 22.2429 11.7283 22.1881L14.3572 16.3834C14.4667 16.1644 14.5767 16.109 14.741 16.109H17.2595C17.4238 16.109 17.5338 16.1644 17.6433 16.3834L20.2712 22.1881C20.326 22.2429 20.3268 22.3522 20.4363 22.3522C20.4909 22.3519 20.5457 22.2973 20.6003 22.1881L27.4451 8.93616C26.2403 6.96473 24.4879 5.32151 22.4617 4.17151L17.6433 14.6862ZM15.9998 2.47424C14.4665 2.47428 12.9878 2.74802 11.6189 3.24084L15.8357 12.3307C15.8904 12.3854 15.8906 12.4945 15.9998 12.4948C16.1093 12.4948 16.11 12.3855 16.1648 12.3307L20.3806 3.24084C19.0116 2.74804 17.533 2.47424 15.9998 2.47424Z" fill="#293043"/>
+          </svg>
+        </div>
+      </div>
+      <div class="topbar-tabs-col">
+        <div class="topbar-tabs">
+          <button class="topbar-tab">Menu</button>
+          <button class="topbar-tab">Models</button>
+          <button class="topbar-tab">Build your own</button>
+          <button class="topbar-tab">Browse available stock</button>
+        </div>
+      </div>
+    </div>
+    <div class="topbar-actions-col">
+      <div class="topbar-actions">
+        <button class="topbar-cta" aria-label="Search">
+          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.7715 21.6013L17.18 15.6221C18.4045 14.0058 19.0513 12.0254 19.017 9.99796C19.0555 8.80563 18.8491 7.61807 18.4105 6.50869C17.9719 5.39931 17.3103 4.3917 16.4668 3.54815C15.6232 2.70461 14.6156 2.04307 13.5062 1.60443C12.3969 1.16579 11.2093 0.959379 10.017 0.997955C8.82374 0.955887 7.63463 1.15991 6.52367 1.59731C5.4127 2.03472 4.40368 2.69614 3.55942 3.5404C2.71515 4.38467 2.05373 5.39369 1.61632 6.50465C1.17892 7.61562 0.9749 8.80473 1.01697 9.99796C0.973574 11.1915 1.17668 12.3812 1.61362 13.4928C2.05056 14.6044 2.71194 15.6139 3.55647 16.4585C4.40101 17.303 5.41057 17.9644 6.52214 18.4013C7.6337 18.8382 8.8234 19.0414 10.017 18.998C12.1035 19.0237 14.1365 18.338 15.7811 17.0537L21.3102 22.9665L22.7715 21.6013ZM10.0173 16.998C9.08657 17.0411 8.15711 16.8895 7.28832 16.553C6.41952 16.2164 5.6305 15.7023 4.97169 15.0435C4.31288 14.3847 3.79878 13.5957 3.46225 12.7269C3.12572 11.8581 2.97416 10.9287 3.01727 9.99796C2.97416 9.06726 3.12572 8.1378 3.46225 7.269C3.79878 6.40021 4.31288 5.61119 4.97169 4.95238C5.6305 4.29357 6.41952 3.77947 7.28832 3.44293C8.15711 3.1064 9.08657 2.95485 10.0173 2.99796C10.948 2.95485 11.8774 3.1064 12.7462 3.44293C13.615 3.77947 14.404 4.29357 15.0628 4.95238C15.7217 5.61119 16.2358 6.40021 16.5723 7.269C16.9088 8.1378 17.0604 9.06726 17.0173 9.99796C17.0604 10.9287 16.9088 11.8581 16.5723 12.7269C16.2358 13.5957 15.7217 14.3848 15.0629 15.0436C14.4041 15.7024 13.615 16.2165 12.7462 16.553C11.8774 16.8895 10.948 17.0411 10.0173 16.998V16.998Z" fill="#293043"/>
+          </svg>
+        </button>
+        <button class="topbar-cta" aria-label="Login">
+          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.9996 0.999756C18.3736 0.999756 22.9996 5.62576 22.9996 11.9998C22.9996 18.3738 18.3736 22.9998 11.9996 22.9998C5.62563 22.9998 0.999634 18.3738 0.999634 11.9998C0.999634 5.62576 5.62563 0.999756 11.9996 0.999756ZM11.9996 2.99976C6.70163 2.99976 2.99963 6.70076 2.99963 11.9998C2.99963 13.8766 3.4714 15.5475 4.30725 16.9294C5.04526 15.7615 6.5176 15.1295 8.29358 14.3835L8.93616 14.1121L9.71936 15.9519L9.06897 16.2273C7.05497 17.0723 5.99674 17.5542 5.82874 18.3992C5.80678 18.505 5.78818 18.6107 5.76721 18.7156C7.33721 20.1576 9.48563 20.9998 11.9996 20.9998C14.5136 20.9998 16.6621 20.1585 18.2321 18.7175C18.2111 18.6107 18.1925 18.506 18.1705 18.3992C18.0025 17.5552 16.9443 17.0733 14.9313 16.2273L14.2789 15.9519L15.0612 14.1121L15.7057 14.3835C17.4826 15.1295 18.954 15.7615 19.693 16.9304C20.5278 15.5475 20.9996 13.8766 20.9996 11.9998C20.9996 6.70076 17.2986 2.99976 11.9996 2.99976ZM11.9996 4.99976C14.5646 4.99976 16.4995 6.93486 16.4996 9.49976C16.4996 12.0648 14.5646 13.9998 11.9996 13.9998C9.43483 13.9996 7.49963 12.0646 7.49963 9.49976C7.49973 6.93499 9.4349 4.99996 11.9996 4.99976ZM11.9996 6.99976C10.5279 6.99994 9.49973 8.028 9.49963 9.49976C9.49963 10.9716 10.5278 11.9996 11.9996 11.9998C13.4716 11.9998 14.4996 10.9718 14.4996 9.49976C14.4995 8.02786 13.4716 6.99976 11.9996 6.99976Z" fill="#293043"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ STEP NAVIGATION ════ -->
+<nav class="step-nav" aria-label="Configuration steps">
+  <div class="step-nav-inner">
+    <button class="step-btn">Overview</button>
+    <button class="step-btn is-active" aria-current="step">Trim</button>
+    <button class="step-btn">Powertrain</button>
+    <button class="step-btn">Exterior</button>
+    <button class="step-btn">Interior</button>
+    <button class="step-btn">Options</button>
+    <button class="step-btn">Summary</button>
+  </div>
+</nav>
+
+<!-- ════ CONTENT ════ -->
+<div id="content">
+  <div id="main-content" class="config-main" role="main">
+    <div class="config-grid">
+
+      <!-- ════ MEDIA COLUMN — gallery reused from tariffs' carousel shell ════ -->
+      <div class="media-col">
+        <div class="media-frame">
+          <img src="https://media.vw.mediaservice.avp.tech/media/fast/v3_02TXWgcZRSGv3m--WbVaqpRaakYtSbbWptmZ3bzp-xFYoyNJDGQ_oGE6ezst7PTzP44O7tpWqmiiCCKtdBWeyEiXqhpKYUSVPTaG6_Eq4JSr7xoK7b-gkqd9arw3pyX875wznnP2WtCtWPB85Nnf930l3XbnssIcbgphPxaqKQdlxqGEGKBO8KaF-ihQ00dbOrrrAx6neZQWB5ycs7oYFhuNqLGoFPxBn2_42wUmVQipBCZl4Uwx7oGoqenHUdNL_Zqu8q61A7u2V7Kj9p2vlAe9iqeHrMdzx4fLpdyeT1cskd9r1Aayevx8RG_N1V_KqQXRWKHH4SuPZI0xlfCsnaDlNPxqqsPJ67vxV2uEjfqSaQriRjQLTuvy_nmIbuLRKc4khtPES37oyPVuF2pHykIszuB2NifxGEQ6NitxW61aZN7gl37EXsxljHewDiJ8S7bXTgP38NVuI58CXkT83PMLzC_pNCHylNYonAGtYR6D-tDMo-SyZNZxXgbuQF5N_JbzBOYa6jdGH_w-LOYS1gHsE4jeskECBvjHNbtWNOIF-Eb5AHkQdQHWCbWTqyjGOuYT_PQKuoGj_RjrdN_EVrwMeom1p1Y92ENMLoF9sJJrA7GceTfqB9QV1BXsTZjHcNaQ8zy2BTSR55CXkJew7wfcwDTxnwSMzXchppAaVQV9RMjP2I9hbWIeRy1k77v2NGLfB3zHMbP8Cf8y13T9KxhnWfrZoSF8SrG-2RPMfQOagDrINYriAkyn2BUMC5gfAZzkK43ggvIB5DLyDPIj9hyHXMr5jTmPOYxHhSMXUI5qBPwGnIb8k3kFcwZlI26jDUFARyFG_AL_A6_IRfhK4wS5lsoD_UPD6c3vSg29E_MTc7Mzjyze499a-HcWuTT_K3reidMo1XT9aS4b787PznlPtdOyo1G7C4m7XLYcBeb2g8roT8bBtUkrAfZNI5JtWiPO7lsVXfJop0by2W9qFn1ihUvaums79V07BUn9i04U-6E67i5XNpQT18tCRv1VnG-K8vWGmUdxboTtlKyOLdgZ4OoUfKi2FtZ1qst_UJb131ddLI1nXhlL_E6Ov6_1blXptb_AYbx3Z7iAwAA.webp" alt="Volkswagen ID. Polo, exterior three-quarter view" id="gallery-img">
+          <div class="tf-arrow-wrap tf-arrow-wrap--prev">
+            <button type="button" class="tf-prev" id="gallery-prev" aria-label="Show previous image">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="m15.54 21.56-.93.94-9.1-9.32a1.71 1.71 0 0 1 0-2.36l9.1-9.32.93.94-9.09 9.32a.34.34 0 0 0 0 .48z"></path></svg>
+            </button>
+          </div>
+          <div class="tf-arrow-wrap tf-arrow-wrap--next">
+            <button type="button" class="tf-next" id="gallery-next" aria-label="Next">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12a1.73 1.73 0 0 1-.47 1.18l-9.1 9.32-.93-.94 9.09-9.32a.34.34 0 0 0 0-.48L8.5 2.44l.93-.94 9.1 9.32A1.7 1.7 0 0 1 19 12"></path></svg>
+            </button>
+          </div>
+          <div class="media-fullscreen-btn-wrap">
+            <button type="button" class="media-fullscreen-btn" aria-label="Activate Fullscreen">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M23.2 8.5h-1.4V2.2h-6.3V.9h6.9c.5 0 .8.3.8.8zM8.5 23.2H1.6c-.5 0-.8-.3-.8-.8v-6.9h1.4v6.3h6.3zM2.2 8.5H.9V1.6c0-.5.3-.8.8-.8h6.8v1.3H2.2zM22.4 23.2h-6.9v-1.3h6.3v-6.4h1.3v6.9c.1.5-.2.8-.7.8"></path></svg>
+            </button>
+          </div>
+        </div>
+        <!-- Mobile-only footer row: lentils live inside the gallery, sharing
+             the same row as the mode-icons, not overlaid on the image and
+             not a separate section below it. Hidden ≥960px, matching live. -->
+        <div class="media-footer-row">
+          <div class="tf-dots-wrap">
+            <div class="tf-dots" id="gallery-dots" role="radiogroup" aria-label="Gallery position">
+              <button type="button" class="tf-dot" data-current role="radio" aria-checked="true" aria-label="Image 1 of 2" tabindex="0"><span class="tf-dot-visual" aria-hidden="true"><span class="tf-dot-fill"></span></span></button>
+              <button type="button" class="tf-dot" role="radio" aria-checked="false" aria-label="Image 2 of 2" tabindex="-1"><span class="tf-dot-visual" aria-hidden="true"><span class="tf-dot-fill"></span></span></button>
+            </div>
+          </div>
+          <div class="media-actions">
+            <div class="media-action-btn-wrap">
+              <button class="media-action-btn" aria-pressed="true" aria-label="Open gallery">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.027 4H3.917A1.916 1.916 0 0 0 2 5.916v12.168c0 .018.005.035.005.054l-.003.003.004.004A1.913 1.913 0 0 0 3.916 20h16.111a1.916 1.916 0 0 0 1.917-1.916V5.916A1.916 1.916 0 0 0 20.027 4M3.33 5.916c0-.323.263-.586.586-.586h16.111c.324 0 .587.263.587.586v7.41C16.648 9.017 16.084 9 15.67 9c-.52 0-1.059.003-5.951 5.452-1.494-1.439-1.842-1.449-2.116-1.449-.395 0-.885.012-4.274 3.68zm.16 12.563c2.825-3.119 3.797-3.908 4.114-4.105.323.2 1.331 1.022 4.287 4.296H3.916a.58.58 0 0 1-.427-.191m16.537.19H13.67l-.463-.528a96 96 0 0 0-2.633-2.837l.094.084c3.632-4.048 4.694-4.87 4.99-5.034.315.173 1.41 1.016 4.957 4.948v2.782a.587.587 0 0 1-.587.586"/><path d="M6.966 10.998c-1.416 0-2.367-.952-2.367-2.368s.95-2.369 2.367-2.369c1.394 0 2.368.974 2.368 2.369s-.974 2.368-2.368 2.368m0-3.407c-.473 0-1.037.18-1.037 1.039s.564 1.038 1.037 1.038c.387 0 1.038-.135 1.038-1.038S7.354 7.59 6.966 7.59"/></svg>
+              </button>
+            </div>
+            <div class="media-action-btn-wrap">
+              <button class="media-action-btn" aria-label="Show 360 exterior view">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="m17.05 19.898-.21-1.313c3.382-.542 5.476-2.06 5.476-3.155 0-1.097-1.148-1.635-1.197-1.657l.543-1.214c.081.035 1.984.902 1.984 2.87 0 2.01-2.712 3.847-6.595 4.469M15.07 19.47c-.022-.295-.03-.394-2.575-2.834l-.92.96c.585.562 1.025.991 1.363 1.327a33 33 0 0 1-.92.015c-6.48 0-10.353-1.788-10.353-3.517 0-.877.881-1.487 1.26-1.708l-.67-1.149c-.578.338-1.92 1.291-1.92 2.857 0 2.9 4.695 4.847 11.683 4.847q.548 0 1.08-.018c-.292.391-.678.9-1.213 1.582l1.048.82c2.167-2.77 2.158-2.89 2.136-3.181M11.191 9.737c0 .452.362.818.808.818s.808-.366.808-.818A.813.813 0 0 0 12 8.92a.813.813 0 0 0-.808.818"/><path d="m20.646 6.855-.235-1.31a48 48 0 0 1-1.894.297c-.478-.873-.888-1.561-.888-1.561C17.228 3.64 16.742 3 15.562 3H8.375c-1.11 0-1.52.594-2.005 1.273 0 0-.419.703-.904 1.59a49 49 0 0 1-1.882-.287l-.228 1.31c.484.085.97.152 1.455.222-.447.894-.817 1.751-.817 2.145v4.56A1.18 1.18 0 0 0 5.167 15h2.548c.648 0 1.18-.539 1.18-1.195v-.351h6.214v.359A1.18 1.18 0 0 0 16.28 15h2.543a1.18 1.18 0 0 0 1.172-1.187v-4.56c0-.4-.375-1.268-.825-2.168.492-.073.984-.143 1.474-.23M7.483 5c.449-.627.51-.67.89-.67h7.188c.45 0 .59.097.925.631.2.335.404.69.604 1.048-3.39.367-6.799.371-10.197.016.196-.349.395-.696.59-1.025m10.996 3.75c-.941.13-1.898.239-2.92.314l.096 1.326a47 47 0 0 0 3.01-.322v3.601H16.44v-1.546H7.565v1.546h-2.24v-3.582c1.029.134 2.064.247 3.096.318l.092-1.326a51 51 0 0 1-3.008-.31c.159-.386.407-.902.707-1.48 1.9.22 3.803.34 5.707.34 1.954 0 3.908-.126 5.854-.358.298.575.546 1.09.707 1.48"/></svg>
+              </button>
+            </div>
+            <div class="media-action-btn-wrap">
+              <button class="media-action-btn" aria-label="Show 360° interior view">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M16.092 14.999H7.12l-1.031-3.127a1.3 1.3 0 0 1 .076-1.029 1.25 1.25 0 0 1 .757-.638 51 51 0 0 1 6.213-.052 1.9 1.9 0 0 1 .462-1.086l.002-.002a7.64 7.64 0 0 0 1.675-3.2 11.7 11.7 0 0 0 .548-3.548A1.29 1.29 0 0 1 17.126 1h3.028l.034.625a22.6 22.6 0 0 1-.64 6.48 16.5 16.5 0 0 1-3.258 6.646zm-8.029-1.323h7.39a15.15 15.15 0 0 0 2.805-5.867 22 22 0 0 0 .632-5.488h-1.764a12.5 12.5 0 0 1-.582 3.906 8.9 8.9 0 0 1-1.941 3.698c-.107.125-.177.21-.183.915l-.007.678-.677-.022c-2.754-.095-6.007-.123-6.458-.018zM21.672 12.572l-.543 1.214a2.03 2.03 0 0 1 1.196 1.657c0 1.097-2.093 2.614-5.474 3.155l.209 1.313c3.883-.62 6.595-2.458 6.595-4.468a3.37 3.37 0 0 0-1.983-2.871"/><path d="m12.505 16.65-.92.96c.585.561 1.025.99 1.362 1.326q-.453.015-.92.016c-6.48 0-10.352-1.788-10.352-3.518 0-.875.882-1.486 1.261-1.709l-.673-1.146a3.55 3.55 0 0 0-1.918 2.855c0 2.9 4.695 4.848 11.683 4.848q.548 0 1.08-.019c-.29.389-.675.896-1.212 1.584l1.047.819c2.164-2.769 2.156-2.897 2.137-3.182-.022-.302-.03-.393-2.575-2.834"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ TRIMS COLUMN ════ -->
+      <div class="trims-col">
+
+        <ul class="trims-list" role="listbox" aria-label="Available trims">
+
+          <!-- Upsell card: battery variant coming soon -->
+          <li class="trim-card--upsell" role="option" tabindex="0">
+            <div class="trim-card-head">
+              <h3 class="trim-card-title">Life 37kWh 116PS</h3>
+            </div>
+            <div class="trim-tags">
+              <span class="tag tag--status">Coming soon</span>
+              <span class="tag tag--electric">Electric</span>
+            </div>
+            <hr class="trim-card-hr">
+            <p class="trim-desc">Available from &pound;23,945. Our entry-level choice, striking the perfect balance between affordability and well-equipped, standard features for comfortable, everyday driving.<sup>1</sup></p>
+            <a href="#" class="more-info-link">More information</a>
+          </li>
+
+          <!-- Life (selected) -->
+          <li class="trim-card" role="option" aria-selected="true" tabindex="0">
+            <div class="trim-card-head">
+              <h3 class="trim-card-title">Life</h3>
+              <button class="q-icon-btn" aria-label="Life: more information">
+                <svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg>
+              </button>
+            </div>
+            <div class="trim-tags">
+              <span class="tag tag--electric">Electric</span>
+            </div>
+            <hr class="trim-card-hr">
+            <p class="trim-desc">The Volkswagen Life trim is our entry-level choice, striking the perfect balance between affordability and well-equipped, standard features for comfortable, everyday driving.</p>
+            <h4 class="batteries-heading">BATTERIES (2 available)</h4>
+            <div class="battery-type-tags">
+              <span class="tag tag--battery-type"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.658 18.85a.813.813 0 0 1-.857.84.793.793 0 0 1-.844-.84v-4.94a1.89 1.89 0 0 0-1.886-1.886h-1.075V3.936a1.935 1.935 0 0 0-1.932-1.934H3.937a1.935 1.935 0 0 0-1.933 1.934v19.067h13.992v-9.65h1.075a.557.557 0 0 1 .556.556v4.942a2.18 2.18 0 0 0 4.36 0V12h-1.33zm-5.992 2.823H3.334V3.936a.604.604 0 0 1 .603-.604h10.127a.604.604 0 0 1 .602.604z"/><path d="m21.084 3.718-1.09.764a3.8 3.8 0 0 1 .664 1.668v.428h-.314a2 2 0 0 0-1.897 1.664V9.56c0 .746.92 1.45 1.893 1.45h1.648V6.15a5 5 0 0 0-.904-2.432m-1.308 5.736-.011-1.125a.84.84 0 0 1 .58-.422h.313v1.775h-.318a.9.9 0 0 1-.564-.228M4.649 11h8.736V5.008H4.649zm1.33-4.662h6.076V9.67H5.979z"/></svg>Electric</span>
+              <span class="tag tag--battery-type"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="19" cy="1.63" r="1"/><circle cx="19" cy="8.63" r="1"/><circle cx="19" cy="22.37" r="1"/><path d="M18.2 13h-5.54V.63h-1.33V13H5.8A1.81 1.81 0 0 0 4 14.78v2a1.81 1.81 0 0 0 1.8 1.8h5.53v4.74h1.33v-4.69h5.54a1.81 1.81 0 0 0 1.8-1.8v-2A1.81 1.81 0 0 0 18.2 13m.47 4.32H5.33v-3h13.34z"/></svg>Automatic</span>
+            </div>
+            <div class="spec-rows">
+              <div class="spec-row">
+                <span class="spec-label"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5v14.324a2.5 2.5 0 0 0 2.5 2.5h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.489h-1.33v7.49a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.171c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746M19.086 3.678H16.93V1.004H15.6v2.674h-.849a1 1 0 0 0-1 1V6.97a4 4 0 0 0 3.42 3.959v2.078h1.33v-2.044a4 4 0 0 0 3.75-3.993V4.678a1 1 0 0 0-1-1h-.835V1.004h-1.33zm-4.005 1.33V6.97a2.67 2.67 0 0 0 2.67 2.67h.5a2.67 2.67 0 0 0 2.67-2.67V5.008z" clip-rule="evenodd"/></svg>Capacity</span>
+                <span class="spec-value">37 | 52kW&middot;h</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5V20.5A2.5 2.5 0 0 0 4.5 23h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.493h-1.33V20.5a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.172c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746m13.065-4.233c.87-1.301 1.474-2.66 1.474-3.825a3.17 3.17 0 0 0-6.34 0c0 1.166.605 2.524 1.474 3.825a18.5 18.5 0 0 0 1.696 2.147 18.5 18.5 0 0 0 1.696-2.147m-1.369 3.73c1.036-1.034 4.173-4.423 4.173-7.555a4.5 4.5 0 1 0-9 0c0 3.132 3.138 6.521 4.173 7.554a.456.456 0 0 0 .654 0Zm1.003-7.558a1.33 1.33 0 1 1-2.66 0 1.33 1.33 0 0 1 2.66 0" clip-rule="evenodd"/></svg>Range</span>
+                <span class="spec-value">205 | 281mi</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Life Launch Edition -->
+          <li class="trim-card" role="option" aria-selected="false" tabindex="0">
+            <div class="trim-card-head">
+              <h3 class="trim-card-title">Life Launch Edition</h3>
+              <button class="q-icon-btn" aria-label="Life Launch Edition: more information">
+                <svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg>
+              </button>
+            </div>
+            <div class="trim-tags">
+              <span class="tag tag--status-neutral">Available from stock only</span>
+              <span class="tag tag--electric">Electric</span>
+            </div>
+            <hr class="trim-card-hr">
+            <p class="trim-desc">Marking the launch of our new model, the Life Launch Edition trim is a limited-edition that adds extra tech, comfort and style for exceptional value.</p>
+            <h4 class="batteries-heading">BATTERIES (2 available)</h4>
+            <div class="battery-type-tags">
+              <span class="tag tag--battery-type"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.658 18.85a.813.813 0 0 1-.857.84.793.793 0 0 1-.844-.84v-4.94a1.89 1.89 0 0 0-1.886-1.886h-1.075V3.936a1.935 1.935 0 0 0-1.932-1.934H3.937a1.935 1.935 0 0 0-1.933 1.934v19.067h13.992v-9.65h1.075a.557.557 0 0 1 .556.556v4.942a2.18 2.18 0 0 0 4.36 0V12h-1.33zm-5.992 2.823H3.334V3.936a.604.604 0 0 1 .603-.604h10.127a.604.604 0 0 1 .602.604z"/><path d="m21.084 3.718-1.09.764a3.8 3.8 0 0 1 .664 1.668v.428h-.314a2 2 0 0 0-1.897 1.664V9.56c0 .746.92 1.45 1.893 1.45h1.648V6.15a5 5 0 0 0-.904-2.432m-1.308 5.736-.011-1.125a.84.84 0 0 1 .58-.422h.313v1.775h-.318a.9.9 0 0 1-.564-.228M4.649 11h8.736V5.008H4.649zm1.33-4.662h6.076V9.67H5.979z"/></svg>Electric</span>
+              <span class="tag tag--battery-type"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="19" cy="1.63" r="1"/><circle cx="19" cy="8.63" r="1"/><circle cx="19" cy="22.37" r="1"/><path d="M18.2 13h-5.54V.63h-1.33V13H5.8A1.81 1.81 0 0 0 4 14.78v2a1.81 1.81 0 0 0 1.8 1.8h5.53v4.74h1.33v-4.69h5.54a1.81 1.81 0 0 0 1.8-1.8v-2A1.81 1.81 0 0 0 18.2 13m.47 4.32H5.33v-3h13.34z"/></svg>Automatic</span>
+            </div>
+            <div class="spec-rows">
+              <div class="spec-row">
+                <span class="spec-label"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5v14.324a2.5 2.5 0 0 0 2.5 2.5h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.489h-1.33v7.49a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.171c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746M19.086 3.678H16.93V1.004H15.6v2.674h-.849a1 1 0 0 0-1 1V6.97a4 4 0 0 0 3.42 3.959v2.078h1.33v-2.044a4 4 0 0 0 3.75-3.993V4.678a1 1 0 0 0-1-1h-.835V1.004h-1.33zm-4.005 1.33V6.97a2.67 2.67 0 0 0 2.67 2.67h.5a2.67 2.67 0 0 0 2.67-2.67V5.008z" clip-rule="evenodd"/></svg>Capacity</span>
+                <span class="spec-value">37 | 52kW&middot;h</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5V20.5A2.5 2.5 0 0 0 4.5 23h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.493h-1.33V20.5a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.172c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746m13.065-4.233c.87-1.301 1.474-2.66 1.474-3.825a3.17 3.17 0 0 0-6.34 0c0 1.166.605 2.524 1.474 3.825a18.5 18.5 0 0 0 1.696 2.147 18.5 18.5 0 0 0 1.696-2.147m-1.369 3.73c1.036-1.034 4.173-4.423 4.173-7.555a4.5 4.5 0 1 0-9 0c0 3.132 3.138 6.521 4.173 7.554a.456.456 0 0 0 .654 0Zm1.003-7.558a1.33 1.33 0 1 1-2.66 0 1.33 1.33 0 0 1 2.66 0" clip-rule="evenodd"/></svg>Range</span>
+                <span class="spec-value">205 | 281mi</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Style -->
+          <li class="trim-card" role="option" aria-selected="false" tabindex="0">
+            <div class="trim-card-head">
+              <h3 class="trim-card-title">Style</h3>
+              <button class="q-icon-btn" aria-label="Style: more information">
+                <svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg>
+              </button>
+            </div>
+            <div class="trim-tags">
+              <span class="tag tag--electric">Electric</span>
+            </div>
+            <hr class="trim-card-hr">
+            <p class="trim-desc">As the name suggests, Style is designed to offer a balance of elegance, comfort, and tech. It&rsquo;s a stylish upgrade with stand-out presence.</p>
+            <h4 class="batteries-heading">BATTERIES (2 available)</h4>
+            <div class="battery-type-tags">
+              <span class="tag tag--battery-type"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.658 18.85a.813.813 0 0 1-.857.84.793.793 0 0 1-.844-.84v-4.94a1.89 1.89 0 0 0-1.886-1.886h-1.075V3.936a1.935 1.935 0 0 0-1.932-1.934H3.937a1.935 1.935 0 0 0-1.933 1.934v19.067h13.992v-9.65h1.075a.557.557 0 0 1 .556.556v4.942a2.18 2.18 0 0 0 4.36 0V12h-1.33zm-5.992 2.823H3.334V3.936a.604.604 0 0 1 .603-.604h10.127a.604.604 0 0 1 .602.604z"/><path d="m21.084 3.718-1.09.764a3.8 3.8 0 0 1 .664 1.668v.428h-.314a2 2 0 0 0-1.897 1.664V9.56c0 .746.92 1.45 1.893 1.45h1.648V6.15a5 5 0 0 0-.904-2.432m-1.308 5.736-.011-1.125a.84.84 0 0 1 .58-.422h.313v1.775h-.318a.9.9 0 0 1-.564-.228M4.649 11h8.736V5.008H4.649zm1.33-4.662h6.076V9.67H5.979z"/></svg>Electric</span>
+              <span class="tag tag--battery-type"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="19" cy="1.63" r="1"/><circle cx="19" cy="8.63" r="1"/><circle cx="19" cy="22.37" r="1"/><path d="M18.2 13h-5.54V.63h-1.33V13H5.8A1.81 1.81 0 0 0 4 14.78v2a1.81 1.81 0 0 0 1.8 1.8h5.53v4.74h1.33v-4.69h5.54a1.81 1.81 0 0 0 1.8-1.8v-2A1.81 1.81 0 0 0 18.2 13m.47 4.32H5.33v-3h13.34z"/></svg>Automatic</span>
+            </div>
+            <div class="spec-rows">
+              <div class="spec-row">
+                <span class="spec-label"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5v14.324a2.5 2.5 0 0 0 2.5 2.5h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.489h-1.33v7.49a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.171c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746M19.086 3.678H16.93V1.004H15.6v2.674h-.849a1 1 0 0 0-1 1V6.97a4 4 0 0 0 3.42 3.959v2.078h1.33v-2.044a4 4 0 0 0 3.75-3.993V4.678a1 1 0 0 0-1-1h-.835V1.004h-1.33zm-4.005 1.33V6.97a2.67 2.67 0 0 0 2.67 2.67h.5a2.67 2.67 0 0 0 2.67-2.67V5.008z" clip-rule="evenodd"/></svg>Capacity</span>
+                <span class="spec-value">37 | 52kW&middot;h</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5V20.5A2.5 2.5 0 0 0 4.5 23h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.493h-1.33V20.5a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.172c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746m13.065-4.233c.87-1.301 1.474-2.66 1.474-3.825a3.17 3.17 0 0 0-6.34 0c0 1.166.605 2.524 1.474 3.825a18.5 18.5 0 0 0 1.696 2.147 18.5 18.5 0 0 0 1.696-2.147m-1.369 3.73c1.036-1.034 4.173-4.423 4.173-7.555a4.5 4.5 0 1 0-9 0c0 3.132 3.138 6.521 4.173 7.554a.456.456 0 0 0 .654 0Zm1.003-7.558a1.33 1.33 0 1 1-2.66 0 1.33 1.33 0 0 1 2.66 0" clip-rule="evenodd"/></svg>Range</span>
+                <span class="spec-value">203 | 278mi</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Style Launch Edition -->
+          <li class="trim-card" role="option" aria-selected="false" tabindex="0">
+            <div class="trim-card-head">
+              <h3 class="trim-card-title">Style Launch Edition</h3>
+              <button class="q-icon-btn" aria-label="Style Launch Edition: more information">
+                <svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg>
+              </button>
+            </div>
+            <div class="trim-tags">
+              <span class="tag tag--status-neutral">Available from stock only</span>
+              <span class="tag tag--electric">Electric</span>
+            </div>
+            <hr class="trim-card-hr">
+            <p class="trim-desc">Marking the launch of our new model, the Style Launch Edition trim is a limited-edition that is packed with an unexpected level of extra features, tech and comfort bringing you great value for money.</p>
+            <h4 class="batteries-heading">BATTERIES (1 available)</h4>
+            <div class="battery-type-tags">
+              <span class="tag tag--battery-type"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.658 18.85a.813.813 0 0 1-.857.84.793.793 0 0 1-.844-.84v-4.94a1.89 1.89 0 0 0-1.886-1.886h-1.075V3.936a1.935 1.935 0 0 0-1.932-1.934H3.937a1.935 1.935 0 0 0-1.933 1.934v19.067h13.992v-9.65h1.075a.557.557 0 0 1 .556.556v4.942a2.18 2.18 0 0 0 4.36 0V12h-1.33zm-5.992 2.823H3.334V3.936a.604.604 0 0 1 .603-.604h10.127a.604.604 0 0 1 .602.604z"/><path d="m21.084 3.718-1.09.764a3.8 3.8 0 0 1 .664 1.668v.428h-.314a2 2 0 0 0-1.897 1.664V9.56c0 .746.92 1.45 1.893 1.45h1.648V6.15a5 5 0 0 0-.904-2.432m-1.308 5.736-.011-1.125a.84.84 0 0 1 .58-.422h.313v1.775h-.318a.9.9 0 0 1-.564-.228M4.649 11h8.736V5.008H4.649zm1.33-4.662h6.076V9.67H5.979z"/></svg>Electric</span>
+              <span class="tag tag--battery-type"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="19" cy="1.63" r="1"/><circle cx="19" cy="8.63" r="1"/><circle cx="19" cy="22.37" r="1"/><path d="M18.2 13h-5.54V.63h-1.33V13H5.8A1.81 1.81 0 0 0 4 14.78v2a1.81 1.81 0 0 0 1.8 1.8h5.53v4.74h1.33v-4.69h5.54a1.81 1.81 0 0 0 1.8-1.8v-2A1.81 1.81 0 0 0 18.2 13m.47 4.32H5.33v-3h13.34z"/></svg>Automatic</span>
+            </div>
+            <div class="spec-rows">
+              <div class="spec-row">
+                <span class="spec-label"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5v14.324a2.5 2.5 0 0 0 2.5 2.5h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.489h-1.33v7.49a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.171c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746M19.086 3.678H16.93V1.004H15.6v2.674h-.849a1 1 0 0 0-1 1V6.97a4 4 0 0 0 3.42 3.959v2.078h1.33v-2.044a4 4 0 0 0 3.75-3.993V4.678a1 1 0 0 0-1-1h-.835V1.004h-1.33zm-4.005 1.33V6.97a2.67 2.67 0 0 0 2.67 2.67h.5a2.67 2.67 0 0 0 2.67-2.67V5.008z" clip-rule="evenodd"/></svg>Capacity</span>
+                <span class="spec-value">52kW&middot;h</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5V20.5A2.5 2.5 0 0 0 4.5 23h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.493h-1.33V20.5a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.172c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746m13.065-4.233c.87-1.301 1.474-2.66 1.474-3.825a3.17 3.17 0 0 0-6.34 0c0 1.166.605 2.524 1.474 3.825a18.5 18.5 0 0 0 1.696 2.147 18.5 18.5 0 0 0 1.696-2.147m-1.369 3.73c1.036-1.034 4.173-4.423 4.173-7.555a4.5 4.5 0 1 0-9 0c0 3.132 3.138 6.521 4.173 7.554a.456.456 0 0 0 .654 0Zm1.003-7.558a1.33 1.33 0 1 1-2.66 0 1.33 1.33 0 0 1 2.66 0" clip-rule="evenodd"/></svg>Range</span>
+                <span class="spec-value">274mi</span>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Trims header — order:-1 floats above image at mobile; header grid-area at desktop -->
+      <div class="trims-header">
+        <p class="model-name">ID. Polo</p>
+        <h2 class="trims-heading"><span>5</span> <strong>trims</strong></h2>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ════ STICKY BOTTOM BAR — full viewport width, outside the padded content column ════ -->
+  <div class="bottom-bar">
+    <div class="bottom-bar-inner">
+      <a href="#" class="compare-link">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M6 20.665h12v1.33H6zM9.335 4.69c0-1.527 1.138-2.665 2.665-2.665s2.665 1.138 2.665 2.665S13.527 7.355 12 7.355c-1.54 0-2.665-1.14-2.665-2.665M12 3.355c-.793 0-1.335.542-1.335 1.335 0 .795.535 1.335 1.335 1.335.793 0 1.335-.542 1.335-1.335S12.793 3.355 12 3.355" clip-rule="evenodd"/><path fill-rule="evenodd" d="m3.483 5.57 6.33-1.33.274 1.3-6.33 1.33zm10.471-2.2 6.34-1.33.273 1.3-6.34 1.33-.274-1.3Zm-2.599 17.96V6.69h1.33v14.64zm3.695-9.725h6.28v1.33h-6.28zM2.67 14.2h6.28v1.33H2.67z" clip-rule="evenodd"/><path fill-rule="evenodd" d="M17.885 3.207c.373-.006.814.19.999.654l.005.012 3.107 8.273v.12c0 2.127-1.739 3.776-3.963 3.776-2.192 0-4.027-1.597-4.027-3.775v-.114l2.903-8.264c.171-.468.605-.676.976-.682m.025 1.845-2.572 7.321c.059 1.293 1.173 2.339 2.695 2.339 1.506 0 2.57-1.05 2.63-2.332zm-12.023.765c.373-.006.814.189.999.654l.004.012L10 14.756v.12c0 2.128-1.74 3.776-3.966 3.776-2.192 0-4.029-1.597-4.029-3.775v-.114L4.911 6.5c.17-.468.605-.676.976-.682Zm.025 1.843-2.575 7.323c.059 1.293 1.174 2.339 2.697 2.339 1.508 0 2.574-1.05 2.633-2.331z" clip-rule="evenodd"/></svg>
+        <span>Compare trims</span>
+      </a>
+      <span class="bottom-bar-sep"></span>
+      <button class="powertrain-btn">
+        Powertrain
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="m15.99 5.377-.887.99a81 81 0 0 1 4.782 4.635H1.991v1.33h17.877a88 88 0 0 1-4.764 4.583l.886.99c.06-.054 6-5.386 6-6.239 0-.876-5.94-6.235-6-6.289"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ INFO DRAWER — recreated from the live configurator's "More information" panel ════ -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<div class="drawer-panel" id="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+  <div class="drawer-header">
+    <h2 class="drawer-title" id="drawer-title"><strong>ID. Polo.</strong> <span id="drawer-trim-name">Life</span></h2>
+    <button type="button" class="drawer-close" id="drawer-close" aria-label="Close">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="m21.474 3.467-.942-.941L12 11.059 3.466 2.526l-.94.941L11.059 12l-8.533 8.532.94.942L12 12.941l8.532 8.533.942-.942L12.941 12z"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-tabs" role="tablist">
+      <button type="button" class="drawer-tab is-active" id="drawer-tab-features" role="tab" aria-selected="true">Key Features</button>
+      <button type="button" class="drawer-tab" id="drawer-tab-equipment" role="tab" aria-selected="false">Standard equipment</button>
+    </div>
+
+    <div id="drawer-panel-features">
+      <p class="drawer-subheading">Key features as standard:</p>
+      <ul class="drawer-feature-list">
+        <li class="drawer-feature-item">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M3.33 12c0-5.076 3.595-8.67 8.67-8.67 5.076 0 8.67 3.594 8.67 8.67s-3.595 8.67-8.67 8.67S3.33 17.075 3.33 12M12 2C6.19 2 2 6.19 2 12s4.19 10 10 10 10-4.19 10-10S17.81 2 12 2m-.141 13.036 5.45-5.678-.96-.92-5.45 5.677a.035.035 0 0 1-.05 0L8.27 11.419l-.961.919 2.577 2.696a1.365 1.365 0 0 0 1.972.002Z" clip-rule="evenodd"/></svg>
+          <span>Alloy wheels 17" Edinburgh</span>
+          <svg aria-hidden="true" class="drawer-chevron" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12a1.73 1.73 0 0 1-.47 1.18l-9.1 9.32-.93-.94 9.09-9.32a.34.34 0 0 0 0-.48L8.5 2.44l.93-.94 9.1 9.32A1.7 1.7 0 0 1 19 12"/></svg>
+        </li>
+        <li class="drawer-feature-item">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M3.33 12c0-5.076 3.595-8.67 8.67-8.67 5.076 0 8.67 3.594 8.67 8.67s-3.595 8.67-8.67 8.67S3.33 17.075 3.33 12M12 2C6.19 2 2 6.19 2 12s4.19 10 10 10 10-4.19 10-10S17.81 2 12 2m-.141 13.036 5.45-5.678-.96-.92-5.45 5.677a.035.035 0 0 1-.05 0L8.27 11.419l-.961.919 2.577 2.696a1.365 1.365 0 0 0 1.972.002Z" clip-rule="evenodd"/></svg>
+          <span>Air Care Climatronic</span>
+        </li>
+        <li class="drawer-feature-item">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M3.33 12c0-5.076 3.595-8.67 8.67-8.67 5.076 0 8.67 3.594 8.67 8.67s-3.595 8.67-8.67 8.67S3.33 17.075 3.33 12M12 2C6.19 2 2 6.19 2 12s4.19 10 10 10 10-4.19 10-10S17.81 2 12 2m-.141 13.036 5.45-5.678-.96-.92-5.45 5.677a.035.035 0 0 1-.05 0L8.27 11.419l-.961.919 2.577 2.696a1.365 1.365 0 0 0 1.972.002Z" clip-rule="evenodd"/></svg>
+          <span>App-Connect Wireless for Apple CarPlay and Android Auto</span>
+        </li>
+        <li class="drawer-feature-item">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M3.33 12c0-5.076 3.595-8.67 8.67-8.67 5.076 0 8.67 3.594 8.67 8.67s-3.595 8.67-8.67 8.67S3.33 17.075 3.33 12M12 2C6.19 2 2 6.19 2 12s4.19 10 10 10 10-4.19 10-10S17.81 2 12 2m-.141 13.036 5.45-5.678-.96-.92-5.45 5.677a.035.035 0 0 1-.05 0L8.27 11.419l-.961.919 2.577 2.696a1.365 1.365 0 0 0 1.972.002Z" clip-rule="evenodd"/></svg>
+          <span>IDA voice assistant</span>
+        </li>
+        <li class="drawer-feature-item">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M3.33 12c0-5.076 3.595-8.67 8.67-8.67 5.076 0 8.67 3.594 8.67 8.67s-3.595 8.67-8.67 8.67S3.33 17.075 3.33 12M12 2C6.19 2 2 6.19 2 12s4.19 10 10 10 10-4.19 10-10S17.81 2 12 2m-.141 13.036 5.45-5.678-.96-.92-5.45 5.677a.035.035 0 0 1-.05 0L8.27 11.419l-.961.919 2.577 2.696a1.365 1.365 0 0 0 1.972.002Z" clip-rule="evenodd"/></svg>
+          <span>High Beam Assist, automatic sensing for switching between dipped and main beam</span>
+        </li>
+        <li class="drawer-feature-item" hidden>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M3.33 12c0-5.076 3.595-8.67 8.67-8.67 5.076 0 8.67 3.594 8.67 8.67s-3.595 8.67-8.67 8.67S3.33 17.075 3.33 12M12 2C6.19 2 2 6.19 2 12s4.19 10 10 10 10-4.19 10-10S17.81 2 12 2m-.141 13.036 5.45-5.678-.96-.92-5.45 5.677a.035.035 0 0 1-.05 0L8.27 11.419l-.961.919 2.577 2.696a1.365 1.365 0 0 0 1.972.002Z" clip-rule="evenodd"/></svg>
+          <span>Rain sensor</span>
+        </li>
+        <li class="drawer-feature-item" hidden>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M3.33 12c0-5.076 3.595-8.67 8.67-8.67 5.076 0 8.67 3.594 8.67 8.67s-3.595 8.67-8.67 8.67S3.33 17.075 3.33 12M12 2C6.19 2 2 6.19 2 12s4.19 10 10 10 10-4.19 10-10S17.81 2 12 2m-.141 13.036 5.45-5.678-.96-.92-5.45 5.677a.035.035 0 0 1-.05 0L8.27 11.419l-.961.919 2.577 2.696a1.365 1.365 0 0 0 1.972.002Z" clip-rule="evenodd"/></svg>
+          <span>Adaptive Cruise Control ACC stop &amp; go</span>
+        </li>
+        <li class="drawer-feature-item" hidden>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M3.33 12c0-5.076 3.595-8.67 8.67-8.67 5.076 0 8.67 3.594 8.67 8.67s-3.595 8.67-8.67 8.67S3.33 17.075 3.33 12M12 2C6.19 2 2 6.19 2 12s4.19 10 10 10 10-4.19 10-10S17.81 2 12 2m-.141 13.036 5.45-5.678-.96-.92-5.45 5.677a.035.035 0 0 1-.05 0L8.27 11.419l-.961.919 2.577 2.696a1.365 1.365 0 0 0 1.972.002Z" clip-rule="evenodd"/></svg>
+          <span>Rear view camera system</span>
+        </li>
+      </ul>
+      <button type="button" class="drawer-show-more" id="drawer-show-more">
+        <span id="drawer-show-more-label">+ Show more</span>
+      </button>
+    </div>
+
+    <div id="drawer-panel-equipment" hidden>
+      <p class="drawer-subheading">Standard equipment:</p>
+      <ul class="drawer-feature-list">
+        <li><button type="button" class="drawer-equipment-item"><span>Alloy wheels</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12a1.73 1.73 0 0 1-.47 1.18l-9.1 9.32-.93-.94 9.09-9.32a.34.34 0 0 0 0-.48L8.5 2.44l.93-.94 9.1 9.32A1.7 1.7 0 0 1 19 12" transform="rotate(90 12 12)"/></svg></button></li>
+        <li><button type="button" class="drawer-equipment-item"><span>Exterior</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12a1.73 1.73 0 0 1-.47 1.18l-9.1 9.32-.93-.94 9.09-9.32a.34.34 0 0 0 0-.48L8.5 2.44l.93-.94 9.1 9.32A1.7 1.7 0 0 1 19 12" transform="rotate(90 12 12)"/></svg></button></li>
+        <li><button type="button" class="drawer-equipment-item"><span>Interior</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12a1.73 1.73 0 0 1-.47 1.18l-9.1 9.32-.93-.94 9.09-9.32a.34.34 0 0 0 0-.48L8.5 2.44l.93-.94 9.1 9.32A1.7 1.7 0 0 1 19 12" transform="rotate(90 12 12)"/></svg></button></li>
+        <li><button type="button" class="drawer-equipment-item"><span>In-car entertainment and communications</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12a1.73 1.73 0 0 1-.47 1.18l-9.1 9.32-.93-.94 9.09-9.32a.34.34 0 0 0 0-.48L8.5 2.44l.93-.94 9.1 9.32A1.7 1.7 0 0 1 19 12" transform="rotate(90 12 12)"/></svg></button></li>
+        <li><button type="button" class="drawer-equipment-item"><span>Safety &amp; security</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12a1.73 1.73 0 0 1-.47 1.18l-9.1 9.32-.93-.94 9.09-9.32a.34.34 0 0 0 0-.48L8.5 2.44l.93-.94 9.1 9.32A1.7 1.7 0 0 1 19 12" transform="rotate(90 12 12)"/></svg></button></li>
+        <li><button type="button" class="drawer-equipment-item"><span>Comfort &amp; convenience</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12a1.73 1.73 0 0 1-.47 1.18l-9.1 9.32-.93-.94 9.09-9.32a.34.34 0 0 0 0-.48L8.5 2.44l.93-.94 9.1 9.32A1.7 1.7 0 0 1 19 12" transform="rotate(90 12 12)"/></svg></button></li>
+        <li><button type="button" class="drawer-equipment-item"><span>Driver's Assistance</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12a1.73 1.73 0 0 1-.47 1.18l-9.1 9.32-.93-.94 9.09-9.32a.34.34 0 0 0 0-.48L8.5 2.44l.93-.94 9.1 9.32A1.7 1.7 0 0 1 19 12" transform="rotate(90 12 12)"/></svg></button></li>
+      </ul>
+    </div>
+
+    <h3 class="drawer-batteries-heading" id="drawer-batteries-heading">Batteries (2 available)</h3>
+    <div class="spec-rows">
+      <div class="spec-row"><span class="spec-label"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="m7.248 13.042 3.838 1.382-2.837 8.974c-.059.22.048.45.255.551s.458.047.602-.13l8.165-10.877c.216-.283.284-.648.184-.987a1.13 1.13 0 0 0-.694-.736l-4.083-1.482L15.067.582c.049-.223-.069-.449-.281-.54s-.462-.026-.597.16L6.697 11.359c-.197.286-.25.645-.142.973.108.329.363.59.693.71"/></svg>Engine type</span><span class="spec-value">Electric</span></div>
+      <div class="spec-row"><span class="spec-label"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="19" cy="1.63" r="1"/><circle cx="19" cy="8.63" r="1"/><circle cx="19" cy="22.37" r="1"/><path d="M18.2 13h-5.54V.63h-1.33V13H5.8A1.81 1.81 0 0 0 4 14.78v2a1.81 1.81 0 0 0 1.8 1.8h5.53v4.74h1.33v-4.69h5.54a1.81 1.81 0 0 0 1.8-1.8v-2A1.81 1.81 0 0 0 18.2 13m.47 4.32H5.33v-3h13.34z"/></svg>Transmission</span><span class="spec-value">Automatic</span></div>
+      <div class="spec-row"><span class="spec-row-left"><span class="spec-label"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5v14.324a2.5 2.5 0 0 0 2.5 2.5h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.489h-1.33v7.49a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.171c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746M19.086 3.678H16.93V1.004H15.6v2.674h-.849a1 1 0 0 0-1 1V6.97a4 4 0 0 0 3.42 3.959v2.078h1.33v-2.044a4 4 0 0 0 3.75-3.993V4.678a1 1 0 0 0-1-1h-.835V1.004h-1.33zm-4.005 1.33V6.97a2.67 2.67 0 0 0 2.67 2.67h.5a2.67 2.67 0 0 0 2.67-2.67V5.008z" clip-rule="evenodd"/></svg>Capacity</span></span><span class="spec-row-right"><button type="button" class="drawer-simulate-btn" data-sim-mode="capacity"><span class="drawer-simulate-btn-label">Simulate charging time</span><span class="drawer-simulate-btn-stroke" aria-hidden="true"></span></button><span class="spec-value">37 | 52kW&middot;h</span></span></div>
+      <div class="spec-row"><span class="spec-row-left"><span class="spec-label"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M10.5 2.334H7.159a.17.17 0 0 0-.17.17v1.165h3.683V2.504a.17.17 0 0 0-.17-.17Zm-3.342-1.33a1.5 1.5 0 0 0-1.5 1.5v1.168H4.5a2.5 2.5 0 0 0-2.5 2.5V20.5A2.5 2.5 0 0 0 4.5 23h8.546a2.5 2.5 0 0 0 2.5-2.5v-7.493h-1.33V20.5a1.17 1.17 0 0 1-1.17 1.17H4.5a1.17 1.17 0 0 1-1.17-1.17V6.172c0-.647.524-1.17 1.17-1.17h7.503v-1.33H12V2.504a1.5 1.5 0 0 0-1.5-1.5zM6.632 13.81l1.715.643-1.286 4.104c-.038.12-.008.235.097.288.108.052.214-.002.288-.098l3.695-4.98a.517.517 0 0 0-.24-.789l-1.826-.686 1.07-4.19a.22.22 0 0 0-.125-.246.22.22 0 0 0-.268.065l-3.376 5.143a.52.52 0 0 0 .256.746m13.065-4.233c.87-1.301 1.474-2.66 1.474-3.825a3.17 3.17 0 0 0-6.34 0c0 1.166.605 2.524 1.474 3.825a18.5 18.5 0 0 0 1.696 2.147 18.5 18.5 0 0 0 1.696-2.147m-1.369 3.73c1.036-1.034 4.173-4.423 4.173-7.555a4.5 4.5 0 1 0-9 0c0 3.132 3.138 6.521 4.173 7.554a.456.456 0 0 0 .654 0Zm1.003-7.558a1.33 1.33 0 1 1-2.66 0 1.33 1.33 0 0 1 2.66 0" clip-rule="evenodd"/></svg>Range</span></span><span class="spec-row-right"><button type="button" class="drawer-simulate-btn" data-sim-mode="range"><span class="drawer-simulate-btn-label">Simulate range</span><span class="drawer-simulate-btn-stroke" aria-hidden="true"></span></button><span class="spec-value">205 | 281mi</span></span></div>
+      <div class="spec-row"><span class="spec-label"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="m18.019 8.36-.884-1-3.896 3.483A2.4 2.4 0 0 0 12 10.51a2.213 2.213 0 0 0-2.297 2.308A2.24 2.24 0 0 0 12 15.127a2.236 2.236 0 0 0 2.297-2.309 2.5 2.5 0 0 0-.185-.968zM12 13.796a.913.913 0 0 1-.967-.979.902.902 0 0 1 .967-.978.902.902 0 0 1 .967.978.913.913 0 0 1-.967.979"/><path d="M3.528 20a11.7 11.7 0 0 1-2.293-7.182A10.554 10.554 0 0 1 12 2.002a10.554 10.554 0 0 1 10.765 10.816 11.7 11.7 0 0 1-2.293 7.183zm.848-1.327h15.248a9.73 9.73 0 0 0 1.81-5.855A9.15 9.15 0 0 0 12 3.332a9.15 9.15 0 0 0-9.435 9.486 9.73 9.73 0 0 0 1.811 5.855"/><path d="M6.233 17.22a6.8 6.8 0 0 1-.776-1.223 7.65 7.65 0 0 1-.762-3.417 7.07 7.07 0 0 1 7.213-7.246 7.5 7.5 0 0 1 2.785.52l-.488 1.237a6.2 6.2 0 0 0-2.297-.427 5.706 5.706 0 0 0-5.883 5.916 6.3 6.3 0 0 0 .624 2.827 5.4 5.4 0 0 0 .624.984z"/></svg>Acceleration 0-62 mph</span><span class="spec-value">7.1 | 9.5s</span></div>
+    </div>
+
+    <h3 class="drawer-explore-heading">More to explore</h3>
+    <a href="#" class="drawer-teaser" target="_blank">
+      <span class="drawer-teaser-icon">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="m17.926 9.318 2.791 1.954.986-.688-.986-3.266 2.726-2.103-.363-1.079-3.423-.065L18.53.842h-1.163l-1.126 3.192-3.424.065-.363 1.116 2.726 2.103-.977 3.266.93.688 2.792-1.954Zm.353-1.37h-.667l-1.596 1.115.561-1.868-.201-.632-1.579-1.219h1.956l.535-.394.64-1.842.666 1.877.535.394h1.956l-1.561 1.184-.202.632.562 1.868z" clip-rule="evenodd"/><path fill-rule="evenodd" d="m21.114 12.62 1.45-.006c.515.889.882 2.002.88 3.087v6.19a1.62 1.62 0 0 1-1.61 1.61h-2a1.61 1.61 0 0 1-1.61-1.61v-.49H6.664v.48a1.63 1.63 0 0 1-1.61 1.63h-2a1.61 1.61 0 0 1-1.61-1.61v-6.19c-.001-1.036.694-2.632 1.357-4.156l.093-.214c-.77-.1-1.578-.218-2.338-.348L.778 9.67c.697.12 1.429.228 2.14.334l.526.078 1.32-3a3.33 3.33 0 0 1 2.58-1.58h3.18v1.33h-3.12a2 2 0 0 0-1.47.88l-1.12 2.52q2.87.31 5.72.37v1.38c-2.09-.06-4.19-.22-6.28-.46-.084.212-.294.691-.529 1.227-.36.823-.78 1.779-.89 2.103 1.54.22 3.14.39 4.78.51l-.09 1.32c-1.64-.11-3.23-.29-4.77-.5v5.71a.29.29 0 0 0 .28.28h2a.3.3 0 0 0 .3-.29v-1.81h14.18v1.82a.29.29 0 0 0 .28.28h2a.29.29 0 0 0 .28-.28v-5.71c-1.5.21-3.06.39-4.66.51l-.1-1.33c1.61-.12 3.17-.29 4.67-.51-.1-.538-.597-1.702-.87-2.23Zm-8.67 4.549a1 1 0 1 0 0-2 1 1 0 0 0 0 2" clip-rule="evenodd"/></svg>
+      </span>
+      <span class="drawer-teaser-text">
+        <span class="drawer-teaser-title">Most popular configuration</span>
+        <span class="drawer-teaser-subtitle">Most popular configuration</span>
+      </span>
+      <svg aria-hidden="true" class="drawer-teaser-external" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.683 3.33H14V2h7a1 1 0 0 1 1 1v8h-1.33V4.224L9.738 15.156l-.94-.94zM20.67 20v-6H22v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7v1.33H4c-.37 0-.67.3-.67.67v16c0 .37.3.67.67.67h16c.37 0 .67-.3.67-.67" clip-rule="evenodd"/></svg>
+    </a>
+  </div>
+  <div class="drawer-bottom-bar">
+    <a href="#" class="compare-link">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M6 20.665h12v1.33H6zM9.335 4.69c0-1.527 1.138-2.665 2.665-2.665s2.665 1.138 2.665 2.665S13.527 7.355 12 7.355c-1.54 0-2.665-1.14-2.665-2.665M12 3.355c-.793 0-1.335.542-1.335 1.335 0 .795.535 1.335 1.335 1.335.793 0 1.335-.542 1.335-1.335S12.793 3.355 12 3.355" clip-rule="evenodd"/><path fill-rule="evenodd" d="m3.483 5.57 6.33-1.33.274 1.3-6.33 1.33zm10.471-2.2 6.34-1.33.273 1.3-6.34 1.33-.274-1.3Zm-2.599 17.96V6.69h1.33v14.64zm3.695-9.725h6.28v1.33h-6.28zM2.67 14.2h6.28v1.33H2.67z" clip-rule="evenodd"/><path fill-rule="evenodd" d="M17.885 3.207c.373-.006.814.19.999.654l.005.012 3.107 8.273v.12c0 2.127-1.739 3.776-3.963 3.776-2.192 0-4.027-1.597-4.027-3.775v-.114l2.903-8.264c.171-.468.605-.676.976-.682m.025 1.845-2.572 7.321c.059 1.293 1.173 2.339 2.695 2.339 1.506 0 2.57-1.05 2.63-2.332zm-12.023.765c.373-.006.814.189.999.654l.004.012L10 14.756v.12c0 2.128-1.74 3.776-3.966 3.776-2.192 0-4.029-1.597-4.029-3.775v-.114L4.911 6.5c.17-.468.605-.676.976-.682Zm.025 1.843-2.575 7.323c.059 1.293 1.174 2.339 2.697 2.339 1.508 0 2.574-1.05 2.633-2.331z" clip-rule="evenodd"/></svg>
+      <span>Compare trims</span>
+    </a>
+    <span class="bottom-bar-sep"></span>
+    <button class="powertrain-btn">
+      Next step
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="m15.99 5.377-.887.99a81 81 0 0 1 4.782 4.635H1.991v1.33h17.877a88 88 0 0 1-4.764 4.583l.886.99c.06-.054 6-5.386 6-6.239 0-.876-5.94-6.235-6-6.289"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ════ SIMULATE DRAWER — second flyout, stacked on top of the info drawer.
+     Opened by any "Simulate" CTA inside the info drawer; embeds NaLa's mobile
+     range-estimator experience (ported from emobility/nala/index.html). ════ -->
+<div class="drawer-backdrop drawer-backdrop--2" id="simulate-backdrop"></div>
+<div class="drawer-panel drawer-panel--2" id="simulate-panel" role="dialog" aria-modal="true" aria-labelledby="simulate-title">
+  <div class="drawer-header">
+    <h2 class="drawer-title" id="simulate-title">Simulate my range</h2>
+    <button type="button" class="drawer-close" id="simulate-close" aria-label="Close">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="m21.474 3.467-.942-.941L12 11.059 3.466 2.526l-.94.941L11.059 12l-8.533 8.532.94.942L12 12.941l8.532 8.533.942-.942L12.941 12z"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+
+    <div class="nala" data-node-id="4065:4798">
+
+      <!-- Top -->
+      <div class="nala-top">
+        <div class="nala-question">
+          <h2 class="nala-headline" id="nala-headline">What is the range&nbsp;&hellip;</h2>
+
+          <div class="nala-sentence" role="group" aria-labelledby="nala-headline">
+
+            <span class="nala-word" id="select-w1">of my</span>
+
+            <span class="fl-select" id="select-veh-wrap">
+              <span class="fl-sizer" aria-hidden="true">
+                <span class="fl-sizer-sub" id="select-veh-sizer-sub">Model: ID. Polo</span>
+                <span id="select-veh-sizer">Life</span>
+              </span>
+              <span class="fl-label"><span id="select-veh-model-static">Model: </span><span id="select-veh-family">ID. Polo</span></span>
+              <select id="select-veh" aria-labelledby="select-veh-model-static select-veh-family">
+                <optgroup label="ID. Polo">
+                  <option value="life" selected>Life</option>
+                  <option value="lifele">Life Launch Edition</option>
+                  <option value="style">Style</option>
+                  <option value="stylele">Style Launch Edition</option>
+                </optgroup>
+              </select>
+              <span class="fl-chevron">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.025 7.5715)"><path d="M10.975 11.427C10.525 11.427 10.102 11.249 9.786 10.927L0 0.93L0.95 0L10.735 9.996C10.865 10.127 11.084 10.128 11.215 9.995L20.999 0L21.95 0.93L12.165 10.926C11.848 11.25 11.425 11.427 10.975 11.427Z" fill="#293043"/></g></svg>
+              </span>
+            </span>
+
+            <span class="nala-mode-range">
+            <span class="nala-word nala-word-long" id="select-w2-long">when I mostly drive</span>
+            <span class="nala-word nala-word-short" id="select-w2-short">when I drive</span>
+
+            <span class="fl-select">
+              <span class="fl-sizer" aria-hidden="true">
+                <span class="fl-sizer-sub">Road type</span>
+                <span id="select-env-sizer">on the motorway</span>
+              </span>
+              <span class="fl-label" id="select-env-label">Road type</span>
+              <select id="select-env" aria-labelledby="select-env-label">
+                <option value="city" selected>in the city</option>
+                <option value="country">on country roads</option>
+                <option value="motorway">on the motorway</option>
+              </select>
+              <span class="fl-chevron">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.025 7.5715)"><path d="M10.975 11.427C10.525 11.427 10.102 11.249 9.786 10.927L0 0.93L0.95 0L10.735 9.996C10.865 10.127 11.084 10.128 11.215 9.995L20.999 0L21.95 0.93L12.165 10.926C11.848 11.25 11.425 11.427 10.975 11.427Z" fill="#293043"/></g></svg>
+              </span>
+            </span>
+
+            <span class="nala-word" id="select-w3">in</span>
+
+            <span class="fl-select">
+              <span class="fl-sizer" aria-hidden="true">
+                <span class="fl-sizer-sub">Weather</span>
+                <span id="select-wea-sizer">warm</span>
+              </span>
+              <span class="fl-label" id="select-wea-label">Weather</span>
+              <select id="select-wea" aria-labelledby="select-wea-label">
+                <option value="warm" selected>warm</option>
+                <option value="mild">mild</option>
+                <option value="cold">cold</option>
+              </select>
+              <span class="fl-chevron">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.025 7.5715)"><path d="M10.975 11.427C10.525 11.427 10.102 11.249 9.786 10.927L0 0.93L0.95 0L10.735 9.996C10.865 10.127 11.084 10.128 11.215 9.995L20.999 0L21.95 0.93L12.165 10.926C11.848 11.25 11.425 11.427 10.975 11.427Z" fill="#293043"/></g></svg>
+              </span>
+            </span>
+
+            <span class="nala-word" id="select-w4">weather and I am driving</span>
+
+            <span class="fl-select">
+              <span class="fl-sizer" aria-hidden="true">
+                <span class="fl-sizer-sub">Occupancy</span>
+                <span id="select-occ-sizer">with a passenger</span>
+              </span>
+              <span class="fl-label" id="select-occ-label">Occupancy</span>
+              <select id="select-occ" aria-labelledby="select-occ-label">
+                <option value="alone" selected>alone</option>
+                <option value="pair">with a passenger</option>
+                <option value="family">with the family</option>
+              </select>
+              <span class="fl-chevron">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.025 7.5715)"><path d="M10.975 11.427C10.525 11.427 10.102 11.249 9.786 10.927L0 0.93L0.95 0L10.735 9.996C10.865 10.127 11.084 10.128 11.215 9.995L20.999 0L21.95 0.93L12.165 10.926C11.848 11.25 11.425 11.427 10.975 11.427Z" fill="#293043"/></g></svg>
+              </span>
+            </span>
+
+            <span class="nala-word">?</span>
+            </span>
+
+            <span class="nala-mode-capacity" hidden>
+            <span class="nala-word" id="select-w-soc1">from</span>
+
+            <span class="fl-select">
+              <span class="fl-sizer" aria-hidden="true">
+                <span class="fl-sizer-sub">Starting charge</span>
+                <span id="select-soc-start-sizer">10%</span>
+              </span>
+              <span class="fl-label" id="select-soc-start-label">Starting charge</span>
+              <select id="select-soc-start" aria-labelledby="select-soc-start-label">
+                <option value="0">0%</option>
+                <option value="10" selected>10%</option>
+                <option value="20">20%</option>
+              </select>
+              <span class="fl-chevron">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.025 7.5715)"><path d="M10.975 11.427C10.525 11.427 10.102 11.249 9.786 10.927L0 0.93L0.95 0L10.735 9.996C10.865 10.127 11.084 10.128 11.215 9.995L20.999 0L21.95 0.93L12.165 10.926C11.848 11.25 11.425 11.427 10.975 11.427Z" fill="#293043"/></g></svg>
+              </span>
+            </span>
+
+            <span class="nala-word" id="select-w-soc2">to</span>
+
+            <span class="fl-select">
+              <span class="fl-sizer" aria-hidden="true">
+                <span class="fl-sizer-sub">Target charge</span>
+                <span id="select-soc-target-sizer">80%</span>
+              </span>
+              <span class="fl-label" id="select-soc-target-label">Target charge</span>
+              <select id="select-soc-target" aria-labelledby="select-soc-target-label">
+                <option value="80" selected>80%</option>
+                <option value="100">100%</option>
+              </select>
+              <span class="fl-chevron">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.025 7.5715)"><path d="M10.975 11.427C10.525 11.427 10.102 11.249 9.786 10.927L0 0.93L0.95 0L10.735 9.996C10.865 10.127 11.084 10.128 11.215 9.995L20.999 0L21.95 0.93L12.165 10.926C11.848 11.25 11.425 11.427 10.975 11.427Z" fill="#293043"/></g></svg>
+              </span>
+            </span>
+
+            <span class="nala-word" id="select-w-soc3">using a</span>
+
+            <span class="fl-select">
+              <span class="fl-sizer" aria-hidden="true">
+                <span class="fl-sizer-sub">Charger type</span>
+                <span id="select-charger-sizer">Home wallbox</span>
+              </span>
+              <span class="fl-label" id="select-charger-label">Charger type</span>
+              <select id="select-charger" aria-labelledby="select-charger-label">
+                <option value="home" selected>Home wallbox</option>
+                <option value="ac">Public AC charger</option>
+                <option value="dc">Rapid DC charger</option>
+                <option value="dcx">Ultra-Rapid DC charger</option>
+              </select>
+              <span class="fl-chevron">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.025 7.5715)"><path d="M10.975 11.427C10.525 11.427 10.102 11.249 9.786 10.927L0 0.93L0.95 0L10.735 9.996C10.865 10.127 11.084 10.128 11.215 9.995L20.999 0L21.95 0.93L12.165 10.926C11.848 11.25 11.425 11.427 10.975 11.427Z" fill="#293043"/></g></svg>
+              </span>
+            </span>
+
+            <span class="nala-word">?</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom -->
+      <div class="nala-result">
+       <div class="nala-result-row">
+        <div class="nala-result-cta">
+          <div class="nala-readout">
+            <div class="nala-result-label">
+              <span class="nala-result-label-text" id="nala-result-label-text">Estimated range</span>
+              <button type="button" class="ref-badge-wrapper" id="nala-ref-badge-btn" aria-label="See reference 13" aria-expanded="false" aria-controls="nala-disclaimer"><span class="ref-badge" aria-hidden="true">13</span></button>
+              <button type="button" class="q-icon-btn" id="nala-info-btn"
+                      aria-haspopup="dialog"
+                      aria-label="More information about the estimated range">
+                <svg class="q-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.67 11.999c0-4.841-3.339-8.67-8.67-8.669S3.33 7.159 3.33 12s3.339 8.67 8.67 8.67 8.67-3.83 8.67-8.671m-7.767 3.669H16v1.33H7.997v-1.33h3.576v-4.33h-2.07v-1.33h3.4zM12 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2m10 5.999c0 5.523-3.882 10-10 10.001S2 17.523 2 12 5.882 2 12 2s10 4.476 10 9.999"/></svg>
+              </button>
+            </div>
+            <div class="nala-value" id="nala-value">
+              <span class="nala-value-reel" id="nala-value-reel" aria-hidden="true"></span>
+              <span class="sr-only" id="nala-value-sr"></span>
+            </div>
+            <p class="sr-only" id="nala-live" aria-live="polite" aria-atomic="true"></p>
+          </div>
+
+          <button type="button" class="nala-cta" id="nala-cta">Done</button>
+        </div>
+
+        <p class="nala-consumption" id="nala-consumption">Energy consumption combined 16.6 - 15.2 kWh/100 km 4  &bull;CO&#8322; emissions combined 0 g/km 4  &bull;CO&#8322; class A</p>
+       </div><!-- /nala-result-row -->
+
+        <!-- Disclaimer overlay -->
+        <div id="nala-disclaimer" role="dialog" aria-label="Disclaimer" aria-modal="false" hidden>
+         <div class="nala-disclaimer-row">
+          <div class="nala-disclaimer-body">
+            <div class="nala-disclaimer-text">
+              <span class="nala-disclaimer-i">13.</span>
+              <div id="nala-disclaimer-content" tabindex="0" role="group" aria-label="Disclaimer details">
+                <p class="nala-disclaimer-copy">Range indication based on the selected parameters and average equipment. Actual range may vary.</p>
+              </div>
+            </div>
+          </div>
+          <div class="nala-disclaimer-close-wrap">
+            <button class="nala-disclaimer-close" id="nala-disclaimer-close" aria-label="Close Disclaimer">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M20.9559 3.98495L20.0139 3.04395L11.9999 11.0589L3.98495 3.04395L3.04395 3.98495L11.0589 11.9999L3.04395 20.0149L3.98495 20.9559L11.9999 12.9409L20.0139 20.9559L20.9559 20.0149L12.9409 11.9999L20.9559 3.98495Z" fill="white"/>
+              </svg>
+            </button>
+          </div>
+         </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Range info modal, nested inside the Simulate drawer -->
+<div id="nala-range-overlay" hidden>
+  <div id="nala-range-backdrop" aria-hidden="true"></div>
+  <div id="nala-range-modal" role="dialog" aria-modal="true"
+       aria-labelledby="nala-range-modal-title" tabindex="-1">
+    <div class="nala-modal-header">
+      <h2 id="nala-range-modal-title" class="nala-modal-title">Estimated range</h2>
+      <button type="button" id="nala-range-modal-close" class="nala-modal-close"
+              aria-label="Close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+             focusable="false" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 5L5 19M5 5l14 14" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <p class="nala-modal-body" id="nala-range-modal-body" tabindex="0">The range calculation always assumes a complete battery depletion cycle, meaning driving the entire distance the battery is empty in one go. Commuting journeys with repeated cold starts and recurring battery heating activation are not included. The displayed range indication is based on the WLTP partial profiles, taking into account additional parameter inputs for outside temperature, air conditioning, payload, and wheel/tire combination. The actual range may vary in practice, as crucial factors such as personal driving style, speed, use of comfort and auxiliary systems, topography, and the aging and wear process of the battery are individually variable. Due to its significantly higher efficiency compared to a combustion engine, the electric motor contributes less to overall energy consumption, meaning the electric vehicle is considerably more sensitive to, for example, auxiliary systems, as well as aerodynamic and tire influences.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var images = [
+    { src: "https://media.vw.mediaservice.avp.tech/media/fast/v3_02TXWgcZRSGv3m--WbVaqpRaakYtSbbWptmZ3bzp-xFYoyNJDGQ_oGE6ezst7PTzP44O7tpWqmiiCCKtdBWeyEiXqhpKYUSVPTaG6_Eq4JSr7xoK7b-gkqd9arw3pyX875wznnP2WtCtWPB85Nnf930l3XbnssIcbgphPxaqKQdlxqGEGKBO8KaF-ihQ00dbOrrrAx6neZQWB5ycs7oYFhuNqLGoFPxBn2_42wUmVQipBCZl4Uwx7oGoqenHUdNL_Zqu8q61A7u2V7Kj9p2vlAe9iqeHrMdzx4fLpdyeT1cskd9r1Aayevx8RG_N1V_KqQXRWKHH4SuPZI0xlfCsnaDlNPxqqsPJ67vxV2uEjfqSaQriRjQLTuvy_nmIbuLRKc4khtPES37oyPVuF2pHykIszuB2NifxGEQ6NitxW61aZN7gl37EXsxljHewDiJ8S7bXTgP38NVuI58CXkT83PMLzC_pNCHylNYonAGtYR6D-tDMo-SyZNZxXgbuQF5N_JbzBOYa6jdGH_w-LOYS1gHsE4jeskECBvjHNbtWNOIF-Eb5AHkQdQHWCbWTqyjGOuYT_PQKuoGj_RjrdN_EVrwMeom1p1Y92ENMLoF9sJJrA7GceTfqB9QV1BXsTZjHcNaQ8zy2BTSR55CXkJew7wfcwDTxnwSMzXchppAaVQV9RMjP2I9hbWIeRy1k77v2NGLfB3zHMbP8Cf8y13T9KxhnWfrZoSF8SrG-2RPMfQOagDrINYriAkyn2BUMC5gfAZzkK43ggvIB5DLyDPIj9hyHXMr5jTmPOYxHhSMXUI5qBPwGnIb8k3kFcwZlI26jDUFARyFG_AL_A6_IRfhK4wS5lsoD_UPD6c3vSg29E_MTc7Mzjyze499a-HcWuTT_K3reidMo1XT9aS4b787PznlPtdOyo1G7C4m7XLYcBeb2g8roT8bBtUkrAfZNI5JtWiPO7lsVXfJop0by2W9qFn1ihUvaums79V07BUn9i04U-6E67i5XNpQT18tCRv1VnG-K8vWGmUdxboTtlKyOLdgZ4OoUfKi2FtZ1qst_UJb131ddLI1nXhlL_E6Ov6_1blXptb_AYbx3Z7iAwAA.webp", alt: "Volkswagen ID. Polo, exterior three-quarter view" },
+    { src: "https://media.vw.mediaservice.avp.tech/media/fast/v3_02T3WscZRTG3_m9886q1VSj0lIxaptsqzbNzmyabJS9SBpjI0kNpF8gYfruzLu70-yXs7Mb00oVRQRRrIW22gsR8UJNSymUoKLgH-CVeFVQ6pUXbcXWT1CpE68Kz815OM_D4ZznnL0mVCcWPDdx9tcNfzm37b2MEC-0hJBfC5V04lLTEkLMcUdU1xUzdLhlKhv6ukuDutsaisIhL-eNDkZhq1lrDnplPRgEXW-9yKQSIYXIvCyEXVgzED09nbjW0rGu7whNqVO5Z1sQhO7IWKHk5d1gJCgHQS7YWQ51oRTmjDbDOigEnt6ZG-tN1Z8KqWs1sSWoRL47kjTHlqLQ-JWUM_GyHzUSPzY6bhudtMWAabt5E-Zbh901JCbFkdxYitpiMDpSjTvlxpFhYa-NLtb3J3FUqZjYr8d-teWSe4IdBxD7sBax3sA6ifUu23w4D9_DVbiOfAl5E_tz7C-wv2S4D5VneIHhM6gF1Hs4H5LZQiZPZhnrbeQ65N3Ib7FPYK-gdmP9wePPYC_gHMQ5jeglU0G4WOdwbseZQrwI3yAPIg-hPsCxcbbjHMVaxX6Kh5ZRN3ikH2eV_ovQho9RN3HuxLkPZ4DRTbAPTuJ0sY4j_0b9gLqCuoqzEecYzgpihkcnkQHyFPIS8hr2_dgD2C72k9ip4VbUOMqgqqifGPkRZxfOPPZx1Hb6vuOxXuTr2OewfoY_4V_umqJnBec8mzciHKxXsd4ne4qhd1ADOIdwXkGMk_kEq4x1AeszmIV0vTW4gHwAuYg8g_yITdexN2NPYe_BPsaDgsIllIc6Aa8htyLfRF7Bnka5qMs4k1CBo3ADfoHf4TfkPHyFVcJ-C6VR__BwetOLYl3_-OzE9Mz007v3urcW3q1FPg3eqml0o7jZqJtGUtx_wN8zMek_20nCZjP255NOGDX9-ZYJonIUzESVahI1Ktk0m0m16I55uWzVrJFFN1fIZXWtVdXFsq61TTbQdRPr4vj-OW_S3-Xn_VzOzepG-mNJ1Gy0i3vWZNl6MzS12HSjdkoWZ-fcbKXWLOlarJcWzXLbPN8xjcAUvWzdJDrUie6a-P9W716ZWv8HRcwOMNsDAAA.webp", alt: "Volkswagen ID. Polo, interior view" }
+  ];
+  var img = document.getElementById("gallery-img");
+  var dots = [].slice.call(document.querySelectorAll("#gallery-dots .tf-dot"));
+  var current = 0;
+
+  function render() {
+    img.src = images[current].src;
+    img.alt = images[current].alt;
+    dots.forEach(function (dot, i) {
+      var active = i === current;
+      dot.toggleAttribute("data-current", active);
+      dot.setAttribute("aria-checked", active ? "true" : "false");
+      dot.setAttribute("tabindex", active ? "0" : "-1");
+    });
+  }
+  function go(delta) {
+    current = (current + delta + images.length) % images.length;
+    render();
+  }
+  document.getElementById("gallery-prev").addEventListener("click", function () { go(-1); });
+  document.getElementById("gallery-next").addEventListener("click", function () { go(1); });
+  dots.forEach(function (dot, i) {
+    dot.addEventListener("click", function () { current = i; render(); });
+  });
+
+  // Icon-buttons group and dots wrapper both live inside the gallery frame
+  // (desktop overlay) or inside the footer row alongside each other
+  // (mobile) — same nodes, moved between the two parents on breakpoint
+  // change, not duplicated markup.
+  (function () {
+    var frame = document.querySelector(".media-frame");
+    var footerRow = document.querySelector(".media-footer-row");
+    var actions = document.querySelector(".media-actions");
+    var dotsWrap = document.querySelector(".tf-dots-wrap");
+    if (!frame || !footerRow || !actions || !dotsWrap) return;
+    var mq = window.matchMedia("(min-width: 960px)");
+    function place() {
+      var target = mq.matches ? frame : footerRow;
+      target.appendChild(dotsWrap);
+      target.appendChild(actions);
+    }
+    place();
+    if (mq.addEventListener) { mq.addEventListener("change", place); }
+    else { mq.addListener(place); }
+  })();
+
+  // Trim card selection — each white-bg card can become the selected one,
+  // so the hover ring and the permanent selected ring both apply to
+  // whichever card is active, matching the live configurator's own cards.
+  var trimCards = [].slice.call(document.querySelectorAll(".trim-card"));
+  trimCards.forEach(function (card) {
+    card.addEventListener("click", function () {
+      trimCards.forEach(function (c) { c.setAttribute("aria-selected", c === card ? "true" : "false"); });
+    });
+  });
+
+  // Info drawer — opened by any trim card's info icon or the upsell card's
+  // "More information" link, recreated from the live configurator's panel.
+  var backdrop = document.getElementById("drawer-backdrop");
+  var panel = document.getElementById("drawer-panel");
+  var closeBtn = document.getElementById("drawer-close");
+  var trimNameEl = document.getElementById("drawer-trim-name");
+  var lastTrigger = null;
+
+  function openDrawer(trimName, trigger) {
+    trimNameEl.textContent = trimName;
+    lastTrigger = trigger;
+    backdrop.classList.add("is-open");
+    panel.classList.add("is-open");
+    closeBtn.focus();
+    document.body.style.overflow = "hidden";
+  }
+  function closeDrawer() {
+    backdrop.classList.remove("is-open");
+    panel.classList.remove("is-open");
+    document.body.style.overflow = "";
+    if (lastTrigger) lastTrigger.focus();
+  }
+
+  document.querySelectorAll(".q-icon-btn[aria-label*=': more information']").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var trimName = btn.getAttribute("aria-label").split(":")[0];
+      openDrawer(trimName, btn);
+    });
+  });
+  var moreInfoLink = document.querySelector(".more-info-link");
+  if (moreInfoLink) {
+    moreInfoLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      openDrawer("Life 37kWh 116PS", moreInfoLink);
+    });
+  }
+  closeBtn.addEventListener("click", closeDrawer);
+  backdrop.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && panel.classList.contains("is-open")) closeDrawer();
+  });
+
+  // Tabs
+  var tabFeatures = document.getElementById("drawer-tab-features");
+  var tabEquipment = document.getElementById("drawer-tab-equipment");
+  var panelFeatures = document.getElementById("drawer-panel-features");
+  var panelEquipment = document.getElementById("drawer-panel-equipment");
+  function selectTab(tab) {
+    var isFeatures = tab === tabFeatures;
+    tabFeatures.classList.toggle("is-active", isFeatures);
+    tabEquipment.classList.toggle("is-active", !isFeatures);
+    tabFeatures.setAttribute("aria-selected", isFeatures ? "true" : "false");
+    tabEquipment.setAttribute("aria-selected", !isFeatures ? "true" : "false");
+    panelFeatures.hidden = !isFeatures;
+    panelEquipment.hidden = isFeatures;
+  }
+  tabFeatures.addEventListener("click", function () { selectTab(tabFeatures); });
+  tabEquipment.addEventListener("click", function () { selectTab(tabEquipment); });
+
+  // Show more — reveals the remaining hidden feature rows
+  var showMoreBtn = document.getElementById("drawer-show-more");
+  var showMoreLabel = document.getElementById("drawer-show-more-label");
+  var hiddenItems = document.querySelectorAll("#drawer-panel-features .drawer-feature-item[hidden]");
+  var expanded = false;
+  showMoreBtn.addEventListener("click", function () {
+    expanded = !expanded;
+    hiddenItems.forEach(function (item) { item.hidden = expanded ? false : true; });
+    showMoreLabel.textContent = expanded ? "- Show less" : "+ Show more";
+  });
+
+  // Simulate drawer — opened by the "Simulate" CTA inside the info drawer;
+  // stacks on top without closing the info drawer underneath it.
+  var simBackdrop = document.getElementById("simulate-backdrop");
+  var simPanel = document.getElementById("simulate-panel");
+  var simClose = document.getElementById("simulate-close");
+  function openSimulate(mode) {
+    if (window.__setSimMode) window.__setSimMode(mode);
+    simBackdrop.classList.add("is-open");
+    simPanel.classList.add("is-open");
+    simClose.focus();
+  }
+  function closeSimulate() {
+    simBackdrop.classList.remove("is-open");
+    simPanel.classList.remove("is-open");
+  }
+  document.querySelectorAll(".drawer-simulate-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () { openSimulate(btn.dataset.simMode); });
+  });
+  simClose.addEventListener("click", closeSimulate);
+  simBackdrop.addEventListener("click", closeSimulate);
+  var nalaCta = document.getElementById("nala-cta");
+  if (nalaCta) nalaCta.addEventListener("click", closeSimulate);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && simPanel.classList.contains("is-open")) closeSimulate();
+  });
+})();
+</script>
+
+<!-- ════ NaLa logic (ported verbatim from emobility/nala/index.html) ════ -->
+<script>
+(function () {
+  'use strict';
+
+  var VEHICLES = {
+    life:    { family: 'ID. Polo', label: 'Life',                 base: 452, consumption: '14.5 - 13.2' },
+    lifele:  { family: 'ID. Polo', label: 'Life Launch Edition',  base: 452, consumption: '14.5 - 13.2' },
+    style:   { family: 'ID. Polo', label: 'Style',                base: 448, consumption: '14.8 - 13.5' },
+    stylele: { family: 'ID. Polo', label: 'Style Launch Edition', base: 441, consumption: '13.9' }
+  };
+  // Reverse lookup from the info drawer's trim name (set by openDrawer) to
+  // this widget's own option keys — built from VEHICLES so the two stay
+  // in sync automatically if a trim's label ever changes.
+  var TRIM_LABEL_TO_VEH = {};
+  Object.keys(VEHICLES).forEach(function (key) { TRIM_LABEL_TO_VEH[VEHICLES[key].label] = key; });
+  var ENV     = { city: 1.00, country: 0.92, motorway: 0.74 };
+  var WEATHER = { warm: 1.00, mild: 0.95,    cold: 0.78 };
+  var OCC     = { alone: 1.00, pair: 0.97,   family: 0.93 };
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  var veh = $('select-veh'), env = $('select-env'), wea = $('select-wea'), occ = $('select-occ');
+  var socStart = $('select-soc-start'), socTarget = $('select-soc-target'), charger = $('select-charger');
+  var reelEl = $('nala-value-reel'), srValueEl = $('nala-value-sr'), liveEl = $('nala-live');
+  var consumptionEl = $('nala-consumption');
+  var infoBtn = $('nala-info-btn'), refBadgeBtn = $('nala-ref-badge-btn');
+  var rangeOverlay = $('nala-range-overlay'), rangeModal = $('nala-range-modal');
+  var rangeModalClose = $('nala-range-modal-close');
+  var rangeModalBody = $('nala-range-modal-body');
+  var headlineEl = $('nala-headline'), resultLabelEl = $('nala-result-label-text');
+  var simTitleEl = $('simulate-title');
+  var modeRangeEl = document.querySelector('.nala-mode-range');
+  var modeCapacityEl = document.querySelector('.nala-mode-capacity');
+
+  // Matches charging-time-simulator's own battCapacities/maxDC for the
+  // "52a" pack (155kW/211PS \u00b7 52kWh) \u2014 the usable capacity (55kWh) differs
+  // from the marketed 52kWh label, and DC throughput is capped by the car's
+  // own max DC rate (135kW), not just the charger's rating.
+  var CHG_BATTERY_KWH = 55;
+  var CHG_MAX_DC_KW = 135;
+  var CHG_MAX_AC_KW = 11; // car's onboard AC charger ceiling, per that app
+  var CHARGERS = {
+    home: { kw: 11,  isDC: false },
+    ac:   { kw: 22,  isDC: false },
+    dc:   { kw: 50,  isDC: true },
+    dcx:  { kw: 150, isDC: true }
+  };
+
+  var currentMode = 'range';
+
+  var liveTimer = null, firstPaint = true;
+  function announce(message) {
+    if (firstPaint) { return; }
+    clearTimeout(liveTimer);
+    liveEl.textContent = message;
+    liveTimer = setTimeout(function () { liveEl.textContent = ''; }, 3000);
+  }
+
+  function makeDigitCol() {
+    var col = document.createElement('span');
+    col.className = 'slot-digit';
+    var reel = document.createElement('span');
+    reel.className = 'slot-reel';
+    for (var i = 0; i <= 9; i++) {
+      var d = document.createElement('span');
+      d.textContent = i;
+      reel.appendChild(d);
+    }
+    col.appendChild(reel);
+    reelEl.appendChild(col);
+    return col;
+  }
+
+  function renderValue(target, unit) {
+    var digits = String(target).split('');
+    var existing = reelEl.querySelectorAll('.slot-digit');
+    if (existing.length !== digits.length || reelEl.querySelector('.nala-time-sep')) {
+      reelEl.innerHTML = '';
+      digits.forEach(function () { makeDigitCol(); });
+      var unitSpan = document.createElement('span');
+      unitSpan.className = 'nala-unit';
+      reelEl.appendChild(unitSpan);
+    }
+    reelEl.querySelector('.nala-unit').textContent = ' ' + unit;
+    reelEl.querySelectorAll('.slot-digit').forEach(function (col, i) {
+      var d = parseInt(digits[i], 10);
+      var reel = col.querySelector('.slot-reel');
+      var delay = (digits.length - 1 - i) * 60;
+      reel.style.transitionDelay = delay + 'ms';
+      reel.style.transform = 'translateY(-' + d + 'em)';
+    });
+    srValueEl.textContent = target + ' ' + unit;
+  }
+
+  // Charging time reads H:MMh (matching charging-time-simulator's own
+  // display), not a flat number \u2014 a separate reel layout with an hour
+  // digit-group, a ':' separator, then a zero-padded minute digit-group.
+  function renderTime(hVal, mVal) {
+    var hDigits = String(hVal).split('');
+    var mDigits = String(mVal).padStart(2, '0').split('');
+    var totalDigits = hDigits.length + mDigits.length;
+    var existing = reelEl.querySelectorAll('.slot-digit');
+    if (existing.length !== totalDigits || !reelEl.querySelector('.nala-time-sep')) {
+      reelEl.innerHTML = '';
+      hDigits.forEach(function () { makeDigitCol(); });
+      var sep = document.createElement('span');
+      sep.className = 'nala-time-sep';
+      sep.textContent = ':';
+      reelEl.appendChild(sep);
+      mDigits.forEach(function () { makeDigitCol(); });
+      var unitSpan = document.createElement('span');
+      unitSpan.className = 'nala-unit';
+      reelEl.appendChild(unitSpan);
+    }
+    reelEl.querySelector('.nala-unit').textContent = ' h';
+    var allDigits = hDigits.concat(mDigits);
+    reelEl.querySelectorAll('.slot-digit').forEach(function (col, i) {
+      var d = parseInt(allDigits[i], 10);
+      var reel = col.querySelector('.slot-reel');
+      var delay = (allDigits.length - 1 - i) * 60;
+      reel.style.transitionDelay = delay + 'ms';
+      reel.style.transform = 'translateY(-' + d + 'em)';
+    });
+    srValueEl.textContent = hVal + ' hours ' + mDigits.join('') + ' minutes';
+  }
+
+  function updateRange() {
+    var v = VEHICLES[veh.value] || VEHICLES.life;
+    var km = Math.round(v.base * (ENV[env.value] || 1) * (WEATHER[wea.value] || 1) * (OCC[occ.value] || 1));
+
+    renderValue(km, 'km');
+    announce('Estimated range ' + km + ' kilometres.');
+
+    var text = 'Energy consumption combined ' + v.consumption +
+               ' kWh/100 km 4  \u2022CO\u2082 emissions combined 0 g/km 4  \u2022CO\u2082 class A';
+    consumptionEl.textContent = text;
+
+    $('select-veh-family').textContent = v.family;
+  }
+
+  function updateCapacity() {
+    var chg = CHARGERS[charger.value] || CHARGERS.home;
+    var startPct = parseInt(socStart.value, 10);
+    var targetPct = parseInt(socTarget.value, 10);
+    var deltaKWh = CHG_BATTERY_KWH * Math.max(0, targetPct - startPct) / 100;
+    // Effective rate is capped by whichever is slower: the charger's own
+    // power, or the car's max intake for that current type (AC is always
+    // capped at the car's 11kW onboard charger regardless of a faster
+    // public AC unit; DC is capped at the car's 135kW max DC rate).
+    var carMaxPower = chg.isDC ? CHG_MAX_DC_KW : CHG_MAX_AC_KW;
+    var effectivePower = Math.min(chg.kw, carMaxPower);
+    var timeHours = effectivePower > 0 ? deltaKWh / effectivePower : 0;
+
+    var h = Math.floor(timeHours);
+    var m = Math.round((timeHours - h) * 60);
+    var mVal = m === 60 ? 0 : m;
+    var hVal = m === 60 ? h + 1 : h;
+
+    renderTime(hVal, mVal);
+    announce('Estimated charging time ' + hVal + ' hours ' + mVal + ' minutes.');
+    consumptionEl.textContent = '';
+
+    $('select-veh-family').textContent = (VEHICLES[veh.value] || VEHICLES.life).family;
+  }
+
+  function update() {
+    if (currentMode === 'capacity') { updateCapacity(); } else { updateRange(); }
+  }
+
+  // The Simulate CTA is scoped to whichever trim's drawer it was opened
+  // from — Life's drawer only offers "Life", Style's only "Style", etc.
+  // There's no real choice once scoped like this, so the select is
+  // rebuilt down to that single option and disabled (same pattern as
+  // charging-time-simulator's own syncSelectDisabled).
+  function applyDrawerTrim() {
+    var trimNameEl = $('drawer-trim-name');
+    var trimName = trimNameEl ? trimNameEl.textContent.trim() : 'Life';
+    var vehKey = TRIM_LABEL_TO_VEH[trimName] || 'life';
+    var label = VEHICLES[vehKey].label;
+    veh.innerHTML = '<option value="' + vehKey + '" selected>' + label + '</option>';
+    veh.disabled = true;
+    var sizer = $('select-veh-sizer'); if (sizer) sizer.textContent = label;
+  }
+
+  window.__setSimMode = function (mode) {
+    applyDrawerTrim();
+    currentMode = mode === 'capacity' ? 'capacity' : 'range';
+    var isCap = currentMode === 'capacity';
+    if (modeRangeEl) modeRangeEl.hidden = isCap;
+    if (modeCapacityEl) modeCapacityEl.hidden = !isCap;
+    if (headlineEl) headlineEl.textContent = isCap ? 'How long does it take to charge\u00a0\u2026' : 'What is the range\u00a0\u2026';
+    if (resultLabelEl) resultLabelEl.textContent = isCap ? 'Estimated charging time' : 'Estimated range';
+    if (simTitleEl) simTitleEl.textContent = isCap ? 'Simulate my charging time' : 'Simulate my range';
+    // No matching disclaimer content for charging time yet, so hide the
+    // range-specific WLTP info trigger + footnote badge in capacity mode
+    // rather than show a mismatched modal.
+    if (infoBtn) infoBtn.hidden = isCap;
+    if (refBadgeBtn) refBadgeBtn.hidden = isCap;
+    update();
+  };
+
+  /* Range info modal */
+  var modalIsOpen = false;
+
+  var bgRegions = [$('topbar'), $('nala-main')];
+  function setBackgroundInert(on) {
+    bgRegions.forEach(function (el) {
+      if (!el) { return; }
+      if (on) { el.setAttribute('inert', ''); } else { el.removeAttribute('inert'); }
+    });
+  }
+
+  function openRangeModal() {
+    rangeOverlay.hidden = false;
+    setBackgroundInert(true);
+    requestAnimationFrame(function () {
+      rangeOverlay.classList.add('is-open');
+    });
+    rangeModalBody.focus();
+    modalIsOpen = true;
+  }
+
+  function closeRangeModal() {
+    rangeOverlay.classList.remove('is-open');
+    var done = false;
+    function finish() {
+      if (done) { return; }
+      done = true;
+      rangeOverlay.hidden = true;
+      setBackgroundInert(false);
+      infoBtn.focus();
+      modalIsOpen = false;
+    }
+    rangeModal.addEventListener('transitionend', finish, { once: true });
+    setTimeout(finish, 350);
+  }
+
+  infoBtn.addEventListener('click', openRangeModal);
+  rangeModalClose.addEventListener('click', closeRangeModal);
+  $('nala-range-backdrop').addEventListener('click', closeRangeModal);
+
+  rangeModal.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') { return; }
+    e.preventDefault();
+    if (document.activeElement === rangeModalClose && !e.shiftKey) {
+      rangeModalBody.focus();
+    } else if (document.activeElement === rangeModalBody && e.shiftKey) {
+      rangeModalClose.focus();
+    } else if (e.shiftKey) {
+      rangeModalBody.focus();
+    } else {
+      rangeModalClose.focus();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modalIsOpen) { closeRangeModal(); }
+  });
+
+  [veh, env, wea, occ, socStart, socTarget, charger].forEach(function (s) { s.addEventListener('change', update); });
+
+  /* Disclaimer panel */
+  var disclaimerPanel = $('nala-disclaimer');
+  var disclaimerBadge = $('nala-ref-badge-btn');
+  var disclaimerClose = $('nala-disclaimer-close');
+  var disclaimerContent = $('nala-disclaimer-content');
+  var disclaimerOpener = null;
+
+  function openDisclaimer() {
+    disclaimerPanel.hidden = false;
+    requestAnimationFrame(function () {
+      disclaimerPanel.classList.add('is-open');
+    });
+    disclaimerBadge.setAttribute('aria-expanded', 'true');
+    disclaimerOpener = disclaimerBadge;
+    (disclaimerContent || disclaimerClose).focus();
+  }
+
+  function closeDisclaimer() {
+    if (disclaimerPanel.hidden) { return; }
+    var focusWasInside = disclaimerPanel.contains(document.activeElement);
+    disclaimerPanel.classList.remove('is-open');
+    disclaimerBadge.setAttribute('aria-expanded', 'false');
+    var done = false;
+    function finish() {
+      if (done) { return; }
+      done = true;
+      disclaimerPanel.hidden = true;
+      if (focusWasInside && disclaimerOpener) { disclaimerOpener.focus(); }
+      disclaimerOpener = null;
+    }
+    disclaimerPanel.addEventListener('transitionend', finish, { once: true });
+    setTimeout(finish, 350);
+  }
+
+  disclaimerBadge.addEventListener('click', function () {
+    if (disclaimerPanel.hidden) { openDisclaimer(); } else { closeDisclaimer(); }
+  });
+
+  disclaimerClose.addEventListener('click', closeDisclaimer);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !disclaimerPanel.hidden) { closeDisclaimer(); }
+  });
+
+  // Each floating-label box is sized to its LONGEST option, fixed once —
+  // not the currently selected option — so switching selections never
+  // resizes the box and reflows the rest of the sentence to a new line.
+  [[veh, 'select-veh-sizer'], [env, 'select-env-sizer'], [wea, 'select-wea-sizer'], [occ, 'select-occ-sizer'], [socStart, 'select-soc-start-sizer'], [socTarget, 'select-soc-target-sizer'], [charger, 'select-charger-sizer']].forEach(function (pair) {
+    var sizerEl = $(pair[1]);
+    if (!sizerEl) return;
+    var longest = '';
+    Array.prototype.forEach.call(pair[0].options, function (opt) {
+      if (opt.textContent.length > longest.length) longest = opt.textContent;
+    });
+    sizerEl.textContent = longest;
+  });
+
+  update();
+  firstPaint = false;
+})();
+</script>
+<script>
+  (function() {
+    var badge = document.getElementById('nala-ref-badge-btn');
+    var panel = document.getElementById('nala-disclaimer');
+    if (!badge || !panel) return;
+    badge.addEventListener('click', function() {
+      if (panel.hidden) {
+        setTimeout(function() {
+          panel.classList.add('highlighted');
+          clearTimeout(panel._ht);
+          panel._ht = setTimeout(function() { panel.classList.remove('highlighted'); }, 2500);
+        }, 50);
+      }
+    });
+  })();
+</script>
+</body>
+</html>
