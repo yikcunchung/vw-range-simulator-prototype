@@ -140,6 +140,13 @@ body {
     grid-area: media; position: sticky; top: 117px; align-self: start;
     height: calc(100vh - 117px - 74px);
     display: flex; flex-direction: column; justify-content: center;
+    /* Cancels .config-main's left inset — live's stage column is a plain 1fr
+       track with no padding of its own (the page-margin breathing room is
+       instead baked into the right column's own width), so the image runs
+       flush to the viewport's left edge. Right edge stays put (width:auto
+       grows to fill the freed space), keeping the column-gap to the header/
+       trims column unchanged. */
+    margin-left: -4.16vw;
   }
   .trims-header { grid-area: header; padding-top: 40px; padding-bottom: 24px; }
   .trims-col { grid-area: trims; }
@@ -259,6 +266,13 @@ body {
 .media-footer-row {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   margin-top: 12px;
+}
+/* Empty at desktop (actions/dots are moved into .media-frame by JS below) —
+   the mobile margin-top would otherwise leave a dangling gap under the now
+   full-height frame. Placed after the base rule so it actually wins the
+   cascade (equal specificity, source order decides). */
+@media (min-width: 960px) {
+  .media-footer-row { margin-top: 0; }
 }
 .tf-dots-wrap { display: contents; }
 @media (min-width: 960px) {
@@ -501,9 +515,14 @@ body {
   background: var(--white);
   border-bottom: 1px solid var(--border-input);
 }
-.drawer-title { font-family: var(--font-head); font-size: 22px; color: var(--navy); }
+/* Title shrinks once the drawer body scrolls past ~64px — verbatim from
+   live's "More information" layer (font-size 22.08px/16px, line-height
+   ratio 1.2, toggled as a hard threshold rather than interpolated). */
+.drawer-title { font-family: var(--font-head); font-size: 22px; line-height: 1.2; color: var(--navy); transition: font-size 0.2s, line-height 0.2s; }
+.drawer-header.is-scrolled .drawer-title { font-size: 16px; }
 .drawer-title strong { font-weight: 700; }
 .drawer-title span { font-weight: 400; }
+@media (prefers-reduced-motion: reduce) { .drawer-title { transition: none; } }
 .drawer-close {
   width: 44px; height: 44px; border-radius: 50%; border: none; background: transparent;
   display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy-dark);
@@ -1446,6 +1465,18 @@ body {
     if (mq.addEventListener) { mq.addEventListener("change", place); }
     else { mq.addListener(place); }
   })();
+
+  // Drawer title shrink-on-scroll — mirrors live's "layer" header: once the
+  // drawer body scrolls past 64px the title drops from 22px to 16px (a hard
+  // threshold, not an interpolation, confirmed against the live configurator).
+  [].slice.call(document.querySelectorAll(".drawer-panel")).forEach(function (drawerPanel) {
+    var header = drawerPanel.querySelector(".drawer-header");
+    var body = drawerPanel.querySelector(".drawer-body");
+    if (!header || !body) return;
+    body.addEventListener("scroll", function () {
+      header.classList.toggle("is-scrolled", body.scrollTop > 64);
+    });
+  });
 
   // Trim card selection — each white-bg card can become the selected one,
   // so the hover ring and the permanent selected ring both apply to
