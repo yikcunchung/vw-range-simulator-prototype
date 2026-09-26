@@ -1273,7 +1273,7 @@ body {
       <!-- ════ MEDIA COLUMN — gallery reused from tariffs' carousel shell ════ -->
       <div class="media-col">
         <div class="media-frame">
-          <img src="assets/media/image-01.webp" alt="Volkswagen ID. Polo, exterior view 1 of 12" id="gallery-img">
+          <img src="assets/media/image-01.webp" alt="Volkswagen ID. Polo, exterior view 1 of 12" id="gallery-img" draggable="false">
           <canvas class="interior-360-canvas" id="interior-360-canvas" aria-label="Panorama Front" role="img" tabindex="0" hidden></canvas>
           <div class="tf-arrow-wrap tf-arrow-wrap--prev">
             <button type="button" class="tf-prev" id="gallery-prev" aria-label="Show previous image">
@@ -2532,6 +2532,63 @@ l76 -6 7 33 c3 18 5 34 4 36 -2 1 -52 7 -113 13 -139 14 -165 20 -165 34 0 7
   // first prev/next/dot click — render() was never actually called at load.
   render();
 
+  // Swipe to change image — mirrors the interior-360 canvas's own
+  // mouse+touch drag pattern below, since a trackpad/mouse drag fires only
+  // mouse events (no touchstart) while a real touchscreen fires only touch.
+  // Passive/no preventDefault on the touch listeners so vertical page
+  // scroll over the image is untouched; only a clearly horizontal drag
+  // past the threshold navigates. img is hidden while the interior 360
+  // canvas is active, so this never fights its drag-to-pan.
+  (function () {
+    var startX = 0, startY = 0, tracking = false;
+    var SWIPE_THRESHOLD = 40;
+    function onStart(x, y) { startX = x; startY = y; tracking = true; }
+    function onEnd(x, y) {
+      if (!tracking) return;
+      tracking = false;
+      var dx = x - startX, dy = y - startY;
+      if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+        go(dx < 0 ? 1 : -1);
+      }
+    }
+    img.addEventListener("touchstart", function (e) {
+      if (e.touches.length !== 1) return;
+      onStart(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+    img.addEventListener("touchend", function (e) {
+      onEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    }, { passive: true });
+    img.addEventListener("mousedown", function (e) { onStart(e.clientX, e.clientY); });
+    window.addEventListener("mouseup", function (e) { onEnd(e.clientX, e.clientY); });
+
+    // Trackpad two-finger swipe — this fires neither touch nor mouse events,
+    // only a stream of "wheel" events carrying horizontal deltaX. A single
+    // physical swipe's momentum/inertial tail can have gaps between ticks
+    // (macOS keeps sending decelerating events after fingers lift); if the
+    // post-trigger lock were released by "silence since last event" (as
+    // before), a gap mid-momentum released it early and the trailing ticks
+    // re-accumulated past the threshold, paging again from one swipe. Fixed:
+    // the lockout is a flat timer from the trigger itself, not extended by
+    // further events, so nothing during that gesture's tail can re-fire.
+    var wheelAccumX = 0, wheelLocked = false, wheelGestureTimer = null, wheelUnlockTimer = null;
+    img.addEventListener("wheel", function (e) {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      if (wheelLocked) return;
+      clearTimeout(wheelGestureTimer);
+      wheelGestureTimer = setTimeout(function () { wheelAccumX = 0; }, 150);
+      wheelAccumX += e.deltaX;
+      if (Math.abs(wheelAccumX) > SWIPE_THRESHOLD) {
+        go(wheelAccumX > 0 ? 1 : -1);
+        wheelAccumX = 0;
+        wheelLocked = true;
+        clearTimeout(wheelGestureTimer);
+        clearTimeout(wheelUnlockTimer);
+        wheelUnlockTimer = setTimeout(function () { wheelLocked = false; }, 500);
+      }
+    }, { passive: false });
+  })();
+
   // Icon-buttons group and dots wrapper both live inside the gallery frame
   // as overlay pills at every width now — moved out of their authored
   // .media-footer-row markup once, not re-parented again on resize.
@@ -3257,19 +3314,21 @@ l76 -6 7 33 c3 18 5 34 4 36 -2 1 -52 7 -113 13 -139 14 -165 20 -165 34 0 7
   if (engineInfoBackdrop) engineInfoBackdrop.addEventListener('click', closeEngineInfo);
 
   // ── Exterior: paint/wheel swatch selection ──
-  function selectSwatch(group, btn) {
-    var swatches = group.querySelectorAll('.color-swatch, .wheel-swatch');
-    swatches.forEach(function (s) { s.setAttribute('aria-checked', s === btn ? 'true' : 'false'); });
+  // Paint colour is one choice shared across the Metallic and Solid groups
+  // (visually separate .option-groups, but a single logical selection), so
+  // clearing must span both — scoped by swatch type, not by group container.
+  function selectSwatch(btn) {
     var isWheel = btn.classList.contains('wheel-swatch');
+    var scopeRoot = btn.closest('[data-step-content="exterior"]') || document;
+    var swatches = scopeRoot.querySelectorAll(isWheel ? '.wheel-swatch' : '.color-swatch');
+    swatches.forEach(function (s) { s.setAttribute('aria-checked', s === btn ? 'true' : 'false'); });
     var nameEl = document.getElementById(isWheel ? 'wheel-info-name' : 'paint-info-name');
     var captionEl = document.getElementById(isWheel ? 'wheel-info-caption' : 'paint-info-caption');
     if (nameEl) nameEl.textContent = btn.dataset.name || btn.getAttribute('aria-label');
     if (captionEl) captionEl.textContent = btn.dataset.caption || '';
   }
-  [].slice.call(document.querySelectorAll('[data-step-content="exterior"] .option-group')).forEach(function (group) {
-    [].slice.call(group.querySelectorAll('.color-swatch, .wheel-swatch')).forEach(function (btn) {
-      btn.addEventListener('click', function () { selectSwatch(group, btn); });
-    });
+  [].slice.call(document.querySelectorAll('[data-step-content="exterior"] .color-swatch, [data-step-content="exterior"] .wheel-swatch')).forEach(function (btn) {
+    btn.addEventListener('click', function () { selectSwatch(btn); });
   });
 
   // ── Interior: single-select swatch card ──
