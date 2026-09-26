@@ -1851,13 +1851,13 @@ l76 -6 7 33 c3 18 5 34 4 36 -2 1 -52 7 -113 13 -139 14 -165 20 -165 34 0 7
             </div>
           </div>
         </div>
-        <p class="summary-disclaimer">ID. Polo Life 37kWh 135 PS 1-Speed Automatic 5 Door | Electric | Consumption: 13.7&nbsp;kWh/62mi<sup>1</sup> and CO2 emissions: 0&nbsp;g/km<sup>1</sup></p>
+        <p class="summary-disclaimer">ID. Polo <span class="summary-trim-name">Life</span> <span class="summary-engine-label">37kWh 135 PS</span> 1-Speed Automatic 5 Door | Electric | Consumption: <span class="summary-consumption">13.7&nbsp;kWh/62mi</span><sup>1</sup> and CO2 emissions: <span class="summary-co2">0&nbsp;g/km</span><sup>1</sup></p>
       </div>
 
       <div class="summary-price-card">
         <div class="summary-price-head">
           <div>
-            <p class="model-name">ID. Polo. Life</p>
+            <p class="model-name">ID. Polo. <span class="summary-trim-name">Life</span></p>
             <h1 class="summary-price-title">Your price specification</h1>
           </div>
           <button type="button" class="q-icon-btn" aria-label="More information">
@@ -1906,7 +1906,7 @@ l76 -6 7 33 c3 18 5 34 4 36 -2 1 -52 7 -113 13 -139 14 -165 20 -165 34 0 7
           <svg aria-hidden="true" class="q-icon" viewBox="0 0 24 24" fill="currentColor"><g id="main"><path d="M17.57 3.472 6.454 11.768l3.577 4.76 10.97-8.33zM5.41 12.59a2 2 0 0 0-.485.687l-1.786 4.4h4.695a2.04 2.04 0 0 0 1.128-.36zM17.852 1.6l4.991 6.868-12.975 9.854a3.38 3.38 0 0 1-2.034.685h-6.67l2.53-6.231a3.37 3.37 0 0 1 1.103-1.431zm5.073 19.468v1.33H1.075v-1.33z"/></g></svg>
         </button>
         <div class="bottom-bar-price-group" id="bottom-bar-price-group" hidden>
-        <span class="bottom-bar-price" id="bottom-bar-price" hidden>&pound;25,055<sup><button type="button" class="ref-badge-wrapper" aria-label="See disclaimer 2"><span class="ref-badge" aria-hidden="true">2</span></button></sup></span>
+        <span class="bottom-bar-price" id="bottom-bar-price" hidden><span id="bottom-bar-price-value">&pound;25,055</span><sup><button type="button" class="ref-badge-wrapper" aria-label="See disclaimer 2"><span class="ref-badge" aria-hidden="true">2</span></button></sup></span>
         <span class="compare-link" id="bottom-bar-p11d-toggle" hidden>
           <svg aria-hidden="true" viewBox="0 0 12 12" fill="currentColor"><g id="main"><path d="M9.284 9.565H4.102c-1.945 0-2.731-.86-2.731-2.522H2.7c0 .953.218 1.192 1.401 1.192h5.12a177 177 0 0 0-1.429-1.456l.944-.938c2.591 2.609 2.697 2.72 2.697 3.11 0 .4-.088.488-2.707 3.014l-.923-.958q.676-.651 1.48-1.442M2.717 2.435h5.18c1.777 0 2.732.95 2.732 2.522H9.3c0-.836-.358-1.192-1.401-1.192H2.774q.564.582 1.433 1.456l-.944.938C.672 3.55.566 3.439.566 3.049c0-.4.088-.488 2.707-3.014l.923.958q-.904.872-1.48 1.442"/></g></svg>
           <span>Show P11D prices</span>
@@ -3034,15 +3034,27 @@ l76 -6 7 33 c3 18 5 34 4 36 -2 1 -52 7 -113 13 -139 14 -165 20 -165 34 0 7
     srValueEl.textContent = hVal + ' hours ' + mDigits.join('') + ' minutes';
   }
 
+  // v.base is stored in km (ported verbatim from the standalone nala app),
+  // but this configurator displays distance in miles everywhere else (trim
+  // card "205 | 281mi", engine spec "Electric range (WLTP combined) 205mi")
+  // \u2014 convert once, after the ratio multipliers, to avoid compounding two
+  // roundings.
+  var KM_TO_MI = 0.621371;
+
   function updateRange() {
     var v = VEHICLES[veh.value] || VEHICLES.life;
-    var km = Math.round(v.base * (ENV[env.value] || 1) * (WEATHER[wea.value] || 1) * (OCC[occ.value] || 1));
+    var rangeKm = v.base * (ENV[env.value] || 1) * (WEATHER[wea.value] || 1) * (OCC[occ.value] || 1);
+    var mi = Math.round(rangeKm * KM_TO_MI);
 
-    renderValue(km, 'km');
-    announce('Estimated range ' + km + ' kilometres.');
+    renderValue(mi, 'mi');
+    announce('Estimated range ' + mi + ' miles.');
 
+    // "kWh/62mi" matches the rest of the app's own consumption unit (e.g.
+    // the engine cards' "13.7 kWh/62mi") \u2014 a UK-convention relabelling of
+    // kWh/100km (100km \u2248 62mi) that keeps the same sourced numeric value,
+    // not a literal per-mile recomputation.
     var text = 'Energy consumption combined ' + v.consumption +
-               ' kWh/100 km 4  \u2022CO\u2082 emissions combined 0 g/km 4  \u2022CO\u2082 class A';
+               ' kWh/62mi 4  \u2022CO\u2082 emissions combined 0 g/km 4  \u2022CO\u2082 class A';
     consumptionEl.textContent = text;
 
     $('select-veh-family').textContent = v.family;
@@ -3265,6 +3277,7 @@ l76 -6 7 33 c3 18 5 34 4 36 -2 1 -52 7 -113 13 -139 14 -165 20 -165 34 0 7
 (function () {
   // ── Powertrain: engine card selection + "more info" drawer ──
   var engineCards = [].slice.call(document.querySelectorAll('#engine-list .trim-card'));
+  var bottomBarPriceValue = document.getElementById('bottom-bar-price-value');
   engineCards.forEach(function (card) {
     card.addEventListener('click', function () {
       engineCards.forEach(function (c) {
@@ -3272,8 +3285,61 @@ l76 -6 7 33 c3 18 5 34 4 36 -2 1 -52 7 -113 13 -139 14 -165 20 -165 34 0 7
         c.setAttribute('aria-selected', selected ? 'true' : 'false');
         c.setAttribute('tabindex', selected ? '0' : '-1');
       });
+      var priceEl = card.querySelector('.engine-card-price');
+      if (bottomBarPriceValue && priceEl) bottomBarPriceValue.textContent = priceEl.textContent;
+      updateSummary();
     });
   });
+
+  // Summary step — "Your price specification" model name, spec disclaimer
+  // and price were static, never reflecting the Trim/Powertrain steps'
+  // actual selections. Re-reads whichever trim/engine card is currently
+  // selected (queried fresh, not the trim step's own module-scoped vars —
+  // this is a separate <script> block/closure) and fills the summary's
+  // dedicated spans, added alongside the existing static copy.
+  var trimStepCardsForSummary = [].slice.call(document.querySelectorAll('.trims-col[data-step-content="trim"] .trim-card'));
+  var summaryTrimNameEls = [].slice.call(document.querySelectorAll('.summary-trim-name'));
+  var summaryEngineLabelEl = document.querySelector('.summary-engine-label');
+  var summaryConsumptionEl = document.querySelector('.summary-consumption');
+  var summaryCo2El = document.querySelector('.summary-co2');
+  var summaryPriceValueEl = document.querySelector('.summary-price-value');
+
+  function engineSpecValue(card, label) {
+    var rows = [].slice.call(card.querySelectorAll('.spec-row'));
+    var row = rows.filter(function (r) {
+      var l = r.querySelector('.spec-label');
+      return l && l.textContent.trim() === label;
+    })[0];
+    var v = row ? row.querySelector('.spec-value') : null;
+    if (!v) return '';
+    var clone = v.cloneNode(true);
+    var sup = clone.querySelector('sup');
+    if (sup) sup.parentNode.removeChild(sup);
+    return clone.textContent.trim();
+  }
+
+  function updateSummary() {
+    var trimCard = trimStepCardsForSummary.filter(function (c) { return c.getAttribute('aria-selected') === 'true'; })[0];
+    if (trimCard) {
+      var titleEl = trimCard.querySelector('.trim-card-title');
+      var trimName = titleEl ? titleEl.textContent.trim() : '';
+      summaryTrimNameEls.forEach(function (el) { el.textContent = trimName; });
+    }
+
+    var engineCard = engineCards.filter(function (c) { return c.getAttribute('aria-selected') === 'true'; })[0];
+    if (!engineCard) return;
+    var engineTitleEl = engineCard.querySelector('.trim-card-title');
+    var engineLabel = engineTitleEl ? engineTitleEl.textContent.trim() : '';
+    var perf = engineSpecValue(engineCard, 'Performance');
+    if (summaryEngineLabelEl) summaryEngineLabelEl.textContent = (engineLabel + ' ' + perf).trim();
+    if (summaryConsumptionEl) summaryConsumptionEl.textContent = engineSpecValue(engineCard, 'Fuel consumption');
+    if (summaryCo2El) summaryCo2El.textContent = engineSpecValue(engineCard, 'CO2 emissions');
+
+    var enginePriceEl = engineCard.querySelector('.engine-card-price');
+    if (summaryPriceValueEl && enginePriceEl) summaryPriceValueEl.textContent = enginePriceEl.textContent.trim();
+  }
+  trimStepCardsForSummary.forEach(function (card) { card.addEventListener('click', updateSummary); });
+  updateSummary();
   var engineInfoBackdrop = document.getElementById('engine-info-backdrop');
   var engineInfoDrawer = document.getElementById('engine-info-drawer');
   var engineInfoClose = document.getElementById('engine-info-close');
